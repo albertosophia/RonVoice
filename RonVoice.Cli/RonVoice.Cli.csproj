@@ -4,6 +4,11 @@
     <ProjectReference Include="..\RonVoice.Core\RonVoice.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../data/ron_commands.json" Link="data/ron_commands.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
