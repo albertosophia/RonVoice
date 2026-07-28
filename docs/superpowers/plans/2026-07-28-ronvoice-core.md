@@ -1994,7 +1994,9 @@ public sealed class PhraseMatcher
     /// Remove a primeira ocorrência da sequência mais longa que couber.
     /// A lista já vem ordenada por tamanho decrescente.
     /// </summary>
-    static (IReadOnlyList<string> Rest, string[]? Found) StripLongest(
+    // "Rest" nao pode ser nome de elemento de tupla (CS8126): colide com o campo
+    // Rest do ValueTuple. Dai "Remaining".
+    static (IReadOnlyList<string> Remaining, string[]? Found) StripLongest(
         IReadOnlyList<string> tokens, IReadOnlyList<string[]> candidates)
     {
         foreach (var candidate in candidates)
