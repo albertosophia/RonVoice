@@ -12,7 +12,21 @@
 
 ## Global Constraints
 
-- **Windows-only.** TFM `net10.0-windows` em todos os projetos. Requer .NET SDK 10 instalado (`dotnet --list-sdks` deve listar `10.x`).
+- **Windows-only.** TFM `net10.0-windows` em todos os projetos.
+- **Invoque o SDK pelo caminho absoluto.** O SDK 10.0.302 está instalado como zip portátil
+  em `%LOCALAPPDATA%\Microsoft\dotnet`, sem elevação. O `dotnet` do PATH resolve para
+  `C:\Program Files\dotnet\dotnet.exe`, que **só tem runtime 7 e não acha SDK nenhum** —
+  está no PATH de máquina, que precede o de usuário e não dá para reordenar sem admin.
+  Em todo comando, use:
+
+  ```powershell
+  $dotnet = "$env:LOCALAPPDATA\Microsoft\dotnet\dotnet.exe"
+  & $dotnet build
+  & $dotnet test
+  ```
+
+  Onde este plano escreve `dotnet ...`, leia `& $dotnet ...`. Verificado funcionando:
+  `--version`, `new`, `restore` e `test` com xUnit.
 - **`RonVoice.Core` não referencia WPF nem `System.Windows`.** Sem `<UseWPF>`, sem `<UseWindowsForms>`. Se precisar, o design está errado.
 - **Nunca `SendKeys`, `keybd_event` ou mensagens de janela.** Só `SendInput` com `KEYEVENTF_SCANCODE`, `wVk = 0`, scan code em `wScan`.
 - **Nenhuma tecla fixa no código.** Todo token resolve por ActionName lido do `Input.ini`, com `keybind_defaults` do JSON como fallback.
