@@ -1149,10 +1149,11 @@ public class CommandResolverTests
     [Fact]
     public void QueuedOrderWithoutCloseMenuDoesNotClose()
     {
-        // door.stack.auto = MENU 1 4, sem close_menu
+        // door.stack.auto = MENU 1 4, sem close_menu.
+        // 5 passos: MENU + digito do meio + (Down/Press/Up envolvendo a ultima).
         var seq = Resolver().Resolve(new Intent(null, "door.stack.auto", true));
         Assert.Equal(StepKind.Up, seq.Steps[^1].Kind);
-        Assert.Equal(4, seq.Steps.Count);
+        Assert.Equal(5, seq.Steps.Count);
     }
 
     [Fact]
@@ -1456,7 +1457,7 @@ public sealed class CommandResolver
 dotnet test --filter CommandResolverTests
 ```
 
-Esperado: 10 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 5 passos em vez de 4, confira se `door.stack.auto` recebeu `close_menu` por engano na Task 3.
+Esperado: 10 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 6 passos em vez de 5, `door.stack.auto` recebeu `close_menu` por engano na Task 3 — ela não deve ter o campo.
 
 - [ ] **Step 7: Commit**
 
