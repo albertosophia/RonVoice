@@ -1,0 +1,7 @@
+# corpus PT: e' o que mantem o modo portugues vivo
+time vermelho abre com flash	door.open.flashbang	red	false
+azul prepara empilha a esquerda	door.stack.left	blue	true
+banana pudim relogio	-	-	false
+para	hold	-	false
+solta luz	player.chemlight	-	false
+time ouro empilha	door.stack.auto	gold	false

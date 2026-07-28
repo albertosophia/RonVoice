@@ -1,0 +1,19 @@
+# secao 8 do brief, com o caso 5 corrigido pela secao 2.6 da spec
+red team, open the door with flashbang	door.open.flashbang	red	false
+open the door with flashbang	door.open.flashbang	-	false
+red team	-	red	false
+stack up left	door.stack.left	-	false
+blue team prep breach and clear	door.breach.leader.clear	blue	true
+banana pudim relogio	-	-	false
+# colisao team / red team: casamento mais longo primeiro
+team	-	gold	false
+gold team	-	gold	false
+blue team	-	blue	false
+# colisao hold: alias de fila e frase de ordem
+hold	hold	-	false
+hold position	hold	-	false
+gold team hold	hold	gold	false
+red team hold up	hold	red	false
+# stopwords por idioma
+do it	confirm.default	-	false
+go go go	confirm.default	-	false
