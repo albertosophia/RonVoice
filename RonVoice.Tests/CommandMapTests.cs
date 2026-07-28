@@ -75,4 +75,62 @@ public class CommandMapTests
                         || t.StartsWith("KEY:", StringComparison.Ordinal),
                     $"token inesperado {t} em {o.Id}");
     }
+
+    [Fact]
+    public void DuplicatePhrasesWereRemoved()
+    {
+        var m = Load();
+        Assert.DoesNotContain("drop a chemlight", m.Orders["deploy.chemlight"].Phrases["en"]);
+        Assert.DoesNotContain("solta a luz",      m.Orders["deploy.chemlight"].Phrases["pt"]);
+        Assert.DoesNotContain("para",             m.Orders["player.yell"].Phrases["pt"]);
+        Assert.DoesNotContain("go",               m.Orders["move.to"].Phrases["en"]);
+        Assert.DoesNotContain("leader leader and clear",
+                              m.Orders["door.breach.leader.leader"].Phrases["en"]);
+    }
+
+    [Fact]
+    public void SurvivingPhrasesAreStillThere()
+    {
+        var m = Load();
+        Assert.Contains("drop chemlight", m.Orders["player.chemlight"].Phrases["en"]);
+        Assert.Contains("solta luz",      m.Orders["player.chemlight"].Phrases["pt"]);
+        Assert.Contains("para",           m.Orders["hold"].Phrases["pt"]);
+        Assert.Contains("go go go",       m.Orders["confirm.default"].Phrases["en"]);
+        Assert.Contains("leader and clear",
+                        m.Orders["door.breach.leader.clear"].Phrases["en"]);
+    }
+
+    [Fact]
+    public void PhraseCountsMatchSpec()
+    {
+        var m = Load();
+        Assert.Equal(399, m.Orders.Values.Sum(o => o.Phrases["en"].Count));
+        Assert.Equal(371, m.Orders.Values.Sum(o => o.Phrases["pt"].Count));
+    }
+
+    [Fact]
+    public void NoOrderLosesAllPhrases()
+    {
+        foreach (var o in Load().Orders.Values)
+        {
+            Assert.NotEmpty(o.Phrases["en"]);
+            Assert.NotEmpty(o.Phrases["pt"]);
+        }
+    }
+
+    [Fact]
+    public void CloseMenuSeedIsExactlyNineteenOrders()
+    {
+        var expected = new[]
+        {
+            "cover", "deploy.chemlight", "deploy.flashbang", "deploy.gas",
+            "deploy.shield", "deploy.stinger", "door.disarm", "door.open.flashbang",
+            "door.open.gas", "door.open.stinger", "door.stack.left",
+            "door.stack.right", "door.stack.split", "door.toggle", "door.wedge",
+            "move.fallin", "move.to", "person.restrain", "search",
+        };
+        var actual = Load().Orders.Values.Where(o => o.CloseMenu)
+                         .Select(o => o.Id).OrderBy(x => x, StringComparer.Ordinal);
+        Assert.Equal(expected.OrderBy(x => x, StringComparer.Ordinal), actual);
+    }
 }
