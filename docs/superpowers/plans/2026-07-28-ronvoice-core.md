@@ -144,10 +144,15 @@ Create `Directory.Build.props` na raiz:
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 </Project>
 ```
+
+**Não ligue `InvariantGlobalization`.** Em modo invariante o .NET não carrega o ICU e
+`string.Normalize(NormalizationForm.FormD)` deixa de decompor — os acentos param de ser
+dobrados e o `TextNormalizer` da Task 7 quebra, levando junto todo o modo português.
+A proteção contra lowercase culture-sensitive vem do `ToLowerInvariant()` explícito na
+chamada, não de um flag de projeto.
 
 Remova a linha `<TargetFramework>` de cada um dos três `.csproj`, para que herdem daqui.
 
