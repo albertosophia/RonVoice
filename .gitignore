@@ -1,0 +1,12 @@
+# build
+bin/
+obj/
+*.user
+.vs/
+
+# Vosk models: baixados no build, nunca versionados
+data/models/
+
+# python
+__pycache__/
+*.pyc
