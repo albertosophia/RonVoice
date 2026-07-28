@@ -393,8 +393,11 @@ peso(t)  = log(1 + N / (1 + df(t)))      N = frases do idioma, df = em quantas o
 score    = 2 · Σ peso(A ∩ B) / (Σ peso(A) + Σ peso(B))       sobre conjuntos de tokens
 ```
 
-Com isso, `open the door with flashbang` dá `0.832` para `door.open.flashbang` contra
-`0.728` para `door.toggle`.
+Com isso, `open the door with flashbang` dá `0.839` para `door.open.flashbang` contra
+`0.711` para `door.toggle` — margem `0.128`, folgada sobre o portão de `0.05`.
+
+(Medido no mapa já com as remoções da seção 10.1. Antes delas os valores eram
+`0.832` e `0.728`: tirar frases muda as frequências e portanto os pesos IDF.)
 
 **Stopwords são por idioma, nunca uma lista só.** `do` é artigo em português (*de+o*) e
 verbo em inglês; uma lista compartilhada esvazia a frase inglesa `do it`, que passa a
