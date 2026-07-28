@@ -3,6 +3,11 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- LibraryImport's source-generated marshalling for array/blittable P/Invoke
+         signatures (SendInputSender.SendInput, ForegroundGuard's user32 calls)
+         emits pointer code, so SYSLIB1062 requires this even though we never
+         write an unsafe block ourselves. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 </Project>

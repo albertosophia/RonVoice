@@ -1,0 +1,168 @@
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
+namespace RonVoice.Core.Input;
+
+/// <summary>
+/// SendInput com scan codes. O jogo é Unreal e lê via RawInput: mensagens de
+/// janela e keybd_event são ignoradas sem erro nenhum.
+/// </summary>
+public sealed partial class SendInputSender : IInputSender
+{
+    const uint INPUT_MOUSE = 0;
+    const uint INPUT_KEYBOARD = 1;
+
+    const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
+    const uint KEYEVENTF_KEYUP = 0x0002;
+    const uint KEYEVENTF_SCANCODE = 0x0008;
+
+    const uint MOUSEEVENTF_LEFTDOWN = 0x0002, MOUSEEVENTF_LEFTUP = 0x0004;
+    const uint MOUSEEVENTF_RIGHTDOWN = 0x0008, MOUSEEVENTF_RIGHTUP = 0x0010;
+    const uint MOUSEEVENTF_MIDDLEDOWN = 0x0020, MOUSEEVENTF_MIDDLEUP = 0x0040;
+    const uint MOUSEEVENTF_XDOWN = 0x0080, MOUSEEVENTF_XUP = 0x0100;
+    const uint XBUTTON1 = 0x0001, XBUTTON2 = 0x0002;
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct MOUSEINPUT
+    {
+        public int dx, dy;
+        public uint mouseData, dwFlags, time;
+        public IntPtr dwExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct KEYBDINPUT
+    {
+        public ushort wVk, wScan;
+        public uint dwFlags, time;
+        public IntPtr dwExtraInfo;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    struct InputUnion
+    {
+        [FieldOffset(0)] public MOUSEINPUT mi;
+        [FieldOffset(0)] public KEYBDINPUT ki;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct INPUT
+    {
+        public uint type;
+        public InputUnion u;
+    }
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    private static partial uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
+
+    readonly bool _dryRun;
+
+    /// <summary>Descrição legível do que foi (ou seria) enviado. Só para depuração.</summary>
+    public List<string> Log { get; } = [];
+
+    public SendInputSender(bool dryRun = false) => _dryRun = dryRun;
+
+    public void Send(KeySequence sequence, CancellationToken ct = default)
+    {
+        foreach (var step in sequence.Steps)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            switch (step.Kind)
+            {
+                case StepKind.Press:
+                    Emit(step.Token, down: true);
+                    Wait(step.HoldMs);
+                    Emit(step.Token, down: false);
+                    break;
+                case StepKind.Down:
+                    Emit(step.Token, down: true);
+                    break;
+                case StepKind.Up:
+                    Emit(step.Token, down: false);
+                    break;
+            }
+
+            Wait(step.GapAfterMs);
+        }
+    }
+
+    void Emit(InputToken token, bool down)
+    {
+        var input = token switch
+        {
+            ScanCodeToken s => KeyInput(s, down),
+            MouseToken m => MouseInput(m, down),
+            _ => throw new ArgumentOutOfRangeException(nameof(token)),
+        };
+
+        Log.Add($"{(down ? "down" : "up  ")} {Render(token)}");
+        if (_dryRun) return;
+
+        var buffer = new[] { input };
+        var sent = SendInput(1, buffer, Marshal.SizeOf<INPUT>());
+        if (sent != 1)
+            throw new InvalidOperationException(
+                $"SendInput rejeitou o evento (erro {Marshal.GetLastWin32Error()})");
+    }
+
+    static string Render(InputToken token) => token switch
+    {
+        ScanCodeToken s => $"scan 0x{s.Scan:X2}{(s.Extended ? " E0" : "")}",
+        MouseToken m => $"mouse {m.Button}",
+        _ => token.ToString()!,
+    };
+
+    static INPUT KeyInput(ScanCodeToken token, bool down)
+    {
+        var flags = KEYEVENTF_SCANCODE;
+        if (token.Extended) flags |= KEYEVENTF_EXTENDEDKEY;
+        if (!down) flags |= KEYEVENTF_KEYUP;
+
+        return new INPUT
+        {
+            type = INPUT_KEYBOARD,
+            u = new InputUnion
+            {
+                // wVk = 0 é obrigatório: com scan code, a virtual key tem que ficar vazia.
+                ki = new KEYBDINPUT { wVk = 0, wScan = token.Scan, dwFlags = flags },
+            },
+        };
+    }
+
+    static INPUT MouseInput(MouseToken token, bool down)
+    {
+        uint flags;
+        uint data = 0;
+
+        switch (token.Button)
+        {
+            case MouseButton.Left: flags = down ? MOUSEEVENTF_LEFTDOWN : MOUSEEVENTF_LEFTUP; break;
+            case MouseButton.Right: flags = down ? MOUSEEVENTF_RIGHTDOWN : MOUSEEVENTF_RIGHTUP; break;
+            case MouseButton.Middle: flags = down ? MOUSEEVENTF_MIDDLEDOWN : MOUSEEVENTF_MIDDLEUP; break;
+            case MouseButton.X1: flags = down ? MOUSEEVENTF_XDOWN : MOUSEEVENTF_XUP; data = XBUTTON1; break;
+            case MouseButton.X2: flags = down ? MOUSEEVENTF_XDOWN : MOUSEEVENTF_XUP; data = XBUTTON2; break;
+            default: throw new ArgumentOutOfRangeException(nameof(token));
+        }
+
+        return new INPUT
+        {
+            type = INPUT_MOUSE,
+            u = new InputUnion { mi = new MOUSEINPUT { dwFlags = flags, mouseData = data } },
+        };
+    }
+
+    /// <summary>
+    /// Thread.Sleep tem granularidade de ~15 ms no Windows, o que estoura um hold
+    /// de 35 ms. Dorme o grosso e faz spin no resto.
+    /// </summary>
+    static void Wait(int ms)
+    {
+        if (ms <= 0) return;
+
+        var sw = Stopwatch.StartNew();
+        var coarse = ms - 16;
+        if (coarse > 0) Thread.Sleep(coarse);
+        while (sw.Elapsed.TotalMilliseconds < ms) Thread.SpinWait(50);
+    }
+}

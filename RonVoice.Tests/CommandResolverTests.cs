@@ -123,4 +123,35 @@ public class CommandResolverTests
         foreach (var id in Map().Orders.Keys)
             _ = r.Resolve(new Intent(null, id, false));
     }
+
+    [Fact]
+    public void DryRunSenderEmitsDownUpPairsInOrder()
+    {
+        var seq = Resolver().Resolve(new Intent("red", "door.open.flashbang", true));
+        var sender = new SendInputSender(dryRun: true);
+        sender.Send(seq);
+
+        Assert.Equal(
+            new[]
+            {
+                "down scan 0x41", "up   scan 0x41",   // F7
+                "down mouse Middle", "up   mouse Middle",
+                "down scan 0x03", "up   scan 0x03",
+                "down scan 0x2A",                     // LShift desce e fica
+                "down scan 0x03", "up   scan 0x03",
+                "up   scan 0x2A",
+                "down mouse Middle", "up   mouse Middle",
+            },
+            sender.Log);
+    }
+
+    [Fact]
+    public void DryRunRespectsTiming()
+    {
+        var seq = Resolver().Resolve(new Intent(null, "door.stack.left", false));
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        new SendInputSender(dryRun: true).Send(seq);
+        // MENU(100+60) + 1(35+35) + 2(35+0) = 265 ms; folga generosa para CI lento
+        Assert.InRange(sw.Elapsed.TotalMilliseconds, 240, 900);
+    }
 }

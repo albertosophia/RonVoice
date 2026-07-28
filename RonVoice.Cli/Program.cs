@@ -8,6 +8,7 @@ return command switch
     "test" => TestCommand.Run(rest),
     "keymap" => KeymapCommand.Run(rest),
     "corpus" => CorpusCommand.Run(rest),
+    "send" => SendCommand.Run(rest),
     _ => Help(),
 };
 
@@ -17,6 +18,7 @@ static int Help()
         ronvoice test "<frase>" [--lang en|pt]   casa a frase e imprime a sequência
         ronvoice keymap [--ini <caminho>]        imprime os binds resolvidos
         ronvoice corpus [--out <pasta>]          regenera corpus/{en,pt}.tsv
+        ronvoice send "<frase>" [--dry-run] [--force]   envia ao jogo
         """);
     return 1;
 }
