@@ -2328,7 +2328,10 @@ Esperado: `en.tsv: 399 linhas` e `pt.tsv: 371 linhas`. Se vierem 402 e 373, a Ta
 dotnet run --project RonVoice.Cli -- test "red team, open the door with flashbang"
 ```
 
-Esperado: `intent : element=red order=door.open.flashbang queue=False`, seguido de três passos (F7, mouse do meio, `Scan(0x03)`).
+Esperado: `intent : element=red order=door.open.flashbang queue=False`, seguido de
+**quatro** passos — `Scan(0x41)` (F7), `Mouse(Middle)`, `Scan(0x03)`, `Scan(0x03)`.
+O `path` é `MENU 2 2`: dois níveis de menu, ambos na tecla 2, então o `Scan(0x03)`
+aparece duas vezes. É exatamente o `F7 MMB 2 2` do exemplo de abertura do `BRIEF.md`.
 
 ```
 dotnet run --project RonVoice.Cli -- keymap
