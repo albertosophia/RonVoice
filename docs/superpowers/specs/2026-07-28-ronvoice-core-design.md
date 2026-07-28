@@ -566,7 +566,22 @@ e preservar a frase idiomática.
 
 Verificado: após as cinco remoções, as 70 ordens continuam alcançáveis nos dois idiomas.
 
-### 10.2 Campo `close_menu`
+### 10.2 `command_keys` passa a usar nomes de tecla UE
+
+Descoberto durante a implementação da Task 6. O bloco `keybind_defaults` é o fallback
+para valores que viriam do `Input.ini`, e o `Input.ini` escreve `Key=One`, não `Key=1`.
+Todos os campos irmãos já eram nomes de tecla (`Z`, `LeftShift`, `Tab`, `F5`, `F`);
+`command_keys` era a exceção, com dígitos literais que o `KeyCatalog` não resolve.
+
+```
+"command_keys": ["1", ... "9"]      ->  ["One", ... "Nine"]
+```
+
+Sem isso, toda ordem cujo dígito do menu caísse no fallback — jogador que remapeou, ou
+`Input.ini` ausente — seria rejeitada. `build_commands.py` foi atualizado junto, para o
+gerador não divergir do mapa.
+
+### 10.3 Campo `close_menu`
 
 Adição de um campo booleano opcional por ordem. Aditivo: ausente é `false`.
 
