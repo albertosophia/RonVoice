@@ -71,24 +71,27 @@ public static class CustomPhraseStore
         CommandMap map, string orderId, string phrase, string language,
         IReadOnlyDictionary<string, List<string>>? pending = null)
     {
-        var normalized = string.Join(' ', TextNormalizer.Tokenize(phrase));
+        // Canônica, não só sem acento: "abra com flash" e "abre com flash" são
+        // a mesma frase depois da dobra do matcher, e aceitar as duas em ordens
+        // diferentes deixaria as duas mudas sem erro nenhum.
+        var normalized = VerbForms.Canonical(phrase, language);
 
         if (normalized.Length == 0) return "escreva alguma coisa";
 
         foreach (var order in map.Orders.Values)
             if (order.Phrases.TryGetValue(language, out var existing)
-                && Owns(existing, normalized))
+                && Owns(existing, normalized, language))
                 return Reason(order.Id, orderId, phrase);
 
         if (pending is not null)
             foreach (var (id, phrases) in pending)
-                if (Owns(phrases, normalized)) return Reason(id, orderId, phrase);
+                if (Owns(phrases, normalized, language)) return Reason(id, orderId, phrase);
 
         return null;
     }
 
-    static bool Owns(IEnumerable<string> phrases, string normalized) =>
-        phrases.Any(p => string.Join(' ', TextNormalizer.Tokenize(p)) == normalized);
+    static bool Owns(IEnumerable<string> phrases, string normalized, string language) =>
+        phrases.Any(p => VerbForms.Canonical(p, language) == normalized);
 
     static string Reason(string ownerId, string orderId, string phrase) =>
         ownerId == orderId

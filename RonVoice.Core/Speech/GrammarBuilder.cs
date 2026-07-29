@@ -38,16 +38,27 @@ public static class GrammarBuilder
             if (normalized.Length > 0 && seen.Add(normalized)) result.Add(normalized);
         }
 
+        // O imperativo formal precisa ESTAR na gramática. Ela é fechada:
+        // palavra que não está nela nunca é emitida, e o VerbForms.Fold do
+        // matcher nunca receberia o "abra" para dobrar.
+        void AddWithVariant(string raw)
+        {
+            Add(raw);
+            if (VerbForms.Variant(raw, language) is { } variant) Add(variant);
+        }
+
         foreach (var order in map.Orders.Values)
             if (order.Phrases.TryGetValue(language, out var phrases))
-                foreach (var p in phrases) Add(p);
+                foreach (var p in phrases) AddWithVariant(p);
 
         foreach (var element in map.Elements.Values)
             if (element.Aliases.TryGetValue(language, out var aliases))
-                foreach (var a in aliases) Add(a);
+                foreach (var a in aliases) AddWithVariant(a);
 
+        // O alias de fila "prepara" também tem forma formal. Sem a variante,
+        // "prepare empilha a esquerda" perderia o envelope de fila.
         if (map.Queue.Aliases.TryGetValue(language, out var queueAliases))
-            foreach (var a in queueAliases) Add(a);
+            foreach (var a in queueAliases) AddWithVariant(a);
 
         result.Add(UnknownToken);
         return result;

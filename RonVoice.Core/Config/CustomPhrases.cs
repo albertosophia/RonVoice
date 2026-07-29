@@ -49,7 +49,7 @@ public static class CustomPhrases
         foreach (var order in map.Orders.Values)
             if (order.Phrases.TryGetValue(language, out var existing))
                 foreach (var p in existing)
-                    owner.TryAdd(Normalize(p), order.Id);
+                    owner.TryAdd(Normalize(p, language), order.Id);
 
         var additions = new Dictionary<string, List<string>>(StringComparer.Ordinal);
 
@@ -65,7 +65,7 @@ public static class CustomPhrases
 
             foreach (var phrase in phrases ?? [])
             {
-                var normalized = Normalize(phrase ?? "");
+                var normalized = Normalize(phrase ?? "", language);
 
                 if (normalized.Length == 0)
                 {
@@ -103,8 +103,13 @@ public static class CustomPhrases
         return new CustomPhraseResult(Merge(map, additions, language), issues, accepted);
     }
 
-    static string Normalize(string phrase) =>
-        string.Join(' ', TextNormalizer.Tokenize(phrase));
+    /// <summary>
+    /// Dobra as formas verbais junto: sem isso "abra com flash" numa ordem e
+    /// "abre com flash" em outra passariam como frases distintas, e depois da
+    /// dobra do matcher as duas ordens ficariam mudas sem erro nenhum.
+    /// </summary>
+    static string Normalize(string phrase, string language) =>
+        VerbForms.Canonical(phrase, language);
 
     static CommandMap Merge(
         CommandMap map, Dictionary<string, List<string>> additions, string language)

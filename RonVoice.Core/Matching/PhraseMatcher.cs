@@ -44,7 +44,9 @@ public sealed class PhraseMatcher
 
     public Intent? Match(string utterance)
     {
-        var tokens = TextNormalizer.Tokenize(utterance);
+        // A dobra vem ANTES de tirar elemento e fila: "espere por mim" precisa
+        // virar "espera por mim" para o alias de fila ser reconhecido.
+        var tokens = VerbForms.Fold(TextNormalizer.Tokenize(utterance), _index.Language);
         if (tokens.Count == 0) return null;
 
         var (afterElement, elementAlias) = StripLongest(
