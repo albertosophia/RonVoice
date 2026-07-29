@@ -4,6 +4,32 @@ using System.Runtime.InteropServices;
 namespace RonVoice.Core.Input;
 
 /// <summary>
+/// Um evento INPUT como ele sai — ou sairia — do SendInput, com os campos que o
+/// jogo de fato lê. Existe porque errar a §5.1 do brief é silencioso: com wVk
+/// preenchido, ou sem KEYEVENTF_SCANCODE, o jogo ignora a tecla e não há erro
+/// nenhum para observar. A renderização em prosa do log continuaria idêntica
+/// byte a byte. Só comparando estes campos um teste consegue acusar a regressão.
+/// </summary>
+/// <param name="Vk">wVk do KEYBDINPUT. Tem que ser 0 quando se manda scan code.</param>
+/// <param name="Scan">wScan do KEYBDINPUT.</param>
+/// <param name="Flags">dwFlags do KEYBDINPUT ou do MOUSEINPUT, conforme Type.</param>
+/// <param name="MouseData">mouseData do MOUSEINPUT; 0 para teclado.</param>
+/// <param name="AtMs">
+/// Quando o evento saiu, em ms desde a criação do sender. É o que torna a §5.2
+/// verificável: sem carimbo por evento, um press-and-release no mesmo tick passa
+/// em qualquer asserção de tempo total da sequência.
+/// </param>
+public readonly record struct EmittedInput(
+    InputToken Token,
+    bool Down,
+    uint Type,
+    ushort Vk,
+    ushort Scan,
+    uint Flags,
+    uint MouseData,
+    double AtMs);
+
+/// <summary>
 /// SendInput com scan codes. O jogo é Unreal e lê via RawInput: mensagens de
 /// janela e keybd_event são ignoradas sem erro nenhum.
 /// </summary>
@@ -56,9 +82,18 @@ public sealed partial class SendInputSender : IInputSender
     private static partial uint SendInput(uint nInputs, [In] INPUT[] pInputs, int cbSize);
 
     readonly bool _dryRun;
+    readonly Stopwatch _clock = Stopwatch.StartNew();
+
+    /// <summary>
+    /// Os eventos INPUT emitidos, na ordem, com os campos exatos que foram (ou
+    /// seriam) passados ao SendInput. É a fonte de verdade da depuração — o Log
+    /// abaixo é só a leitura em prosa dela.
+    /// </summary>
+    public List<EmittedInput> Events { get; } = [];
 
     /// <summary>Descrição legível do que foi (ou seria) enviado. Só para depuração.</summary>
-    public List<string> Log { get; } = [];
+    public IReadOnlyList<string> Log =>
+        [.. Events.Select(e => $"{(e.Down ? "down" : "up  ")} {Render(e.Token)}")];
 
     public SendInputSender(bool dryRun = false) => _dryRun = dryRun;
 
@@ -122,7 +157,15 @@ public sealed partial class SendInputSender : IInputSender
             _ => throw new ArgumentOutOfRangeException(nameof(token)),
         };
 
-        Log.Add($"{(down ? "down" : "up  ")} {Render(token)}");
+        // ki e mi ocupam o mesmo espaço da união: cada tipo é lido pelo campo que
+        // é dele. Ler ki.dwFlags de um MOUSEINPUT devolveria mouseData.
+        var at = _clock.Elapsed.TotalMilliseconds;
+        Events.Add(input.type == INPUT_MOUSE
+            ? new EmittedInput(token, down, input.type, 0, 0,
+                               input.u.mi.dwFlags, input.u.mi.mouseData, at)
+            : new EmittedInput(token, down, input.type, input.u.ki.wVk, input.u.ki.wScan,
+                               input.u.ki.dwFlags, 0, at));
+
         if (_dryRun) return;
 
         var buffer = new[] { input };

@@ -25,6 +25,11 @@ public static class SendCommand
 
         var map = CommandMap.Load(Cli.MapPath);
         var iniPath = KeybindReader.FindDefaultIniPath();
+        // A §7 da spec pede aviso alto, e `send` é onde ele importa: quem tem a
+        // config em lugar inesperado roda tudo nos defaults, com saída de aparência
+        // perfeitamente normal, e nenhuma tecla chega no jogo.
+        if (iniPath is null)
+            Console.Error.WriteLine("AVISO: Input.ini não encontrado; usando keybind_defaults");
         var binds = iniPath is null
             ? new Dictionary<string, string>()
             : KeybindReader.Read(iniPath);
@@ -66,7 +71,18 @@ public static class SendCommand
         {
             Console.WriteLine();
             Console.WriteLine("--- eventos INPUT que sairiam ---");
-            foreach (var line in sender.Log) Console.WriteLine("  " + line);
+            // Log e Events são o mesmo dado, na mesma ordem: prosa e struct.
+            // A §8.2 da spec dispensou teste unitário do sender com o argumento
+            // de que o dry-run imprime o INPUT exato — imprimir só a prosa
+            // deixava wVk e dwFlags fora de qualquer olho humano ou automático.
+            var lines = sender.Log;
+            for (var i = 0; i < lines.Count; i++)
+            {
+                var e = sender.Events[i];
+                Console.WriteLine(
+                    $"  {lines[i],-18} type={e.Type} wVk=0x{e.Vk:X4} wScan=0x{e.Scan:X4} "
+                    + $"dwFlags=0x{e.Flags:X4} mouseData=0x{e.MouseData:X4}");
+            }
         }
         return 0;
     }

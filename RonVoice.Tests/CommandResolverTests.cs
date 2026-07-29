@@ -226,7 +226,10 @@ public class CommandResolverTests
         var seq = Resolver().Resolve(new Intent(null, "door.stack.left", false));
         var sw = System.Diagnostics.Stopwatch.StartNew();
         new SendInputSender(dryRun: true).Send(seq);
-        // MENU(100+60) + 1(35+35) + 2(35+0) = 265 ms; folga generosa para CI lento
+        // MENU(100+60) + 1(35+35) + 2(35+35) = 300 ms; folga generosa para CI lento.
+        // O gap do último passo não é zerado — ver a deviation 1 da Task 6.
+        // Isto mede só o total: o hold de cada tecla é asserido, evento a
+        // evento, em SendInputSenderTests.EveryPressHoldsTheKeyForItsWholeHold.
         Assert.InRange(sw.Elapsed.TotalMilliseconds, 240, 900);
     }
 }
