@@ -1,5 +1,6 @@
 using RonVoice.App.ViewModels;
 using RonVoice.Core.Commands;
+using RonVoice.Core.Config;
 
 namespace RonVoice.Tests;
 
@@ -107,4 +108,51 @@ public class CommandsViewModelTests
         var door = Vm().Groups.First(g => g.Context == "door");
         Assert.Contains("porta", door.Header, StringComparison.OrdinalIgnoreCase);
     }
+
+    static Dictionary<string, IReadOnlyList<string>> Custom() => new()
+    {
+        ["door.stack.left"] = new[] { "cola na esquerda" },
+    };
+
+    [Fact]
+    public void MarksTheRowsThatCarryUserPhrases()
+    {
+        var vm = new CommandsViewModel(CommandMap.Load(CommandMapTests.MapPath), Custom());
+
+        var rows = vm.Groups.SelectMany(g => g.Orders).ToList();
+        Assert.True(rows.First(o => o.Id == "door.stack.left").HasCustomPhrases);
+        Assert.False(rows.First(o => o.Id == "hold").HasCustomPhrases);
+    }
+
+    [Fact]
+    public void ShowsTheUserPhrasesSeparatelyFromTheFactoryOnes()
+    {
+        var vm = new CommandsViewModel(CommandMap.Load(CommandMapTests.MapPath), Custom());
+        var row = vm.Groups.SelectMany(g => g.Orders).First(o => o.Id == "door.stack.left");
+
+        Assert.Contains("cola na esquerda", row.CustomPhrasesText);
+    }
+
+    /// <summary>
+    /// Quem escreveu o arquivo precisa VER que uma linha dele foi recusada.
+    /// Num log ninguem olha.
+    /// </summary>
+    [Fact]
+    public void SurfacesTheIssuesSoARefusedPhraseIsNotSilent()
+    {
+        var issues = new List<PhraseIssue>
+        {
+            new(PhraseIssueKind.Collision, "hold", "empilha",
+                "\"empilha\" já pertence a door.stack.auto"),
+        };
+        var vm = new CommandsViewModel(
+            CommandMap.Load(CommandMapTests.MapPath), null, issues);
+
+        Assert.True(vm.HasIssues);
+        Assert.Contains("empilha", vm.IssuesText);
+        Assert.Contains("door.stack.auto", vm.IssuesText);
+    }
+
+    [Fact]
+    public void NoIssuesMeansNothingIsShown() => Assert.False(Vm().HasIssues);
 }

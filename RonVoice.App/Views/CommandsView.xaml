@@ -7,6 +7,34 @@
             <TextBlock Text="O que você pode falar" FontSize="16" FontWeight="SemiBold" />
             <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,6"
                        Text="Fale qualquer uma das frases abaixo com o jogo em foco. O contexto diz para onde você precisa estar olhando." />
+            <!--
+                Avisos do minhas_frases.json. Ficam na tela, nao num log: quem
+                escreveu o arquivo precisa ver que uma linha dele foi recusada.
+            -->
+            <Border Background="#FFF3CD" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasIssues}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Recarregar" Padding="10,4"
+                            Margin="10,0,0,0" VerticalAlignment="Top"
+                            Command="{Binding ReloadCommand}" />
+                    <StackPanel>
+                        <TextBlock Text="Suas frases — algumas não entraram:"
+                                   FontWeight="SemiBold" FontSize="12" Foreground="#856404" />
+                        <TextBlock Text="{Binding IssuesText}" TextWrapping="Wrap"
+                                   FontSize="11" Foreground="#856404" Margin="0,4,0,0" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
             <DockPanel>
                 <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0"
                            Foreground="#888" Text="{Binding CountText}" />
@@ -71,6 +99,22 @@
                                                     <TextBlock Text="{Binding PhrasesPtText}"
                                                                TextWrapping="Wrap"
                                                                FontSize="12" Foreground="#666" />
+
+                                                    <!-- Frases do usuario, em cor propria -->
+                                                    <TextBlock Text="{Binding CustomPhrasesText}"
+                                                               TextWrapping="Wrap"
+                                                               FontSize="12" Foreground="#2E7D32">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasCustomPhrases}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
                                                 </StackPanel>
 
                                                 <Button Grid.Column="1" Content="Enviar ao jogo"

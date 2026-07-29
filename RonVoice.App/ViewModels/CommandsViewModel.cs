@@ -1,4 +1,5 @@
 using RonVoice.Core.Commands;
+using RonVoice.Core.Config;
 using RonVoice.Core.Matching;
 
 namespace RonVoice.App.ViewModels;
@@ -12,15 +13,35 @@ public sealed class CommandsViewModel : ObservableBase
     readonly IReadOnlyList<OrderRowViewModel> _all;
     string _search = "";
 
-    public CommandsViewModel(CommandMap map)
+    public CommandsViewModel(
+        CommandMap map,
+        IReadOnlyDictionary<string, IReadOnlyList<string>>? custom = null,
+        IReadOnlyList<PhraseIssue>? issues = null)
     {
+        Issues = issues ?? [];
+
         _all = map.Orders.Values
             .OrderBy(o => o.Id, StringComparer.Ordinal)
-            .Select(o => new OrderRowViewModel(o))
+            .Select(o => new OrderRowViewModel(
+                o, custom is not null && custom.TryGetValue(o.Id, out var c) ? c : null))
             .ToList();
         Groups = Group(_all);
         SendCommand = new RelayCommand(_ => { }, _ => false);
+        ReloadCommand = new RelayCommand(_ => { }, _ => false);
     }
+
+    /// <summary>
+    /// O que foi recusado do minhas_frases.json. Aparece na tela, não num log:
+    /// quem escreveu o arquivo precisa ver que uma linha dele não entrou.
+    /// </summary>
+    public IReadOnlyList<PhraseIssue> Issues { get; }
+
+    public bool HasIssues => Issues.Count > 0;
+
+    public string IssuesText => string.Join('\n', Issues.Select(i => $"· {i.Message}"));
+
+    /// <summary>Relê o minhas_frases.json sem fechar o app. Ligado na integração.</summary>
+    public RelayCommand ReloadCommand { get; set; }
 
     /// <summary>
     /// "Enviar ao jogo" de cada linha. Nasce desabilitado e é substituído na

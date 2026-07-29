@@ -3,10 +3,21 @@ using RonVoice.Core.Commands;
 namespace RonVoice.App.ViewModels;
 
 /// <summary>Uma ordem no catálogo, já no formato que a tela mostra.</summary>
-public sealed class OrderRowViewModel(OrderDefinition order)
+public sealed class OrderRowViewModel(
+    OrderDefinition order, IReadOnlyList<string>? customPhrases = null)
 {
     public string Id => order.Id;
     public string Context => order.Context;
+
+    /// <summary>
+    /// Frases que o usuário acrescentou pelo minhas_frases.json. Ficam separadas
+    /// na tela para ele distinguir o que escreveu do que veio de fábrica.
+    /// </summary>
+    public IReadOnlyList<string> CustomPhrases => customPhrases ?? [];
+
+    public bool HasCustomPhrases => CustomPhrases.Count > 0;
+
+    public string CustomPhrasesText => string.Join("  ·  ", CustomPhrases);
 
     /// <summary>
     /// As 25 ordens marcadas `confidence: "verify"` nunca foram confirmadas em
