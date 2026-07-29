@@ -13,3 +13,6 @@ __pycache__/
 
 # publish output
 dist/
+
+# audio de teste, gerado por `ronvoice synth`
+RonVoice.Tests/audio/

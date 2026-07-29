@@ -27,6 +27,8 @@
           CopyToOutputDirectory="PreserveNewest" />
     <None Include="fixtures/**" CopyToOutputDirectory="PreserveNewest" />
     <None Include="corpus/**" CopyToOutputDirectory="PreserveNewest" />
+    <!-- gerado por `ronvoice synth`; não versionado -->
+    <None Include="audio/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
