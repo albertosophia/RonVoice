@@ -1,3 +1,4 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using RonVoice.Core.Commands;
 using RonVoice.Core.Matching;
@@ -28,9 +29,12 @@ public static class GrammarBuilder
 
         void Add(string raw)
         {
-            // O reconhecedor devolve minúsculas sem pontuação; normalizamos a
-            // gramática do mesmo jeito para o matcher receber o que espera.
-            var normalized = string.Join(' ', TextNormalizer.Tokenize(raw));
+            // Acentos PRESERVADOS de propósito: o vocabulário do modelo português
+            // contém as formas acentuadas, e entregar "avanca" em vez de "avança"
+            // faz o Vosk descartar a palavra inteira com "Ignoring word missing in
+            // vocabulary" — o modo português parava de funcionar por isso.
+            // O matcher tira acento dos dois lados, então o casamento não muda.
+            var normalized = string.Join(' ', TextNormalizer.TokenizeKeepingAccents(raw));
             if (normalized.Length > 0 && seen.Add(normalized)) result.Add(normalized);
         }
 
@@ -49,6 +53,18 @@ public static class GrammarBuilder
         return result;
     }
 
+    /// <summary>
+    /// Escapamento relaxado é obrigatório: o padrão do System.Text.Json converte
+    /// "avança" em "avança", e o parser JSON do Vosk **não decodifica**
+    /// essas sequências — ele recebe a barra invertida literal e descarta a
+    /// palavra com "Ignoring word missing in vocabulary". O modo português
+    /// parava aí. A gramática precisa sair em UTF-8 puro.
+    /// </summary>
+    static readonly JsonSerializerOptions GrammarJson = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
+
     public static string Build(CommandMap map, string language) =>
-        JsonSerializer.Serialize(Phrases(map, language));
+        JsonSerializer.Serialize(Phrases(map, language), GrammarJson);
 }
