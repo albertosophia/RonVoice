@@ -1,0 +1,139 @@
+RonVoice — controle por voz dos NPCs de Ready or Not
+=====================================================
+
+Nao precisa instalar nada. Descompacte e rode.
+
+
+COMO USAR
+---------
+
+1. Abra o Ready or Not.
+
+2. De dois cliques em RonVoice.App.exe.
+
+   O Windows vai perguntar se pode executar como administrador. Responda Sim.
+   Sem isso o input nao chega no jogo e NAO aparece erro nenhum: o jogo roda
+   com integridade mais alta que um programa comum, e o Windows descarta o
+   input silenciosamente.
+
+3. A primeira aba mostra tudo que voce pode falar. Use a busca para achar.
+
+   Na aba Configuracao, escolha o idioma, o microfone e o executavel do jogo,
+   e clique em "Verificar tudo" para saber se esta tudo no lugar.
+
+4. Entre numa missao, mire numa porta e fale. Em ingles:
+
+       "stack up"
+       "red team open with flashbang"
+       "prep open the door"
+
+5. Um ponto colorido aparece ao lado do relogio e na barra do programa:
+
+       verde     escutando
+       cinza     jogo fora de foco (nao escuta)
+       laranja   mudo
+       vermelho  falha - passe o mouse para ler o motivo
+
+   Ctrl+Alt+M muta sem tirar a mao do jogo.
+   Botao direito no icone da bandeja: mutar ou sair.
+
+
+ELE SO ESCUTA COM O JOGO EM FOCO
+--------------------------------
+
+Alt-tab para o Discord ou o navegador e ele para sozinho. Isso e' de
+proposito: o microfone fica sempre ligado, e o foco no jogo e' o que impede
+conversa comum de virar ordem.
+
+
+ESTA TUDO CERTO?
+----------------
+
+Na aba Configuracao, clique em "Verificar tudo". Ele checa elevacao, modelo de
+voz, microfone, jogo e teclas, e diz o que falta.
+
+A checagem do microfone pede que voce fale. Se a barra nao se mexer, o
+problema e' o microfone, nao a sua pronuncia — e a investigacao acaba ai.
+
+
+SUAS PROPRIAS FRASES
+--------------------
+
+Se voce fala diferente do que o programa espera, ensine a frase a ele.
+
+Na aba Comandos, ache a ordem e clique em "+ minha frase". Escreva do seu
+jeito e clique em Adicionar (ou aperte Enter). A frase aparece em verde ali
+mesmo. Para tirar, clique no x ao lado dela.
+
+Reabra o RonVoice depois de editar. A frase ja' esta gravada, mas o
+reconhecimento so' monta a lista de palavras na abertura — enquanto voce nao
+reabrir, ele nao ouve a frase nova.
+
+Se a frase que voce escreveu ja pertencer a outra ordem, ele recusa e diz de
+qual ordem e'. Isso e' proposital: duas ordens com a mesma frase fariam as
+DUAS pararem de funcionar, sem erro nenhum.
+
+As frases ficam num arquivo minhas_frases.json nesta pasta, assim:
+
+    {
+      "door.open.flashbang": ["manda a bang", "joga a luz e entra"],
+      "hold": ["fica quieto"]
+    }
+
+A chave e' o nome da ordem, que aparece na aba Comandos. Da' para editar esse
+arquivo na mao e clicar em Recarregar, ou mandar o arquivo para um amigo. As
+frases novas somam com as que ja existem; nada e' removido.
+
+
+DEPURAR SEM FALAR
+-----------------
+
+Tudo abaixo roda num terminal aberto COMO ADMINISTRADOR nesta pasta.
+
+    .\RonVoice.Cli.exe test "red team open with flashbang"
+        casa a frase e mostra as teclas, sem jogo e sem microfone
+
+    .\RonVoice.Cli.exe keymap
+        mostra o que ele entendeu dos seus binds do jogo
+
+    .\RonVoice.Cli.exe listen --list-devices
+        lista os microfones
+
+    .\RonVoice.Cli.exe listen --dry-run
+        escuta e mostra o que faria, sem mandar tecla nenhuma
+
+    .\RonVoice.Cli.exe listen --device 3
+        usa outro microfone
+
+    .\RonVoice.Cli.exe send "stack up" --delay 5
+        manda uma ordem depois de 5 segundos, para voce alt-tabear
+
+
+SE NAO FUNCIONAR
+----------------
+
+Nada acontece no jogo
+    O programa nao esta como administrador. E' a causa em quase todos os
+    casos. Feche e abra de novo, e responda Sim no aviso do Windows.
+
+"o jogo nao esta em foco"
+    O nome do processo varia por loja (a versao Steam chama-se
+    ReadyOrNotSteam-Win64-Shipping). Na aba Configuracao, aponte o executavel
+    do jogo — ele passa a usar o nome certo.
+
+Ponto vermelho
+    Falta o microfone ou a pasta data\models. Passe o mouse no ponto.
+
+Reconhece errado ou dispara sozinho
+    A aba Teste mostra o que ele esta ouvindo, sem mandar tecla ao jogo.
+    Se disparar sem voce querer, suba o limiar na aba Configuracao em passos
+    de 0.05.
+
+
+TECLAS
+------
+
+Ele le os seus binds reais de
+%LOCALAPPDATA%\ReadyOrNot\Saved\Config\Windows\Input.ini
+Nao ha tecla fixa no codigo: se voce remapeou o menu, ele acompanha.
+Confira na aba Configuracao, ou com  .\RonVoice.Cli.exe keymap

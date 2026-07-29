@@ -98,7 +98,9 @@ public sealed class RonVoiceSession : IDisposable
         _gate.StateChanged += s =>
             Application.Current.Dispatcher.Invoke(() => _main.StatusBar.ListenState = s);
 
-        _main.Commands = new CommandsViewModel(_map, custom.Accepted, custom.Issues);
+        _main.Commands = new CommandsViewModel(
+            _map, custom.Accepted, custom.Issues,
+            CustomPhrasesPath(settingsPath), settings.Language);
         _main.Test = new TestViewModel();
         _main.Checks = new ChecksViewModel();
         _main.Settings = new SettingsViewModel(settings, devices, _binds);
@@ -207,7 +209,9 @@ public sealed class RonVoiceSession : IDisposable
         var custom = CustomPhrases.Apply(
             LoadRawMap(), CustomPhrasesPath(_settingsPath), _settings.Language);
 
-        _main.Commands = new CommandsViewModel(custom.Map, custom.Accepted, custom.Issues);
+        _main.Commands = new CommandsViewModel(
+            custom.Map, custom.Accepted, custom.Issues,
+            CustomPhrasesPath(_settingsPath), _settings.Language);
         _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
         _main.Commands.SendCommand = new RelayCommand(
             p => _ = SendToGameAsync((OrderRowViewModel)p!), _ => GameIsRunning());

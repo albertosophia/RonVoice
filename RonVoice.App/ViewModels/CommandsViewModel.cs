@@ -13,21 +13,91 @@ public sealed class CommandsViewModel : ObservableBase
     readonly IReadOnlyList<OrderRowViewModel> _all;
     string _search = "";
 
+    readonly CommandMap _map;
+    readonly string? _storePath;
+    readonly string _language;
+    readonly Dictionary<string, List<string>> _store;
+
+    /// <param name="storePath">
+    /// Caminho do minhas_frases.json. Quando nulo, a edição fica desligada —
+    /// é o modo dos testes e de qualquer uso sem pasta gravável.
+    /// </param>
     public CommandsViewModel(
         CommandMap map,
         IReadOnlyDictionary<string, IReadOnlyList<string>>? custom = null,
-        IReadOnlyList<PhraseIssue>? issues = null)
+        IReadOnlyList<PhraseIssue>? issues = null,
+        string? storePath = null,
+        string language = "en")
     {
+        _map = map;
+        _storePath = storePath;
+        _language = language;
+        _store = storePath is null ? [] : CustomPhraseStore.Read(storePath);
         Issues = issues ?? [];
 
         _all = map.Orders.Values
             .OrderBy(o => o.Id, StringComparer.Ordinal)
-            .Select(o => new OrderRowViewModel(
-                o, custom is not null && custom.TryGetValue(o.Id, out var c) ? c : null))
+            .Select(o => Build(o, custom))
             .ToList();
         Groups = Group(_all);
         SendCommand = new RelayCommand(_ => { }, _ => false);
         ReloadCommand = new RelayCommand(_ => { }, _ => false);
+    }
+
+    /// <summary>A edição só existe quando há onde gravar.</summary>
+    public bool CanEdit => _storePath is not null;
+
+    OrderRowViewModel Build(
+        OrderDefinition order, IReadOnlyDictionary<string, IReadOnlyList<string>>? custom)
+    {
+        var row = new OrderRowViewModel(
+            order, custom is not null && custom.TryGetValue(order.Id, out var c) ? c : null);
+
+        row.AddCommand = new RelayCommand(_ => AddPhrase(row), _ => CanEdit);
+        row.RemoveCommand = new RelayCommand(
+            p => RemovePhrase(row, (string)p!), _ => CanEdit);
+        return row;
+    }
+
+    /// <summary>
+    /// Valida antes de gravar. Descobrir a colisão depois significaria duas
+    /// ordens mudas sem erro nenhum — foi o que já aconteceu neste projeto.
+    /// </summary>
+    void AddPhrase(OrderRowViewModel row)
+    {
+        if (_storePath is null) return;
+
+        var phrase = row.Draft.Trim();
+        var rejection = CustomPhraseStore.Reject(_map, row.Id, phrase, _language, _store);
+        if (rejection is not null) { row.DraftError = rejection; return; }
+
+        CustomPhraseStore.Add(_storePath, row.Id, phrase, _store);
+        row.CustomPhrases.Add(phrase);
+        row.Draft = "";
+        row.DraftError = null;
+        PendingRestart = true;
+    }
+
+    void RemovePhrase(OrderRowViewModel row, string phrase)
+    {
+        if (_storePath is null) return;
+
+        CustomPhraseStore.Remove(_storePath, row.Id, phrase, _store);
+        row.CustomPhrases.Remove(phrase);
+        PendingRestart = true;
+    }
+
+    bool _pendingRestart;
+
+    /// <summary>
+    /// Fica verdadeiro depois da primeira edição. A gramática do reconhecedor é
+    /// montada na abertura e é imutável na vida do VoskRecognizer, então a
+    /// frase nova aparece no catálogo na hora mas só é ouvida ao reabrir.
+    /// </summary>
+    public bool PendingRestart
+    {
+        get => _pendingRestart;
+        private set => Set(ref _pendingRestart, value);
     }
 
     /// <summary>

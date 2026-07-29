@@ -155,4 +155,200 @@ public class CommandsViewModelTests
 
     [Fact]
     public void NoIssuesMeansNothingIsShown() => Assert.False(Vm().HasIssues);
+
+    // ---- editor: adicionar e remover pela tela ----
+
+    static string TempPath() =>
+        Path.Combine(Path.GetTempPath(), $"ronvoice-vm-{Guid.NewGuid():N}.json");
+
+    static CommandsViewModel Editable(string path) =>
+        new(CommandMap.Load(CommandMapTests.MapPath), null, null, path, "pt");
+
+    static OrderRowViewModel Row(CommandsViewModel vm, string id) =>
+        vm.Groups.SelectMany(g => g.Orders).First(o => o.Id == id);
+
+    [Fact]
+    public void WithoutAPathToWriteToTheEditingIsOff()
+    {
+        var vm = Vm();
+        Assert.False(vm.CanEdit);
+        Assert.False(Row(vm, "hold").AddCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void AddingAPhraseShowsItAndWritesTheFile()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var row = Row(vm, "hold");
+            row.Draft = "fica quieto ai";
+            row.AddCommand.Execute(null);
+
+            Assert.Contains("fica quieto ai", row.CustomPhrases);
+            Assert.Contains("fica quieto ai", CustomPhraseStore.Read(path)["hold"]);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    [Fact]
+    public void TheFieldIsClearedAfterAdding()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var row = Row(vm, "hold");
+            row.Draft = "fica quieto ai";
+            row.AddCommand.Execute(null);
+
+            Assert.Equal("", row.Draft);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    /// <summary>
+    /// Duas ordens com a mesma frase fazem as DUAS pararem de funcionar sem
+    /// erro nenhum. O usuario tem que saber na hora de digitar, nao depois.
+    /// </summary>
+    [Fact]
+    public void APhraseThatBelongsToAnotherOrderIsRefusedOnTheScreenAndNotWritten()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var row = Row(vm, "hold");
+            row.Draft = "empilha";
+            row.AddCommand.Execute(null);
+
+            Assert.True(row.HasDraftError);
+            Assert.Contains("door.stack.auto", row.DraftError);
+            Assert.Empty(row.CustomPhrases);
+            Assert.False(File.Exists(path));
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    /// <summary>
+    /// O mapa e' montado na abertura: sem checar o que ja' foi gravado nesta
+    /// sessao, da' para colidir duas frases proprias e nao ver nada.
+    /// </summary>
+    [Fact]
+    public void APhraseAddedThisSessionBlocksTheSameOneOnAnotherOrder()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var first = Row(vm, "hold");
+            first.Draft = "para tudo agora";
+            first.AddCommand.Execute(null);
+
+            var second = Row(vm, "cover");
+            second.Draft = "para tudo agora";
+            second.AddCommand.Execute(null);
+
+            Assert.True(second.HasDraftError);
+            Assert.Contains("hold", second.DraftError);
+            Assert.Empty(second.CustomPhrases);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    [Fact]
+    public void RemovingTakesThePhraseOffTheScreenAndOutOfTheFile()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var row = Row(vm, "hold");
+            row.Draft = "fica quieto ai";
+            row.AddCommand.Execute(null);
+            row.RemoveCommand.Execute("fica quieto ai");
+
+            Assert.Empty(row.CustomPhrases);
+            Assert.False(CustomPhraseStore.Read(path).ContainsKey("hold"));
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    /// <summary>
+    /// A gramatica do Vosk e' imutavel na vida do reconhecedor. Sem o aviso, o
+    /// usuario fala a frase nova, nada acontece, e nao ha erro nenhum.
+    /// </summary>
+    [Fact]
+    public void EditingAsksForARestartBecauseTheGrammarIsBuiltAtStartup()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            Assert.False(vm.PendingRestart);
+
+            var row = Row(vm, "hold");
+            row.Draft = "fica quieto ai";
+            row.AddCommand.Execute(null);
+
+            Assert.True(vm.PendingRestart);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    [Fact]
+    public void PhrasesAlreadyInTheFileShowUpWhenTheScreenOpens()
+    {
+        var path = TempPath();
+        try
+        {
+            CustomPhraseStore.Write(path, new() { ["hold"] = ["fica quieto ai"] });
+
+            var vm = new CommandsViewModel(
+                CommandMap.Load(CommandMapTests.MapPath),
+                new Dictionary<string, IReadOnlyList<string>>
+                {
+                    ["hold"] = new[] { "fica quieto ai" },
+                },
+                null, path, "pt");
+
+            Assert.Contains("fica quieto ai", Row(vm, "hold").CustomPhrases);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    [Fact]
+    public void TypingAgainClearsTheErrorFromTheLastTry()
+    {
+        var path = TempPath();
+        try
+        {
+            var row = Row(Editable(path), "hold");
+            row.Draft = "empilha";
+            row.AddCommand.Execute(null);
+            Assert.True(row.HasDraftError);
+
+            row.Draft = "empilha ai";
+            Assert.False(row.HasDraftError);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
+
+    [Fact]
+    public void AnAddedPhraseIsFindableBySearch()
+    {
+        var path = TempPath();
+        try
+        {
+            var vm = Editable(path);
+            var row = Row(vm, "hold");
+            row.Draft = "fica quieto ai";
+            row.AddCommand.Execute(null);
+
+            vm.Search = "fica quieto";
+            Assert.Equal(1, vm.TotalShown);
+        }
+        finally { if (File.Exists(path)) File.Delete(path); }
+    }
 }
