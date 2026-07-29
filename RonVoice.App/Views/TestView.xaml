@@ -1,0 +1,63 @@
+<UserControl x:Class="RonVoice.App.Views.TestView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
+    <StackPanel Margin="20" MaxWidth="620" HorizontalAlignment="Left">
+
+        <TextBlock Text="A minha voz está funcionando?" FontSize="16" FontWeight="SemiBold" />
+        <TextBlock Foreground="#888" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,16"
+                   Text="Clique no botão, fale uma frase de comando, e clique de novo para parar. Nada é enviado ao jogo neste teste." />
+
+        <Button Padding="16,10" FontSize="14" HorizontalAlignment="Left"
+                Command="{Binding ToggleRecordingCommand}">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Content" Value="Testar minha voz" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRecording}" Value="True">
+                            <Setter Property="Content" Value="Parar e ver o resultado" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <!--
+            O medidor separa "microfone mudo" de "pronuncia nao entendida" antes
+            de qualquer reconhecimento: se a barra nao se mexe, acabou a
+            investigacao.
+        -->
+        <StackPanel Margin="0,16,0,0"
+                    Visibility="{Binding IsRecording, Converter={StaticResource BoolToVis}}">
+            <TextBlock Text="nível de entrada" Foreground="#888" FontSize="11" />
+            <ProgressBar Height="18" Minimum="0" Maximum="1"
+                         Value="{Binding Level, Mode=OneWay}" />
+            <TextBlock Foreground="#888" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
+                       Text="Se esta barra não se mexer enquanto você fala, o problema é o microfone — não a pronúncia." />
+        </StackPanel>
+
+        <Border Margin="0,20,0,0" Padding="14" CornerRadius="4"
+                Visibility="{Binding HasResult, Converter={StaticResource BoolToVis}}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background" Value="#F8D7DA" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Succeeded}" Value="True">
+                            <Setter Property="Background" Value="#D4EDDA" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel>
+                <TextBlock Text="{Binding Verdict}" TextWrapping="Wrap"
+                           FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Detail}" TextWrapping="Wrap"
+                           FontSize="11" Foreground="#555" Margin="0,8,0,0" />
+            </StackPanel>
+        </Border>
+
+    </StackPanel>
+</UserControl>
