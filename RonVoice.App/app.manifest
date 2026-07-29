@@ -5,7 +5,7 @@
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
         <!--
           O jogo roda com integridade mais alta. O Windows descarta input de
-          integridade menor SEM gerar erro, então sem elevação o app parece
+          integridade menor SEM gerar erro, entao sem elevacao o app parece
           funcionar e nenhuma tecla chega. Confirmado em jogo em 2026-07-28.
         -->
         <requestedExecutionLevel level="requireAdministrator" uiAccess="false" />

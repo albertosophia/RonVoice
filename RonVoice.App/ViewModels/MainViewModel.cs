@@ -10,6 +10,14 @@ public sealed class MainViewModel : ObservableBase
 
     public StatusBarViewModel StatusBar { get; } = new();
 
+    /// <summary>
+    /// Atribuídos pela sessão logo após a construção, que é quem tem o mapa, os
+    /// binds e a lista de microfones. Não nulos depois disso.
+    /// </summary>
+    public CommandsViewModel Commands { get; set; } = null!;
+    public TestViewModel Test { get; set; } = null!;
+    public SettingsViewModel Settings { get; set; } = null!;
+
     /// <summary>0 = Comandos, 1 = Teste, 2 = Configuração. Abre em Comandos.</summary>
     public int SelectedTabIndex
     {
