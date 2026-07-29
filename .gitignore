@@ -19,3 +19,9 @@ RonVoice.Tests/audio/
 
 # vs user files
 *.csproj.user
+
+# pacotes de distribuicao gerados
+pack/
+build-fd/
+dist-app/
+*.zip
