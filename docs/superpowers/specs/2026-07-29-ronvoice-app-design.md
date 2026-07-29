@@ -283,7 +283,8 @@ hook global de teclado.
 2. Reconhecimento em português nunca foi exercitado com áudio — só existe voz sintética
    inglesa na máquina do autor.
 3. As 19 ordens com `close_menu` e as 25 marcadas `verify` continuam sem validação em jogo.
-   O botão Testar da aba Comandos é o que torna isso viável para o autor e para terceiros.
+   O botão "Enviar ao jogo" da aba Comandos é o que torna essa validação viável para o
+   autor e para terceiros, já que dispensa acertar a fala primeiro.
 4. Antivírus e SmartScreen. O app envia teclas sintéticas, registra hotkey global e escuta
    o microfone: é, comportamentalmente, indistinguível de um keylogger, e heurística de
    antivírus tende a reclamar. Sem assinatura de código, parte dos usuários verá alerta.
