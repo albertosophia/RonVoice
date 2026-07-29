@@ -19,6 +19,14 @@ public static class Cli
     public static bool Flag(string[] args, string name) => args.Contains(name);
 
     /// <summary>
+    /// Remove um sufixo ".exe" opcional, sem diferenciar maiúsculas/minúsculas.
+    /// Process.ProcessName nunca inclui a extensão, mas quem copia o nome do
+    /// Gerenciador de Tarefas para --process provavelmente cola com ela.
+    /// </summary>
+    public static string StripExeSuffix(string name) =>
+        name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ? name[..^4] : name;
+
+    /// <summary>
     /// Lê e valida --delay. Ausente vira 0 (comportamento atual, sem espera).
     /// Um valor malformado ou negativo é rejeitado explicitamente em vez de
     /// virar 0 em silêncio — quem digitou "--delay abc" quer saber que errou,

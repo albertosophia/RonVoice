@@ -11,7 +11,8 @@ public static class SendCommand
         if (args.Length == 0 || args[0].StartsWith("--", StringComparison.Ordinal))
         {
             Console.Error.WriteLine(
-                "uso: ronvoice send \"<frase>\" [--lang en|pt] [--dry-run] [--force] [--delay <segundos>]");
+                "uso: ronvoice send \"<frase>\" [--lang en|pt] [--dry-run] [--force] "
+                + "[--delay <segundos>] [--process <nome>]");
             return 1;
         }
 
@@ -19,6 +20,13 @@ public static class SendCommand
         var lang = Cli.Option(args, "--lang") ?? "en";
         var dryRun = Cli.Flag(args, "--dry-run");
         var force = Cli.Flag(args, "--force");
+        // Override para builds do jogo com nome de processo que o prefixo padrão
+        // (§ForegroundGuard.GameProcessPrefix) não previu. Aceita com ou sem
+        // ".exe" porque é assim que a maioria copia do Gerenciador de Tarefas.
+        var processOverride = Cli.Option(args, "--process");
+        string[]? processNames = processOverride is null
+            ? null
+            : [Cli.StripExeSuffix(processOverride)];
 
         if (!Cli.TryParseDelay(args, out var delaySeconds, out var delayError))
         {
@@ -63,10 +71,11 @@ public static class SendCommand
             return 3;
         }
 
-        if (!dryRun && !force && !ForegroundGuard.IsGameForeground())
+        if (!dryRun && !force && !ForegroundGuard.IsGameForeground(processNames))
         {
             Console.Error.WriteLine(
                 $"descartada: o jogo não está em foco (em foco: {ForegroundGuard.ForegroundProcessName() ?? "?"}). "
+                + "Se o processo do seu jogo tem outro nome, use --process <nome> (com ou sem .exe). "
                 + "Use --force para mandar mesmo assim.");
             return 4;
         }

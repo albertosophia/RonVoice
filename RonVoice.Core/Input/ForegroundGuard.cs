@@ -12,9 +12,17 @@ public static partial class ForegroundGuard
     [LibraryImport("user32.dll")]
     private static partial uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
 
-    /// <summary>Nomes de processo do jogo, sem extensão.</summary>
-    public static readonly string[] GameProcessNames =
-        ["ReadyOrNot-Win64-Shipping", "ReadyOrNot"];
+    /// <summary>
+    /// Prefixo comum a toda distribuição conhecida do jogo: Steam usa
+    /// "ReadyOrNotSteam-Win64-Shipping", o build nu usa "ReadyOrNot-Win64-Shipping"
+    /// ou só "ReadyOrNot", e a Epic (ou qualquer loja futura) provavelmente cola
+    /// seu próprio sufixo do mesmo jeito. Comparar por igualdade exata contra uma
+    /// lista curta é a mesma armadilha que o resto do projeto já evita com
+    /// keybindings — presumir um conjunto fechado de nomes quando o jogo em si não
+    /// garante nenhum. Nenhum outro processo comum plausivelmente começa com
+    /// "ReadyOrNot", então o prefixo é seguro sem precisar listar cada loja.
+    /// </summary>
+    public const string GameProcessPrefix = "ReadyOrNot";
 
     public static string? ForegroundProcessName()
     {
@@ -33,12 +41,23 @@ public static partial class ForegroundGuard
         }
     }
 
+    /// <summary>
+    /// Predicado puro por trás de <see cref="IsGameForeground"/>, separado dela
+    /// para poder ser testado sem os P/Invoke de GetForegroundWindow. Sem
+    /// <paramref name="processNames"/>, casa por prefixo — cobre Steam, Epic e
+    /// variantes futuras. Com <paramref name="processNames"/> (o override de
+    /// `--process`), casa só por igualdade exata contra a lista dada: é o
+    /// jogador dizendo o nome certo do processo dele, não um palpite nosso.
+    /// </summary>
+    public static bool Matches(string processName, IReadOnlyCollection<string>? processNames = null) =>
+        processNames is null
+            ? processName.StartsWith(GameProcessPrefix, StringComparison.OrdinalIgnoreCase)
+            : processNames.Any(n => string.Equals(n, processName, StringComparison.OrdinalIgnoreCase));
+
     public static bool IsGameForeground(IReadOnlyCollection<string>? processNames = null)
     {
         var name = ForegroundProcessName();
-        if (name is null) return false;
-        return (processNames ?? GameProcessNames)
-            .Any(n => string.Equals(n, name, StringComparison.OrdinalIgnoreCase));
+        return name is not null && Matches(name, processNames);
     }
 
     /// <summary>
