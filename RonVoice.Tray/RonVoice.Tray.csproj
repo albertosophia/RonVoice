@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- exigido pelo gerador do LibraryImport usado em GlobalHotkey (SYSLIB1062) -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RonVoice.Core\RonVoice.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../data/ron_commands.json" Link="data/ron_commands.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

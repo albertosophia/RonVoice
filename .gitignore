@@ -16,3 +16,6 @@ dist/
 
 # audio de teste, gerado por `ronvoice synth`
 RonVoice.Tests/audio/
+
+# vs user files
+*.csproj.user

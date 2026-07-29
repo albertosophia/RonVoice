@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RonVoice.Cli", "RonVoice.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RonVoice.Tests", "RonVoice.Tests\RonVoice.Tests.csproj", "{8F5F2BF4-5CD4-40A2-A70C-8ED75B41E4FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RonVoice.Tray", "RonVoice.Tray\RonVoice.Tray.csproj", "{42E517B9-7068-4772-9280-270DDA9CB8BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{8F5F2BF4-5CD4-40A2-A70C-8ED75B41E4FE}.Release|x64.Build.0 = Release|Any CPU
 		{8F5F2BF4-5CD4-40A2-A70C-8ED75B41E4FE}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F5F2BF4-5CD4-40A2-A70C-8ED75B41E4FE}.Release|x86.Build.0 = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|x64.Build.0 = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Debug|x86.Build.0 = Debug|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|x64.ActiveCfg = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|x64.Build.0 = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|x86.ActiveCfg = Release|Any CPU
+		{42E517B9-7068-4772-9280-270DDA9CB8BE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
