@@ -5,6 +5,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="20" MaxWidth="620" HorizontalAlignment="Left">
 
+            <views:ChecksView DataContext="{Binding DataContext.Checks,
+                              RelativeSource={RelativeSource AncestorType=Window}}"
+                              Margin="0,0,0,20" />
+
             <TextBlock Text="Jogo" FontWeight="SemiBold" FontSize="13" />
             <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,4"
                        Text="O nome do processo muda conforme a loja. Escolha o executável para o app saber quando o jogo está em foco." />

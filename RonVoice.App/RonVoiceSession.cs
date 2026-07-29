@@ -10,6 +10,7 @@ using RonVoice.Core.Input;
 using RonVoice.Core.Matching;
 using RonVoice.Core.Pipeline;
 using RonVoice.Core.Speech;
+using RonVoice.Core.Startup;
 
 namespace RonVoice.App;
 
@@ -47,8 +48,12 @@ public sealed class RonVoiceSession : IDisposable
         _settings = settings;
         _settingsPath = settingsPath;
 
-        _map = CommandMap.Load(
-            Path.Combine(AppContext.BaseDirectory, "data", "ron_commands.json"));
+        // A ORDEM IMPORTA: as frases do usuário entram antes da gramática ser
+        // construída. Invertido, tudo parece funcionar — o catálogo mostra a
+        // frase, os testes passam — e o Vosk simplesmente nunca a ouve.
+        var custom = CustomPhrases.Apply(LoadRawMap(), CustomPhrasesPath(settingsPath),
+                                         settings.Language);
+        _map = custom.Map;
 
         _binds = KeybindReader.FindDefaultIniPath() is { } ini
             ? KeybindReader.Read(ini)
@@ -93,8 +98,9 @@ public sealed class RonVoiceSession : IDisposable
         _gate.StateChanged += s =>
             Application.Current.Dispatcher.Invoke(() => _main.StatusBar.ListenState = s);
 
-        _main.Commands = new CommandsViewModel(_map);
+        _main.Commands = new CommandsViewModel(_map, custom.Accepted, custom.Issues);
         _main.Test = new TestViewModel();
+        _main.Checks = new ChecksViewModel();
         _main.Settings = new SettingsViewModel(settings, devices, _binds);
 
         WireCommands();
@@ -126,6 +132,13 @@ public sealed class RonVoiceSession : IDisposable
     public static RonVoiceSession Start(
         AppSettings settings, string settingsPath, bool portable, string modelsDir) =>
         new(settings, settingsPath, portable, modelsDir);
+
+    static CommandMap LoadRawMap() => CommandMap.Load(
+        Path.Combine(AppContext.BaseDirectory, "data", "ron_commands.json"));
+
+    /// <summary>Ao lado do settings.json, que é onde o modo portable guarda tudo.</summary>
+    static string CustomPhrasesPath(string settingsPath) =>
+        Path.Combine(Path.GetDirectoryName(settingsPath)!, CustomPhrases.FileName);
 
     static string[]? ProcessNamesFrom(AppSettings settings) =>
         settings.GameExecutablePath is { } exe && exe.Length > 0
@@ -179,6 +192,66 @@ public sealed class RonVoiceSession : IDisposable
 
         _main.Settings.BrowseCommand = new RelayCommand(_ => BrowseForGame());
         _main.Settings.SaveCommand = new RelayCommand(_ => SaveSettings());
+
+        _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
+        _main.Checks.RunCommand = new RelayCommand(_ => _ = RunChecksAsync());
+    }
+
+    /// <summary>
+    /// Relê o minhas_frases.json sem fechar o app. O reconhecedor NÃO é recriado:
+    /// a gramática é imutável na vida de um VoskRecognizer, então as frases novas
+    /// só passam a ser ouvidas ao reabrir. A mensagem diz isso — esconder seria pior.
+    /// </summary>
+    void ReloadCustomPhrases()
+    {
+        var custom = CustomPhrases.Apply(
+            LoadRawMap(), CustomPhrasesPath(_settingsPath), _settings.Language);
+
+        _main.Commands = new CommandsViewModel(custom.Map, custom.Accepted, custom.Issues);
+        _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
+        _main.Commands.SendCommand = new RelayCommand(
+            p => _ = SendToGameAsync((OrderRowViewModel)p!), _ => GameIsRunning());
+        _main.RaiseCommandsChanged();
+
+        var accepted = custom.Accepted.Values.Sum(v => v.Count);
+        MessageBox.Show(
+            $"{accepted} frase(s) aceita(s), {custom.Issues.Count} aviso(s).\n\n"
+            + "Reabra o RonVoice para o reconhecimento passar a ouvir as frases novas.",
+            "RonVoice", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    async Task RunChecksAsync()
+    {
+        _main.Checks.BeginMicrophoneTest();
+
+        double peak = 0;
+        void Measure(ReadOnlyMemory<byte> chunk)
+        {
+            var level = AudioLevel.Rms(chunk.Span);
+            if (level > peak) peak = level;
+            Application.Current.Dispatcher.Invoke(() => _main.Checks.Level = level);
+        }
+
+        _capture.OnAudio += Measure;
+        await Task.Delay(TimeSpan.FromSeconds(3));
+        _capture.OnAudio -= Measure;
+
+        var modelsDir = ModelLocator.FindModelsDirectory();
+        var modelPresent = modelsDir is not null && ModelPresent(_settings.Language, modelsDir);
+
+        _main.Checks.Show(StartupChecks.Run(new CheckInputs(
+            Elevated: ForegroundGuard.IsElevated(),
+            ModelPresent: modelPresent,
+            Language: _settings.Language,
+            MicrophonePeak: peak,
+            GameFound: GameIsRunning() || _settings.GameExecutablePath is not null,
+            InputIniFound: KeybindReader.FindDefaultIniPath() is not null)));
+    }
+
+    static bool ModelPresent(string language, string modelsDir)
+    {
+        try { return ModelLocator.LooksLikeAModel(ModelLocator.Find(language, modelsDir)); }
+        catch (ModelNotFoundException) { return false; }
     }
 
     /// <summary>

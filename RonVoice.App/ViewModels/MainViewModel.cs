@@ -17,6 +17,10 @@ public sealed class MainViewModel : ObservableBase
     public CommandsViewModel Commands { get; set; } = null!;
     public TestViewModel Test { get; set; } = null!;
     public SettingsViewModel Settings { get; set; } = null!;
+    public ChecksViewModel Checks { get; set; } = null!;
+
+    /// <summary>Chamado quando o Recarregar troca o catálogo inteiro.</summary>
+    public void RaiseCommandsChanged() => Raise(nameof(Commands));
 
     /// <summary>0 = Comandos, 1 = Teste, 2 = Configuração. Abre em Comandos.</summary>
     public int SelectedTabIndex

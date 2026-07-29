@@ -30,7 +30,7 @@ public static class ListenCommand
             return 1;
         }
 
-        var map = CommandMap.Load(Cli.MapPath);
+        var map = Cli.LoadMap(lang);
 
         var iniPath = KeybindReader.FindDefaultIniPath();
         if (iniPath is null)

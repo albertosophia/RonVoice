@@ -42,7 +42,7 @@ public static class SendCommand
         // trocar do terminal pro jogo com alt-tab antes da ordem sair.
         Cli.CountdownDelay(delaySeconds);
 
-        var map = CommandMap.Load(Cli.MapPath);
+        var map = Cli.LoadMap(lang);
         var iniPath = KeybindReader.FindDefaultIniPath();
         // A §7 da spec pede aviso alto, e `send` é onde ele importa: quem tem a
         // config em lugar inesperado roda tudo nos defaults, com saída de aparência

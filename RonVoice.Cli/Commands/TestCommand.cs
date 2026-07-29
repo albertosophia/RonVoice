@@ -1,5 +1,6 @@
 using System.Globalization;
 using RonVoice.Core.Commands;
+using RonVoice.Core.Config;
 using RonVoice.Core.Input;
 using RonVoice.Core.Matching;
 
@@ -9,6 +10,25 @@ public static class Cli
 {
     public static string MapPath =>
         Path.Combine(AppContext.BaseDirectory, "data", "ron_commands.json");
+
+    /// <summary>
+    /// O mapa com as frases do usuário já mescladas. O CLI é a ferramenta de
+    /// depuração do projeto: se ele não enxergasse o minhas_frases.json, quem
+    /// estivesse depurando a própria frase receberia um falso negativo.
+    /// Avisos vão para stderr, para não sujarem a saída principal.
+    /// </summary>
+    public static CommandMap LoadMap(string language)
+    {
+        var custom = CustomPhrases.Apply(
+            CommandMap.Load(MapPath),
+            Path.Combine(AppContext.BaseDirectory, CustomPhrases.FileName),
+            language);
+
+        foreach (var issue in custom.Issues)
+            Console.Error.WriteLine($"AVISO ({CustomPhrases.FileName}): {issue.Message}");
+
+        return custom.Map;
+    }
 
     public static string? Option(string[] args, string name)
     {
@@ -105,7 +125,7 @@ public static class TestCommand
 
         var utterance = args[0];
         var lang = Cli.Option(args, "--lang") ?? "en";
-        var map = CommandMap.Load(Cli.MapPath);
+        var map = Cli.LoadMap(lang);
 
         var iniPath = KeybindReader.FindDefaultIniPath();
         if (iniPath is null)
