@@ -11,6 +11,7 @@ return command switch
     "send" => SendCommand.Run(rest),
     "synth" => SynthCommand.Run(rest),
     "listen" => ListenCommand.Run(rest),
+    "focus" => FocusCommand.Run(rest),
     _ => Help(),
 };
 
@@ -24,6 +25,7 @@ static int Help()
         ronvoice synth --out <pasta> [--lang en|pt] [--phrase "<texto>"] [--limit N]   gera WAVs de teste
         ronvoice listen [--lang en|pt] [--from-wav <arq>] [--list-devices] [--device N]
                         [--threshold F] [--dry-run] [--process <nome>]   escuta e envia
+        ronvoice focus [--seconds N] [--out <arq>]   grava quem esta em foco (para depurar VR)
         """);
     return 1;
 }
