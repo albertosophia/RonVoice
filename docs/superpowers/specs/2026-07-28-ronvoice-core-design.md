@@ -612,6 +612,21 @@ Corrigir a lista em jogo é o **primeiro teste da etapa 4**, como a §5.4 do bri
 
 ## 11. Pendências para validação em jogo
 
+### Confirmado em jogo em 2026-07-28
+
+- **Elevação é requisito, não recomendação.** Com o app não-elevado, nenhuma tecla chega
+  ao jogo e não há erro em lugar nenhum: o `SendInput` retorna sucesso e os eventos entram
+  na fila do Windows, mas o UIPI os descarta antes do jogo. Medido: o processo do jogo
+  nega `PROCESS_VM_READ` com acesso negado a um processo do mesmo usuário, o que só
+  ocorre com integridade diferente. Confirma a §5.8 do brief.
+- **Não há anti-cheat bloqueando `SendInput`.** Com o app elevado as teclas chegam e o
+  menu responde. Resolve a quarta pergunta da §10 do brief.
+- **O nome do processo varia por loja.** A build Steam chama-se
+  `ReadyOrNotSteam-Win64-Shipping`, não `ReadyOrNot-Win64-Shipping`. O `ForegroundGuard`
+  passou a casar por prefixo, com `--process` como escape.
+
+### Ainda abertas
+
 Não bloqueiam a implementação; bloqueiam o "pronto" da etapa 4.
 
 1. `close_menu` das 19 ordens semeadas e das demais 51.
