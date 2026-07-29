@@ -55,7 +55,12 @@ public sealed class CommandResolver
         {
             var token = ResolvePathToken(order.Path[i]);
             var isLast = i == order.Path.Count - 1;
-            var isMenu = token is MouseToken;
+
+            // "é o passo que abre o menu?", não "resolveu para um botão de
+            // mouse?". Os 100 ms de hold e os 60 ms de settle são do clique que
+            // abre o menu — quem rebindar OpenSwatCommand para o teclado precisa
+            // deles igual, e um dígito que caia num botão de mouse não precisa.
+            var isMenu = order.Path[i] == "MENU";
 
             if (isLast && intent.Queue)
             {
@@ -127,13 +132,27 @@ public sealed class CommandResolver
         throw new ResolveException($"token de path desconhecido: {token}");
     }
 
-    /// <summary>Bind real do jogo; se ausente ou irreconhecível, o default do mapa.</summary>
+    /// <summary>
+    /// Bind real do jogo. As duas situações são diferentes e não podem ser
+    /// coladas num único <c>&amp;&amp;</c>:
+    /// <list type="bullet">
+    /// <item>bind ausente do arquivo — cai no default do mapa, como a §7 da spec manda;</item>
+    /// <item>bind presente mas fora do KeyCatalog — rejeita a ordem e nomeia a tecla.</item>
+    /// </list>
+    /// Cair no default no segundo caso manda uma tecla que o jogador
+    /// explicitamente rebindou para outra coisa, sem exceção e sem log: é a
+    /// falha "tecla errada, em silêncio". O jogo liga ações de SWAT à roda do
+    /// mouse por padrão, e a roda é justamente o que não sabemos enviar.
+    /// </summary>
     InputToken ResolveAction(string action, string fallbackKeyName)
     {
-        if (_binds.TryGetValue(action, out var bound)
-            && KeyCatalog.TryResolve(bound, out var token))
-            return token;
-        return ResolveKeyName(fallbackKeyName);
+        if (!_binds.TryGetValue(action, out var bound))
+            return ResolveKeyName(fallbackKeyName);
+
+        return KeyCatalog.TryResolve(bound, out var token)
+            ? token
+            : throw new ResolveException(
+                $"a ação {action} está ligada a {bound}, que não sabemos enviar");
     }
 
     static InputToken ResolveKeyName(string keyName) =>

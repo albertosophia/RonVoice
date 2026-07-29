@@ -100,6 +100,81 @@ public class CommandResolverTests
     }
 
     [Fact]
+    public void RejectsABindWeCannotSendInsteadOfUsingTheDefault()
+    {
+        // Bind ausente cai no default; bind PRESENTE que não sabemos enviar não
+        // pode cair no default — mandaria a tecla que o jogador rebindou para
+        // longe, sem erro nenhum. Não é hipótese: o Input.ini real já liga
+        // CycleSwatElementNext/Previous à roda do mouse, e a roda é exatamente
+        // o que o KeyCatalog (corretamente) recusa.
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "MouseScrollUp",
+        };
+        var ex = Assert.Throws<ResolveException>(
+            () => new CommandResolver(Map(), binds)
+                .Resolve(new Intent(null, "door.stack.left", false)));
+        Assert.Contains("OpenSwatCommand", ex.Message);
+        Assert.Contains("MouseScrollUp", ex.Message);
+    }
+
+    [Fact]
+    public void PrefersTheRealBindsOverTheDefaults()
+    {
+        // Todo bind do Input.ini real coincide com o keybind_defaults, então
+        // nenhum outro teste distingue "leu o bind" de "usou o default": dá para
+        // apagar a consulta a _binds inteira e o resto da suíte continua verde.
+        // Este é o único teste que falha se as teclas voltarem a ser fixas —
+        // que é a razão de o KeybindReader existir (§5.7 do brief).
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["SelectElementRed"] = "F2",                // default: F7
+            ["OpenSwatCommand"] = "ThumbMouseButton",   // default: MiddleMouse
+            ["SwatInputKeyOne"] = "Q",                  // default: One
+            ["SwatInputKeyTwo"] = "L",                  // default: Two
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent("red", "door.stack.left", false));   // MENU 1 2
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x3C), 35, 35),                     // F2
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 100, 60),
+                new KeyStep(StepKind.Press, Sc(0x10), 35, 35),                     // Q
+                new KeyStep(StepKind.Press, Sc(0x26), 35, 35),                     // L
+            },
+            seq.Steps);
+    }
+
+    [Fact]
+    public void MenuTimingFollowsTheMenuTokenNotTheKindOfKeyItResolvedTo()
+    {
+        // O hold de 100 ms e o settle de 60 ms são do passo que ABRE o menu, não
+        // de "resolveu para botão de mouse". Quem rebinda OpenSwatCommand para o
+        // teclado precisa deles do mesmo jeito, e um dígito que caia num botão de
+        // mouse não precisa. Ler o tipo do token troca os dois de lugar em
+        // silêncio — e o clique de fechamento, que já usa 100 fixo, faria a mesma
+        // tecla ter tempos diferentes ao abrir e ao fechar.
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "G",                  // menu no teclado
+            ["SwatInputKeyOne"] = "ThumbMouseButton",   // dígito no mouse
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent(null, "door.stack.left", false));   // MENU 1 2
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x22), 100, 60),                    // G abre o menu
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 35, 35),
+                new KeyStep(StepKind.Press, Sc(0x03), 35, 35),
+            },
+            seq.Steps);
+    }
+
+    [Fact]
     public void ThrowsNamingTheActionWhenNothingResolves()
     {
         var map = Map();

@@ -1190,6 +1190,71 @@ public class CommandResolverTests
     }
 
     [Fact]
+    public void RejectsABindWeCannotSendInsteadOfUsingTheDefault()
+    {
+        // Bind ausente cai no default; bind PRESENTE que não sabemos enviar não
+        // pode cair no default — mandaria a tecla que o jogador rebindou para
+        // longe, sem erro nenhum.
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "MouseScrollUp",
+        };
+        var ex = Assert.Throws<ResolveException>(
+            () => new CommandResolver(Map(), binds)
+                .Resolve(new Intent(null, "door.stack.left", false)));
+        Assert.Contains("OpenSwatCommand", ex.Message);
+        Assert.Contains("MouseScrollUp", ex.Message);
+    }
+
+    [Fact]
+    public void PrefersTheRealBindsOverTheDefaults()
+    {
+        // Todo bind do Input.ini real coincide com o keybind_defaults, então
+        // nenhum outro teste distingue "leu o bind" de "usou o default". Este é o
+        // único que falha se as teclas voltarem a ser fixas (§5.7 do brief).
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["SelectElementRed"] = "F2",
+            ["OpenSwatCommand"] = "ThumbMouseButton",
+            ["SwatInputKeyOne"] = "Q",
+            ["SwatInputKeyTwo"] = "L",
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent("red", "door.stack.left", false));
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x3C), 35, 35),
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 100, 60),
+                new KeyStep(StepKind.Press, Sc(0x10), 35, 35),
+                new KeyStep(StepKind.Press, Sc(0x26), 35, 35),
+            },
+            seq.Steps);
+    }
+
+    [Fact]
+    public void MenuTimingFollowsTheMenuTokenNotTheKindOfKeyItResolvedTo()
+    {
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "G",
+            ["SwatInputKeyOne"] = "ThumbMouseButton",
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent(null, "door.stack.left", false));
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x22), 100, 60),
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 35, 35),
+                new KeyStep(StepKind.Press, Sc(0x03), 35, 35),
+            },
+            seq.Steps);
+    }
+
+    [Fact]
     public void ThrowsNamingTheActionWhenNothingResolves()
     {
         var map = Map();
@@ -1372,7 +1437,10 @@ public sealed class CommandResolver
         {
             var token = ResolvePathToken(order.Path[i]);
             var isLast = i == order.Path.Count - 1;
-            var isMenu = token is MouseToken;
+            // "é o passo que abre o menu?", não "resolveu para um botão de mouse?":
+            // o hold de 100 e o settle de 60 são do clique que abre o menu, e
+            // seguem sendo dele se o jogador rebindar OpenSwatCommand no teclado.
+            var isMenu = order.Path[i] == "MENU";
 
             if (isLast && intent.Queue)
             {
@@ -1440,13 +1508,22 @@ public sealed class CommandResolver
         throw new ResolveException($"token de path desconhecido: {token}");
     }
 
-    /// <summary>Bind real do jogo; se ausente ou irreconhecível, o default do mapa.</summary>
+    /// <summary>
+    /// Bind real do jogo. Bind ausente cai no default do mapa; bind presente mas
+    /// fora do KeyCatalog rejeita a ordem e nomeia a tecla — colar as duas
+    /// situações num único && manda a tecla errada em silêncio para quem
+    /// rebindou a ação para algo que não sabemos enviar (a roda do mouse, por
+    /// exemplo, que o jogo usa por padrão em ações de SWAT).
+    /// </summary>
     InputToken ResolveAction(string action, string fallbackKeyName)
     {
-        if (_binds.TryGetValue(action, out var bound)
-            && KeyCatalog.TryResolve(bound, out var token))
-            return token;
-        return ResolveKeyName(fallbackKeyName);
+        if (!_binds.TryGetValue(action, out var bound))
+            return ResolveKeyName(fallbackKeyName);
+
+        return KeyCatalog.TryResolve(bound, out var token)
+            ? token
+            : throw new ResolveException(
+                $"a ação {action} está ligada a {bound}, que não sabemos enviar");
     }
 
     static InputToken ResolveKeyName(string keyName) =>
@@ -1462,7 +1539,7 @@ public sealed class CommandResolver
 dotnet test --filter CommandResolverTests
 ```
 
-Esperado: 10 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 6 passos em vez de 5, `door.stack.auto` recebeu `close_menu` por engano na Task 3 — ela não deve ter o campo.
+Esperado: 13 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 6 passos em vez de 5, `door.stack.auto` recebeu `close_menu` por engano na Task 3 — ela não deve ter o campo.
 
 - [ ] **Step 7: Commit**
 
