@@ -1,7 +1,8 @@
 using System.Drawing;
+using System.Windows.Forms;
 using RonVoice.Core.Pipeline;
 
-namespace RonVoice.Tray;
+namespace RonVoice.App;
 
 /// <summary>
 /// Quatro estados visíveis. Com o microfone sempre ligado, saber se ele está

@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
-namespace RonVoice.Tray;
+namespace RonVoice.App;
 
 /// <summary>
 /// Atalho global via RegisterHotKey. O mesmo mecanismo que a etapa 6 vai usar

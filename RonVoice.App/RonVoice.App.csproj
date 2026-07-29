@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>true</UseWPF>
+    <!-- interop apenas pelo NotifyIcon; não há Form neste app -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- exigido pelo gerador do LibraryImport usado nos hooks (SYSLIB1062) -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Este app é WPF; o WinForms entra só pelo NotifyIcon. Sem remover o using
+      implícito, `Application` fica ambíguo entre os dois frameworks em todo
+      arquivo. Quem precisa de WinForms declara o using explicitamente.
+    -->
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RonVoice.Core\RonVoice.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../data/ron_commands.json" Link="data/ron_commands.json"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
