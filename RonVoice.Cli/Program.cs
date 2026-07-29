@@ -10,6 +10,7 @@ return command switch
     "corpus" => CorpusCommand.Run(rest),
     "send" => SendCommand.Run(rest),
     "synth" => SynthCommand.Run(rest),
+    "listen" => ListenCommand.Run(rest),
     _ => Help(),
 };
 
@@ -21,6 +22,8 @@ static int Help()
         ronvoice corpus [--out <pasta>]          regenera corpus/{en,pt}.tsv
         ronvoice send "<frase>" [--dry-run] [--force] [--delay <segundos>] [--process <nome>]   envia ao jogo
         ronvoice synth --out <pasta> [--lang en|pt] [--phrase "<texto>"] [--limit N]   gera WAVs de teste
+        ronvoice listen [--lang en|pt] [--from-wav <arq>] [--list-devices] [--device N]
+                        [--threshold F] [--dry-run] [--process <nome>]   escuta e envia
         """);
     return 1;
 }

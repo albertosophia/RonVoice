@@ -21,7 +21,12 @@ public static class ModelLocator
             throw new ModelNotFoundException(
                 $"idioma sem modelo configurado: {language} (suportados: {string.Join(", ", Prefixes.Keys)})");
 
-        var dir = modelsDir ?? Path.Combine(AppContext.BaseDirectory, "data", "models");
+        var dir = modelsDir ?? FindModelsDirectory();
+        if (dir is null)
+            throw new ModelNotFoundException(
+                $"pasta data/models não encontrada a partir de {AppContext.BaseDirectory} "
+                + "nem nos diretórios acima. Rode tools/fetch-models.ps1.");
+
         if (!Directory.Exists(dir))
             throw new ModelNotFoundException(
                 $"pasta de modelos não encontrada: {dir}. Rode tools/fetch-models.ps1.");
@@ -61,6 +66,24 @@ public static class ModelLocator
                 && File.Exists(Path.Combine(modelDir, "mfcc.conf"));
 
         return classic || flat;
+    }
+
+    /// <summary>
+    /// Procura data/models ao lado do executável e, se não achar, subindo a árvore.
+    /// Num app publicado a pasta fica junto do exe; rodando do repositório ela fica
+    /// na raiz, vários níveis acima de bin/Debug/net10.0-windows. Os modelos pesam
+    /// 118 MB somados, então copiá-los para cada pasta de saída seria desperdício.
+    /// </summary>
+    public static string? FindModelsDirectory(string? startAt = null)
+    {
+        var dir = new DirectoryInfo(startAt ?? AppContext.BaseDirectory);
+
+        for (var levels = 0; dir is not null && levels < 8; levels++, dir = dir.Parent)
+        {
+            var candidate = Path.Combine(dir.FullName, "data", "models");
+            if (Directory.Exists(candidate)) return candidate;
+        }
+        return null;
     }
 
     /// <summary>Idioma inferido do nome da pasta, ou null se não reconhecido.</summary>

@@ -35,6 +35,32 @@ public class ModelLocatorTests
         Assert.True(ModelLocator.LooksLikeAModel(flat));
     }
 
+    /// <summary>
+    /// Rodando do repositório, a saída fica em bin/Debug/net10.0-windows e os
+    /// modelos na raiz. Copiá-los para cada saída custaria 118 MB por projeto.
+    /// </summary>
+    [Fact]
+    public void FindsTheModelsDirectoryByWalkingUpFromTheOutputFolder()
+    {
+        var found = ModelLocator.FindModelsDirectory();
+        Assert.NotNull(found);
+        Assert.True(Directory.Exists(found), $"não existe: {found}");
+        Assert.EndsWith(Path.Combine("data", "models"), found!.TrimEnd(Path.DirectorySeparatorChar));
+    }
+
+    [Fact]
+    public void FindingModelsGivesUpInsteadOfWalkingToTheDriveRoot()
+    {
+        var deep = Path.Combine(Path.GetTempPath(), $"ronvoice-fundo-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(deep);
+        try { Assert.Null(ModelLocator.FindModelsDirectory(deep)); }
+        finally { Directory.Delete(deep); }
+    }
+
+    [Fact]
+    public void ResolvesWithoutAnExplicitDirectory() =>
+        Assert.True(ModelLocator.LooksLikeAModel(ModelLocator.Find("en")));
+
     [Fact]
     public void RejectsADirectoryThatIsNotAModel()
     {
