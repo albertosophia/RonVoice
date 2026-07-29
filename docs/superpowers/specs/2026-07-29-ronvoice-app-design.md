@@ -113,10 +113,12 @@ Cada ordem mostra:
 - o contexto — para onde o jogador precisa estar olhando
 - um selo nas **25 ordens marcadas `confidence: "verify"`**, que podem não funcionar em
   jogo. Sem o aviso, viram "esse comando está quebrado"
-- um botão **Testar**, que envia a ordem ao jogo sem passar por reconhecimento
+- um botão **Enviar ao jogo**, que executa a ordem sem passar por reconhecimento
 
-O botão Testar existe para separar dois problemas que o usuário confunde: "a ordem não
-funciona" e "ele não entendeu o que eu falei". Testando pelo botão, a fala sai da equação.
+O nome é deliberadamente diferente do "Testar minha voz" da aba Teste, porque os dois
+respondem perguntas opostas. Aqui a fala sai da equação: serve para descobrir se **a ordem
+em si** funciona no jogo — útil sobretudo nas 25 marcadas `verify`. Lá, o jogo sai da
+equação: serve para descobrir se **a voz** está sendo entendida.
 
 **Ele não pode simplesmente enviar.** Ao clicar, quem está em foco é a janela do app, e o
 `ForegroundGuard` — corretamente — recusaria. Forçar seria pior: as teclas iriam para a
@@ -130,21 +132,45 @@ de depender de o usuário fazer alt-tab.
 Se o jogo não estiver rodando, o botão fica desabilitado com o motivo em tooltip, em vez de
 falhar ao ser clicado.
 
-### 5.3 Aba Teste
+### 5.3 Aba Teste — "a minha voz está funcionando?"
 
-Ao vivo, enquanto a pessoa fala:
+Não é um monitor passivo. É um gesto deliberado: a pessoa clica em **Testar minha voz**,
+fala uma frase de comando, e recebe um veredito.
 
-- o texto reconhecido e a confiança
-- a ordem casada, o elemento e se ficou enfileirada
-- as teclas que sairiam
-- e quando **não** casa, o motivo: fora do vocabulário, confiança baixa, ambíguo, ou jogo
-  fora de foco
+O propósito é responder duas perguntas que o usuário não sabe separar sozinho: *o microfone
+está pegando?* e *a minha pronúncia está sendo entendida?*
 
-Substitui o "painel ao vivo" do brief — mesma informação, melhor posicionada. Vira a
-ferramenta de suporte embutida, não um monitor de desenvolvedor.
+**Enquanto grava**, um medidor de nível ao vivo. Se a barra não se mexe enquanto a pessoa
+fala, o problema é o microfone e a investigação acabou aí — sem depender de reconhecimento
+nenhum. É o que separa as duas causas antes de qualquer outra coisa.
 
-Justificativa: os três portões de rejeição do §6 do brief são silenciosos **de propósito**,
-porque latência é o requisito. Esta aba é o único lugar onde eles ficam observáveis.
+**Dois detalhes que fazem a funcionalidade existir:**
+
+1. **O `ListenGate` é ignorado no modo de teste.** Durante o teste quem está em foco é a
+   janela do app, não o jogo, e o portão — corretamente — recusaria todo o áudio. Sem essa
+   exceção, o teste nunca ouviria nada.
+2. **Nada é enviado ao jogo.** É o único ponto do sistema onde reconhecer com sucesso não
+   produz tecla. É teste de voz, não de comando.
+
+**O veredito diz o que fazer, não o que houve.** Os motivos de rejeição são termos internos;
+na tela viram causa e ação:
+
+| resultado interno | o que a pessoa lê |
+|---|---|
+| nenhum áudio acima do silêncio | "Não ouvi nada. Confira o microfone selecionado e o volume de entrada do Windows." |
+| `Unknown` (veio `[unk]`) | "Ouvi você, mas não era um comando conhecido. Veja a aba Comandos para as frases aceitas." |
+| `LowConfidence` | "Entendi, mas com pouca certeza. Tente falar mais perto do microfone ou num ambiente mais silencioso." |
+| `NoMatch` | "Ouvi \"<texto>\", mas não bate com nenhum comando." |
+| ambíguo | "Ouvi \"<texto>\", que pode ser dois comandos diferentes. Tente uma frase mais específica." |
+| casou | "Funcionou: <ordem>" mais o elemento, a fila e as teclas que sairiam |
+
+Em todos os casos a tela mostra também o texto cru reconhecido e a confiança, para quem
+quiser ir mais fundo — mas embaixo, não como resposta principal.
+
+Isto substitui o "painel ao vivo" do brief. A informação é a mesma; o formato é o que a
+torna útil para quem não escreveu o programa. Os três portões de rejeição do §6 do brief
+são silenciosos **de propósito**, porque latência é o requisito — esta aba é o único lugar
+onde eles ficam observáveis.
 
 ### 5.4 Aba Configuração
 
@@ -240,8 +266,9 @@ Janela WPF não se testa automaticamente, e esta spec não finge que sim.
 - detecção de colisão da tecla de PTT contra um `Input.ini` de fixture
 - `ModelDownloader` — validação e o move atômico; que uma extração inválida **não**
   substitui a pasta boa
-- `TestViewModel` — recebe eventos do pipeline e produz as linhas certas, inclusive os
-  quatro motivos de rejeição
+- `TestViewModel` — o mapeamento de cada resultado interno para a mensagem que a pessoa lê,
+  incluindo o caso "não ouvi nada", que não vem do pipeline e sim da ausência de áudio
+  acima do silêncio
 
 **Não testável, com verificação manual registrada:** XAML, bandeja, o prompt do UAC, e o
 hook global de teclado.
@@ -271,7 +298,7 @@ hook global de teclado.
 | portable | copiar a pasta para outra máquina leva configuração, modelos e preferências |
 | elevação | abrir o app pede UAC; a barra de estado reflete o resultado |
 | catálogo | busca encontra qualquer uma das 770 frases e agrupa por contexto; as 25 `verify` aparecem sinalizadas |
-| botão Testar | minimiza, devolve o foco ao jogo, conta três segundos e envia; desabilitado com motivo quando o jogo não está rodando |
-| aba de teste | falar mostra texto, confiança, casamento e teclas; e o motivo quando rejeita |
+| botão Enviar ao jogo | minimiza, devolve o foco ao jogo, conta três segundos e envia; desabilitado com motivo quando o jogo não está rodando |
+| Testar minha voz | grava com medidor de nível, ignora o portão de foco, não envia tecla nenhuma, e devolve um veredito em português com a causa e o que fazer |
 | configuração | trocar microfone, jogo, idioma e modo de escuta sobrevive a fechar e reabrir |
 | primeira execução | numa máquina limpa, sem `data/models`, o app baixa e abre |
