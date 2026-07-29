@@ -18,7 +18,7 @@ static int Help()
         ronvoice test "<frase>" [--lang en|pt]   casa a frase e imprime a sequência
         ronvoice keymap [--ini <caminho>]        imprime os binds resolvidos
         ronvoice corpus [--out <pasta>]          regenera corpus/{en,pt}.tsv
-        ronvoice send "<frase>" [--dry-run] [--force]   envia ao jogo
+        ronvoice send "<frase>" [--dry-run] [--force] [--delay <segundos>]   envia ao jogo
         """);
     return 1;
 }

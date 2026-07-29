@@ -1,3 +1,4 @@
+using System.Globalization;
 using RonVoice.Core.Commands;
 using RonVoice.Core.Input;
 using RonVoice.Core.Matching;
@@ -16,6 +17,58 @@ public static class Cli
     }
 
     public static bool Flag(string[] args, string name) => args.Contains(name);
+
+    /// <summary>
+    /// Lê e valida --delay. Ausente vira 0 (comportamento atual, sem espera).
+    /// Um valor malformado ou negativo é rejeitado explicitamente em vez de
+    /// virar 0 em silêncio — quem digitou "--delay abc" quer saber que errou,
+    /// não mandar a ordem na hora sem aviso.
+    /// </summary>
+    public static bool TryParseDelay(string[] args, out double seconds, out string? error)
+    {
+        var raw = Option(args, "--delay");
+        if (raw is null)
+        {
+            seconds = 0;
+            error = null;
+            return true;
+        }
+
+        if (!double.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out seconds)
+            || double.IsNaN(seconds) || double.IsInfinity(seconds) || seconds < 0)
+        {
+            seconds = 0;
+            error = $"--delay inválido: '{raw}' (espere um número >= 0, em segundos)";
+            return false;
+        }
+
+        error = null;
+        return true;
+    }
+
+    /// <summary>
+    /// Espera com contador visível antes de mandar a ordem. Roda antes do
+    /// foreground check de propósito: é a janela pra trocar do terminal pro
+    /// jogo com alt-tab. Sai sem imprimir nada se o delay for 0.
+    /// </summary>
+    public static void CountdownDelay(double totalSeconds)
+    {
+        if (totalSeconds <= 0) return;
+
+        Console.Error.WriteLine(
+            $"aguardando {totalSeconds:0.###}s antes de enviar — troque para o jogo agora...");
+
+        var remainingMs = (int)Math.Round(totalSeconds * 1000);
+        while (remainingMs > 0)
+        {
+            var secondsLeft = (int)Math.Ceiling(remainingMs / 1000.0);
+            Console.Error.Write($"\r  enviando em {secondsLeft,3}s...   ");
+            var step = Math.Min(1000, remainingMs);
+            Thread.Sleep(step);
+            remainingMs -= step;
+        }
+        Console.Error.WriteLine("\r  enviando agora!             ");
+    }
 
     public static string Describe(InputToken token) => token switch
     {

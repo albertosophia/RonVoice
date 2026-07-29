@@ -10,7 +10,8 @@ public static class SendCommand
     {
         if (args.Length == 0 || args[0].StartsWith("--", StringComparison.Ordinal))
         {
-            Console.Error.WriteLine("uso: ronvoice send \"<frase>\" [--lang en|pt] [--dry-run] [--force]");
+            Console.Error.WriteLine(
+                "uso: ronvoice send \"<frase>\" [--lang en|pt] [--dry-run] [--force] [--delay <segundos>]");
             return 1;
         }
 
@@ -19,9 +20,19 @@ public static class SendCommand
         var dryRun = Cli.Flag(args, "--dry-run");
         var force = Cli.Flag(args, "--force");
 
+        if (!Cli.TryParseDelay(args, out var delaySeconds, out var delayError))
+        {
+            Console.Error.WriteLine(delayError);
+            return 1;
+        }
+
         if (!ForegroundGuard.IsElevated())
             Console.Error.WriteLine(
                 "AVISO: o app não está elevado. Se o jogo estiver, o input não chega e não há erro.");
+
+        // O delay roda antes do foreground check, de propósito: é a janela pra
+        // trocar do terminal pro jogo com alt-tab antes da ordem sair.
+        Cli.CountdownDelay(delaySeconds);
 
         var map = CommandMap.Load(Cli.MapPath);
         var iniPath = KeybindReader.FindDefaultIniPath();
