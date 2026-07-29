@@ -1,23 +1,17 @@
-﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using RonVoice.App.ViewModels;
 
 namespace RonVoice.App;
 
 /// <summary>
-/// Interaction logic for MainWindow.xaml
+/// Só faz wiring: a §9 do brief proíbe lógica de negócio neste projeto, e é o
+/// que mantém tudo o que importa dentro dos view models, onde há teste.
 /// </summary>
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(MainViewModel viewModel)
     {
         InitializeComponent();
+        DataContext = viewModel;
     }
 }

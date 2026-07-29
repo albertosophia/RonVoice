@@ -1,9 +1,9 @@
-﻿<Application x:Class="RonVoice.App.App"
+<Application x:Class="RonVoice.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:RonVoice.App"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--
+        Sem StartupUri: a janela e' criada em App.xaml.cs, depois de carregar a
+        configuracao e, na primeira execucao, de baixar o modelo.
+    -->
+    <Application.Resources />
 </Application>
