@@ -53,17 +53,31 @@ public static class KeymapCommand
 
         var bound = action is null ? null : binds.GetValueOrDefault(action);
         var resolver = new CommandResolver(map, binds);
+
+        // O token é renderizado através de uma ordem que o use, porque é a
+        // resolução real que interessa. Não confundir "nenhuma ordem usa este
+        // slot" com "a tecla não resolve": o slot 9 não é usado por ordem
+        // nenhuma, e mostrar isso como falha manda quem depura atrás de um bug
+        // que não existe.
+        var order = map.Orders.Values.FirstOrDefault(o => o.Path.Contains(token));
         string rendered;
-        try
+        if (order is null)
         {
-            var order = map.Orders.Values.First(o => o.Path.Contains(token));
-            var seq = resolver.Resolve(new Core.Matching.Intent(null, order.Id, false));
-            var index = order.Path.ToList().IndexOf(token);
-            rendered = Cli.Describe(seq.Steps[index].Token);
+            rendered = "(nenhuma ordem usa)";
         }
-        catch (Exception)
+        else
         {
-            rendered = "(não resolve)";
+            try
+            {
+                var seq = resolver.Resolve(new Core.Matching.Intent(null, order.Id, false));
+                var index = order.Path.ToList().IndexOf(token);
+                rendered = Cli.Describe(seq.Steps[index].Token);
+            }
+            catch (ResolveException ex)
+            {
+                rendered = "(NÃO RESOLVE)";
+                Console.WriteLine($"  ! {token}: {ex.Message}");
+            }
         }
 
         Console.WriteLine($"{token,-22} {rendered,-20} "
