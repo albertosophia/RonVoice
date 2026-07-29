@@ -1,0 +1,95 @@
+<UserControl x:Class="RonVoice.App.Views.CommandsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel Margin="6">
+
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <TextBlock Text="O que você pode falar" FontSize="16" FontWeight="SemiBold" />
+            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,6"
+                       Text="Fale qualquer uma das frases abaixo com o jogo em foco. O contexto diz para onde você precisa estar olhando." />
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0"
+                           Foreground="#888" Text="{Binding CountText}" />
+                <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="6,4" FontSize="13" />
+            </DockPanel>
+        </StackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Groups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,14">
+
+                            <TextBlock Text="{Binding Header}" FontWeight="SemiBold"
+                                       FontSize="13" Margin="0,0,0,4" Foreground="#3A6EA5" />
+
+                            <ItemsControl ItemsSource="{Binding Orders}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="#DDD" BorderThickness="0,0,0,1"
+                                                Padding="6,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Grid.Column="0">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Id}"
+                                                                   FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding PathText}"
+                                                                   Foreground="#999" FontSize="11"
+                                                                   Margin="10,1,0,0" />
+                                                        <!--
+                                                            As 25 ordens confidence: verify nunca
+                                                            foram confirmadas em jogo. Sem o selo,
+                                                            viram "esse comando esta quebrado".
+                                                        -->
+                                                        <Border Background="#FFF3CD"
+                                                                CornerRadius="3" Padding="5,1"
+                                                                Margin="10,0,0,0">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding NeedsVerification}" Value="True">
+                                                                            <Setter Property="Visibility" Value="Visible" />
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                            <TextBlock Text="não verificado em jogo"
+                                                                       FontSize="10" Foreground="#856404" />
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{Binding PhrasesEnText}"
+                                                               TextWrapping="Wrap" Margin="0,3,0,0"
+                                                               FontSize="12" />
+                                                    <TextBlock Text="{Binding PhrasesPtText}"
+                                                               TextWrapping="Wrap"
+                                                               FontSize="12" Foreground="#666" />
+                                                </StackPanel>
+
+                                                <Button Grid.Column="1" Content="Enviar ao jogo"
+                                                        Padding="10,4" Margin="10,0,0,0"
+                                                        VerticalAlignment="Top"
+                                                        Command="{Binding DataContext.SendCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </DockPanel>
+</UserControl>
