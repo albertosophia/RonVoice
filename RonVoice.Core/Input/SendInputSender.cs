@@ -64,26 +64,52 @@ public sealed partial class SendInputSender : IInputSender
 
     public void Send(KeySequence sequence, CancellationToken ct = default)
     {
-        foreach (var step in sequence.Steps)
+        // Down/Up existem só para o LShift do envelope de fila, e são os únicos
+        // passos que deixam uma tecla descida entre iterações. Abortar ou falhar
+        // no meio do envelope deixaria o go-code engatado: pela §5.3 do brief,
+        // hold_command segurado durante a navegação cancela o menu, então toda
+        // ordem seguinte erra em silêncio até o jogador tocar no shift.
+        var held = new List<InputToken>();
+        try
         {
-            ct.ThrowIfCancellationRequested();
-
-            switch (step.Kind)
+            foreach (var step in sequence.Steps)
             {
-                case StepKind.Press:
-                    Emit(step.Token, down: true);
-                    Wait(step.HoldMs);
-                    Emit(step.Token, down: false);
-                    break;
-                case StepKind.Down:
-                    Emit(step.Token, down: true);
-                    break;
-                case StepKind.Up:
-                    Emit(step.Token, down: false);
-                    break;
-            }
+                ct.ThrowIfCancellationRequested();
 
-            Wait(step.GapAfterMs);
+                switch (step.Kind)
+                {
+                    case StepKind.Press:
+                        Emit(step.Token, down: true);
+                        Wait(step.HoldMs);
+                        Emit(step.Token, down: false);
+                        break;
+                    case StepKind.Down:
+                        Emit(step.Token, down: true);
+                        held.Add(step.Token);
+                        break;
+                    case StepKind.Up:
+                        Emit(step.Token, down: false);
+                        held.Remove(step.Token);
+                        break;
+                }
+
+                Wait(step.GapAfterMs);
+            }
+        }
+        finally
+        {
+            // No caminho feliz `held` já está vazio. Solta em ordem inversa, como
+            // uma pilha, para o dia em que houver mais de um modificador.
+            for (var i = held.Count - 1; i >= 0; i--)
+            {
+                // A tentativa já fica registrada no log antes do SendInput. Uma
+                // segunda falha do mesmo SendInput não acrescenta informação e
+                // não pode substituir a exceção que nos trouxe até aqui — trocar
+                // um cancelamento por um InvalidOperationException perderia o
+                // motivo real do aborto.
+                try { Emit(held[i], down: false); }
+                catch (InvalidOperationException) { }
+            }
         }
     }
 
