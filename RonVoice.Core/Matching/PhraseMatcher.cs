@@ -57,39 +57,66 @@ public sealed class PhraseMatcher
 
         // "hold" é alias de fila E frase da ordem `hold`. Remover de forma gulosa
         // destruiria a ordem, então pontuamos os dois candidatos e ficamos com o melhor.
-        var candidates = new List<(IReadOnlyList<string> Tokens, bool Queue)>();
-        if (queueAlias is not null && afterQueue.Count > 0)
-            candidates.Add((afterQueue, true));
-        candidates.Add((afterElement, false));
+        var queued = queueAlias is not null ? Evaluate(afterQueue) : null;
+        var plain = Evaluate(afterElement);
 
-        (double Score, string? OrderId, bool Queue)? best = null;
-
-        foreach (var (candidateTokens, isQueue) in candidates)
-        {
-            if (candidateTokens.Count == 0) continue;
-
-            var ranked = _index.Rank(candidateTokens);
-            if (ranked.Count == 0 || ranked[0].Score < _options.Threshold) continue;
-
-            var top = ranked[0];
-            var runnerUp = ranked.FirstOrDefault(
-                r => !string.Equals(r.OrderId, top.OrderId, StringComparison.Ordinal));
-            var runnerUpScore = runnerUp?.Score ?? 0.0;
-
-            var accepted = top.Score - runnerUpScore >= _options.Margin;
-            var candidate = (top.Score, accepted ? top.OrderId : null, isQueue);
-
-            // Empate desempata a favor da fila: enfileirar o que era para executar
-            // deixa os NPCs parados e o jogador percebe; o contrário arromba cedo.
-            if (best is null || candidate.Score > best.Value.Score
-                || (candidate.Score == best.Value.Score && isQueue))
-                best = candidate;
-        }
+        var queue = queued is not null
+            && (plain is null || QueueWins(queued.Value, plain.Value));
+        var best = queue ? queued : plain;
 
         if (best is null || best.Value.OrderId is null)
             return element is null ? null : new Intent(element, null, false);
 
-        return new Intent(element, best.Value.OrderId, best.Value.Queue);
+        return new Intent(element, best.Value.OrderId, queue);
+    }
+
+    /// <param name="OrderId">
+    /// null quando a margem não separou o topo do melhor de outra ordem: casou
+    /// alguma coisa, mas não o suficiente para mandar tecla.
+    /// </param>
+    readonly record struct Candidate(double Score, string? OrderId);
+
+    Candidate? Evaluate(IReadOnlyList<string> tokens)
+    {
+        if (tokens.Count == 0) return null;
+
+        var ranked = _index.Rank(tokens);
+        if (ranked.Count == 0 || ranked[0].Score < _options.Threshold) return null;
+
+        var top = ranked[0];
+        var runnerUp = ranked.FirstOrDefault(
+            r => !string.Equals(r.OrderId, top.OrderId, StringComparison.Ordinal));
+        var accepted = top.Score - (runnerUp?.Score ?? 0.0) >= _options.Margin;
+
+        return new Candidate(top.Score, accepted ? top.OrderId : null);
+    }
+
+    /// <summary>
+    /// Qual leitura vale quando os dois candidatos passam do limiar.
+    /// </summary>
+    static bool QueueWins(Candidate queued, Candidate plain)
+    {
+        // Tirar o alias não mudou a ordem casada e não melhorou a pontuação: o
+        // alias era palavra da frase, não modificador sobre ela. É o caso das
+        // frases que dizem "espera" duas vezes — "arromba e espera espera por
+        // mim" é frase de door.breach.leader.leader, e como a pontuação é sobre
+        // conjuntos de tokens, remover uma das ocorrências não muda o conjunto:
+        // os dois candidatos empatam em 1.000 e o desempate a favor da fila
+        // engatilha uma ordem que era para executar.
+        //
+        // A comparação é entre os dois candidatos, nunca contra o limiar.
+        // "prepara empilha a esquerda" também casa a MESMA ordem dos dois lados,
+        // mas sem fila pontua 0.756 contra 1.000 — ali o alias é mesmo um
+        // modificador, e a fila continua vencendo. Decidir só por "mesma ordem"
+        // quebraria esse caso e ignoraria um "queue" dito com todas as letras.
+        if (queued.OrderId is not null
+            && string.Equals(queued.OrderId, plain.OrderId, StringComparison.Ordinal)
+            && plain.Score >= queued.Score)
+            return false;
+
+        // Empate desempata a favor da fila: enfileirar o que era para executar
+        // deixa os NPCs parados e o jogador percebe; o contrário arromba cedo.
+        return queued.Score >= plain.Score;
     }
 
     /// <summary>

@@ -92,16 +92,33 @@ public class CorpusTests
         Assert.Empty(unreachable);
     }
 
+    /// <summary>
+    /// Confere as quatro colunas, não só a ordem. O corpus gerado registra
+    /// element e queue em todas as 770 linhas e ninguém os checava — foi
+    /// exatamente por isso que duas frases PT passaram a enfileirar sem que
+    /// nada acusasse. Além da ordem certa, isto prende duas regras de domínio
+    /// que o corpus gerado é a única rede a cobrir: nenhum elemento inventado
+    /// quando a frase não menciona um, e nenhum envelope de fila inventado
+    /// quando a frase não pede.
+    /// </summary>
     [Theory]
     [InlineData("en")]
     [InlineData("pt")]
     public void EveryGeneratedPhraseResolves(string lang)
     {
         var matcher = new PhraseMatcher(Map(), lang);
-        var rejected = ReadTsv($"{lang}.tsv")
-            .Where(r => matcher.Match(r.Text)?.OrderId != r.OrderId)
-            .Select(r => $"{r.Text} ({r.OrderId})")
-            .ToList();
-        Assert.Empty(rejected);
+        var wrong = new List<string>();
+
+        foreach (var (text, orderId, element, queue) in ReadTsv($"{lang}.tsv"))
+        {
+            var m = matcher.Match(text);
+            if (m is not null && m.OrderId == orderId && m.Element == element && m.Queue == queue)
+                continue;
+
+            wrong.Add(
+                $"\"{text}\" esperado (order={orderId}, el={element ?? "-"}, q={queue}) "
+                + $"veio (order={m?.OrderId ?? "-"}, el={m?.Element ?? "-"}, q={m?.Queue ?? false})");
+        }
+        Assert.Empty(wrong);
     }
 }
