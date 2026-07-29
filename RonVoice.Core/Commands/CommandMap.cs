@@ -28,6 +28,14 @@ public sealed class CommandMap
         Timing = timing;
     }
 
+    /// <summary>
+    /// Cópia com outro conjunto de ordens, preservando o resto. Usado pela
+    /// mesclagem das frases do usuário, que não pode alterar o mapa no lugar:
+    /// o mapa de fábrica precisa continuar disponível para comparação.
+    /// </summary>
+    public CommandMap WithOrders(IReadOnlyDictionary<string, OrderDefinition> orders) =>
+        new(orders, Elements, Queue, Defaults, Timing);
+
     public static CommandMap Load(string path)
     {
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
