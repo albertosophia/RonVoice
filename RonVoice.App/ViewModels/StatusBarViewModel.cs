@@ -15,6 +15,7 @@ public sealed class StatusBarViewModel : ObservableBase
     string _language = "en";
     string? _activeElement;
     string? _talkKeyProblem;
+    string? _microphoneProblem;
     ListenState _listenState = ListenState.Idle;
 
     public bool Elevated
@@ -45,6 +46,17 @@ public sealed class StatusBarViewModel : ObservableBase
     {
         get => _activeElement;
         set { if (Set(ref _activeElement, value)) Raise(nameof(Summary)); }
+    }
+
+    /// <summary>
+    /// O microfone pedido não está presente e outro está gravando. Fica dito na
+    /// barra porque a falha é muda: gravar do dispositivo errado não dá erro,
+    /// só silêncio, e o usuário conclui que o reconhecimento é ruim.
+    /// </summary>
+    public string? MicrophoneProblem
+    {
+        get => _microphoneProblem;
+        set { if (Set(ref _microphoneProblem, value)) Raise(nameof(Summary)); }
     }
 
     /// <summary>
@@ -90,6 +102,7 @@ public sealed class StatusBarViewModel : ObservableBase
                 StateText,
             };
             if (ActiveElement is { } e) parts.Add($"elemento: {e}");
+            if (MicrophoneProblem is { } m) parts.Add(m);
             if (TalkKeyProblem is { } t) parts.Add(t);
             if (!Portable) parts.Add("configuração fora da pasta — modo portable desligado");
             return string.Join("   ·   ", parts);

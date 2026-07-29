@@ -95,9 +95,12 @@ public sealed class RonVoiceSession : IDisposable
             settings.ConfidenceThreshold);
         _pipeline.Start();
 
+        // Pelo NOME, não pela posição: a enumeração se desloca quando um
+        // dispositivo entra ou sai, e entrar em VR faz exatamente isso.
         var devices = WasapiCapture.ListDevices();
-        _capture = new WasapiCapture(
-            settings.MicrophoneDevice < devices.Count ? settings.MicrophoneDevice : 0);
+        var microphone = MicrophoneResolver.Resolve(
+            devices, settings.MicrophoneName, settings.MicrophoneDevice);
+        _capture = new WasapiCapture(microphone.Index);
         _capture.OnAudio += OnAudio;
         _capture.Start();
 
@@ -105,9 +108,11 @@ public sealed class RonVoiceSession : IDisposable
         _main.StatusBar.Elevated = ForegroundGuard.IsElevated();
         _main.StatusBar.Portable = portable;
         _main.StatusBar.Language = settings.Language;
-        _main.StatusBar.MicrophoneName =
-            devices.Count > 0 ? devices[Math.Min(settings.MicrophoneDevice, devices.Count - 1)]
-                              : "(nenhum)";
+        // Uma fonte só para o que grava e para o que a barra diz. Antes eram
+        // duas contas diferentes, e a barra podia nomear um dispositivo que
+        // não era o que estava gravando.
+        _main.StatusBar.MicrophoneName = microphone.Name;
+        _main.StatusBar.MicrophoneProblem = microphone.Problem;
         // Agora que a barra existe, um push-to-talk sem tecla legível pode ser
         // dito em voz alta em vez de virar um app que simplesmente não escuta.
         ApplyListenMode(settings);

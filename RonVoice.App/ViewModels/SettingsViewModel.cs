@@ -1,3 +1,4 @@
+using RonVoice.Core.Audio;
 using RonVoice.Core.Config;
 
 namespace RonVoice.App.ViewModels;
@@ -23,7 +24,10 @@ public sealed class SettingsViewModel : ObservableBase
 
         _language = initial.Language;
         _gameExecutablePath = initial.GameExecutablePath;
-        _microphoneDevice = initial.MicrophoneDevice;
+        // O nome manda sobre a posição: se o dispositivo salvo ainda existe, a
+        // lista aponta para ELE, mesmo que a enumeração tenha se deslocado.
+        _microphoneDevice = MicrophoneResolver
+            .Resolve(devices, initial.MicrophoneName, initial.MicrophoneDevice).Index;
         _usePushToTalk = initial.Mode == ListenModeSetting.PushToTalk;
         _pushToTalkKey = initial.PushToTalkKey;
         _confidenceThreshold = initial.ConfidenceThreshold;
@@ -109,11 +113,22 @@ public sealed class SettingsViewModel : ObservableBase
     public RelayCommand SaveCommand { get; set; }
     public RelayCommand BrowseCommand { get; set; }
 
+    /// <summary>
+    /// O nome do dispositivo escolhido, que é o que vale ao reabrir. A posição
+    /// vai junto só como desempate: ela se desloca quando um dispositivo entra
+    /// ou sai da enumeração, e aí gravaria do microfone do vizinho.
+    /// </summary>
+    public string? SelectedMicrophoneName =>
+        MicrophoneDevice >= 0 && MicrophoneDevice < Microphones.Count
+            ? Microphones[MicrophoneDevice]
+            : null;
+
     public AppSettings ToSettings() => new(
         Language,
         GameExecutablePath,
         MicrophoneDevice,
         UsePushToTalk ? ListenModeSetting.PushToTalk : ListenModeSetting.AlwaysOn,
         PushToTalkKey,
-        ConfidenceThreshold);
+        ConfidenceThreshold,
+        SelectedMicrophoneName);
 }
