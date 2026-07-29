@@ -40,6 +40,12 @@ public sealed class RonVoiceSession : IDisposable
     VoiceTestRunner? _testRunner;
     string[]? _processNames;
 
+    /// <summary>
+    /// Sonda da tecla de falar, ou null quando o nome configurado não é
+    /// legível. Trocada junto com a configuração.
+    /// </summary>
+    Func<bool>? _talkKey;
+
     public MainWindow Window { get; }
 
     RonVoiceSession(
@@ -62,12 +68,20 @@ public sealed class RonVoiceSession : IDisposable
         _resolver = new CommandResolver(_map, _binds);
         _processNames = ProcessNamesFrom(settings);
 
+        // O modo já nasce certo em vez de virar push-to-talk depois: entre abrir
+        // o microfone e ajustar o modo, quem pediu PTT ficaria com o microfone
+        // aberto sem ter pedido.
+        _talkKey = TalkKeyProbe.For(settings.PushToTalkKey);
+
+        // A sonda é indireta de propósito: a tecla pode mudar na aba
+        // Configuração, e o portão captura o delegate uma única vez.
         _gate = new ListenGate(
             () => ForegroundGuard.IsGameForeground(_processNames),
             isMuted: null,
             mode: settings.Mode == ListenModeSetting.PushToTalk
                 ? ListenMode.PushToTalk
-                : ListenMode.AlwaysOn);
+                : ListenMode.AlwaysOn,
+            isTalkKeyDown: () => _talkKey?.Invoke() ?? false);
 
         _engine = new VoskSpeechEngine(
             ModelLocator.Find(settings.Language, modelsDir),
@@ -94,6 +108,10 @@ public sealed class RonVoiceSession : IDisposable
         _main.StatusBar.MicrophoneName =
             devices.Count > 0 ? devices[Math.Min(settings.MicrophoneDevice, devices.Count - 1)]
                               : "(nenhum)";
+        // Agora que a barra existe, um push-to-talk sem tecla legível pode ser
+        // dito em voz alta em vez de virar um app que simplesmente não escuta.
+        ApplyListenMode(settings);
+
         _main.StatusBar.ListenState = _gate.State;
         _gate.StateChanged += s =>
             Application.Current.Dispatcher.Invoke(() => _main.StatusBar.ListenState = s);
@@ -329,6 +347,42 @@ public sealed class RonVoiceSession : IDisposable
             _main.Settings.GameExecutablePath = dialog.FileName;
     }
 
+    /// <summary>
+    /// Liga o modo de escuta e a sonda da tecla juntos, que é a única forma de
+    /// não repetir o bug: o push-to-talk só é aceito quando existe uma tecla
+    /// que dá para ler. Sem isso o portão respondia "aguardando a tecla" para
+    /// sempre e o app nunca processava áudio, sem erro em lugar nenhum.
+    /// </summary>
+    /// <returns>Motivo de o push-to-talk não ter sido aceito, ou null.</returns>
+    string? ApplyListenMode(AppSettings settings)
+    {
+        _talkKey = TalkKeyProbe.For(settings.PushToTalkKey);
+
+        if (settings.Mode != ListenModeSetting.PushToTalk)
+        {
+            _gate.Mode = ListenMode.AlwaysOn;
+            _main.StatusBar.TalkKeyProblem = null;
+            return null;
+        }
+
+        if (_talkKey is null)
+        {
+            // Continua em push-to-talk, sem escutar. Cair para sempre-ligado
+            // seria pior: quem escolheu PTT não quer o microfone aberto, e a
+            // troca calada trairia a escolha. O motivo fica dito na barra.
+            _gate.Mode = ListenMode.PushToTalk;
+            var problem = settings.PushToTalkKey is { Length: > 0 } key
+                ? $"PUSH-TO-TALK PARADO — não sei ler a tecla \"{key}\""
+                : "PUSH-TO-TALK PARADO — nenhuma tecla escolhida";
+            _main.StatusBar.TalkKeyProblem = problem;
+            return problem;
+        }
+
+        _gate.Mode = ListenMode.PushToTalk;
+        _main.StatusBar.TalkKeyProblem = null;
+        return null;
+    }
+
     void SaveSettings()
     {
         var updated = _main.Settings.ToSettings();
@@ -339,9 +393,18 @@ public sealed class RonVoiceSession : IDisposable
         var languageChanged = updated.Language != _settings.Language;
         _settings = updated;
         _processNames = ProcessNamesFrom(updated);
-        _gate.Mode = updated.Mode == ListenModeSetting.PushToTalk
-            ? ListenMode.PushToTalk : ListenMode.AlwaysOn;
+        var talkKeyProblem = ApplyListenMode(updated);
         _main.Commands.SendCommand.RaiseCanExecuteChanged();
+
+        if (talkKeyProblem is not null)
+        {
+            MessageBox.Show(
+                $"Configuração salva, mas o push-to-talk não vai funcionar:\n\n"
+                + $"{talkKeyProblem}\n\n"
+                + "Clique no campo da tecla e aperte a tecla que você quer usar.",
+                "RonVoice", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
 
         MessageBox.Show(
             languageChanged

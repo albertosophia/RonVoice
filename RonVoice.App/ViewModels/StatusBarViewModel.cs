@@ -14,6 +14,7 @@ public sealed class StatusBarViewModel : ObservableBase
     string _microphoneName = "(nenhum)";
     string _language = "en";
     string? _activeElement;
+    string? _talkKeyProblem;
     ListenState _listenState = ListenState.Idle;
 
     public bool Elevated
@@ -44,6 +45,17 @@ public sealed class StatusBarViewModel : ObservableBase
     {
         get => _activeElement;
         set { if (Set(ref _activeElement, value)) Raise(nameof(Summary)); }
+    }
+
+    /// <summary>
+    /// Por que o push-to-talk não tem como funcionar. Fica na barra porque a
+    /// falha dele é muda por natureza: sem tecla legível o portão nunca abre,
+    /// e o usuário fala, aperta, e nada acontece nem dá erro.
+    /// </summary>
+    public string? TalkKeyProblem
+    {
+        get => _talkKeyProblem;
+        set { if (Set(ref _talkKeyProblem, value)) Raise(nameof(Summary)); }
     }
 
     public ListenState ListenState
@@ -78,6 +90,7 @@ public sealed class StatusBarViewModel : ObservableBase
                 StateText,
             };
             if (ActiveElement is { } e) parts.Add($"elemento: {e}");
+            if (TalkKeyProblem is { } t) parts.Add(t);
             if (!Portable) parts.Add("configuração fora da pasta — modo portable desligado");
             return string.Join("   ·   ", parts);
         }

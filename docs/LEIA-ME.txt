@@ -46,6 +46,26 @@ proposito: o microfone fica sempre ligado, e o foco no jogo e' o que impede
 conversa comum de virar ordem.
 
 
+SO QUANDO EU APERTAR UMA TECLA (PUSH-TO-TALK)
+---------------------------------------------
+
+Se voce nao quer o microfone aberto o tempo todo, ligue push-to-talk na aba
+Configuracao. Marque a caixa, clique no campo da tecla e APERTE a tecla que
+voce quer usar — ele captura sozinho, voce nao digita o nome. Da' para usar os
+botoes de lado do mouse, que e' o mais comodo: o polegar ja' descansa neles.
+
+Segure a tecla, fale, solte. A ordem sai quando voce solta.
+
+Ele nao aceita modificador sozinho (Shift, Ctrl, Alt) porque essas teclas
+nunca "soltam" de forma limpa. E se a tecla escolhida for a mesma de algum
+bind do jogo, ele avisa ali mesmo.
+
+Se aparecer PUSH-TO-TALK PARADO na barra de baixo, e' porque nao ha tecla
+escolhida ou ele nao sabe ler a que esta la'. Ele nao volta a escutar sozinho:
+quem liga push-to-talk nao quer o microfone aberto, e trocar calado seria
+trair a escolha.
+
+
 ESTA TUDO CERTO?
 ----------------
 

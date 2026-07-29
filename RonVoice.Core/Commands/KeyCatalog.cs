@@ -73,4 +73,11 @@ public static class KeyCatalog
 
     public static bool TryResolve(string ueKeyName, out InputToken token) =>
         Map.TryGetValue(ueKeyName, out token!);
+
+    /// <summary>
+    /// Só para os testes: toda tecla que sabemos MANDAR também precisa ser
+    /// LEGÍVEL pelo VirtualKeys, senão ela pode ser escolhida como push-to-talk
+    /// e o portão nunca abre.
+    /// </summary>
+    public static IEnumerable<string> Names() => Map.Keys;
 }

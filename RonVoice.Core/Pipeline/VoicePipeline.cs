@@ -19,6 +19,14 @@ public sealed class VoicePipeline
     readonly double _confidenceThreshold;
     bool _gateWasOpen = true;
 
+    /// <summary>
+    /// Deixa passar o resultado de uma finalização feita ao soltar a tecla do
+    /// push-to-talk. Sem isso o portão já está fechado quando a frase fica
+    /// pronta, e o OnRecognized descartaria exatamente a fala que o jogador
+    /// segurou a tecla para dizer.
+    /// </summary>
+    bool _finishingDeliberateUtterance;
+
     public event Action<RecognitionResult>? Heard;
     public event Action<Intent>? Matched;
     public event Action<Rejection>? Rejected;
@@ -49,13 +57,34 @@ public sealed class VoicePipeline
         _gate.Poll();
         if (!_gate.ShouldProcess())
         {
-            // Uma frase pela metade dita antes do alt-tab completaria depois e
-            // viraria ordem. Reseta uma vez, na transição.
-            if (_gateWasOpen) { _engine.Reset(); _gateWasOpen = false; }
+            if (_gateWasOpen)
+            {
+                // Duas transições opostas, e tratar as duas igual quebrava uma
+                // delas. Soltar a tecla do push-to-talk é o FIM de uma fala
+                // deliberada: finaliza e deixa virar ordem. Perder o foco ou
+                // mutar é o contrário — uma frase pela metade dita antes do
+                // alt-tab completaria depois e viraria ordem sozinha.
+                if (_gate.State == ListenState.WaitingForKey) FinishUtterance();
+                else _engine.Reset();
+
+                _gateWasOpen = false;
+            }
             return;
         }
         _gateWasOpen = true;
         _engine.Feed(audio);
+    }
+
+    /// <summary>
+    /// Fecha a fala em curso e aceita o resultado apesar do portão fechado.
+    /// O Flush do motor dispara OnRecognized de forma sincrona, então a bandeira
+    /// cobre exatamente essa chamada.
+    /// </summary>
+    void FinishUtterance()
+    {
+        _finishingDeliberateUtterance = true;
+        try { _engine.Flush(); }
+        finally { _finishingDeliberateUtterance = false; }
     }
 
     public void Flush()
@@ -66,7 +95,7 @@ public sealed class VoicePipeline
     void OnRecognized(RecognitionResult result)
     {
         if (!result.IsFinal) return;
-        if (!_gate.ShouldProcess()) return;
+        if (!_finishingDeliberateUtterance && !_gate.ShouldProcess()) return;
         if (result.Text.Length == 0) return;
 
         Heard?.Invoke(result);
