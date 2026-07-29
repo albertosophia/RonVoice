@@ -1,0 +1,69 @@
+<UserControl x:Class="RonVoice.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20" MaxWidth="620" HorizontalAlignment="Left">
+
+            <TextBlock Text="Jogo" FontWeight="SemiBold" FontSize="13" />
+            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,4"
+                       Text="O nome do processo muda conforme a loja. Escolha o executável para o app saber quando o jogo está em foco." />
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Content="Procurar..." Padding="10,4"
+                        Margin="6,0,0,0" Command="{Binding BrowseCommand}" />
+                <TextBox Text="{Binding GameExecutablePath}" IsReadOnly="True" Padding="6,4" />
+            </DockPanel>
+            <TextBlock Foreground="#666" FontSize="11" Margin="0,4,0,0"
+                       Text="{Binding GameProcessName, StringFormat=processo: {0}}" />
+            <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"
+                       Text="{Binding GameWarning}" />
+
+            <TextBlock Text="Microfone" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
+            <ComboBox ItemsSource="{Binding Microphones}"
+                      SelectedIndex="{Binding MicrophoneDevice}" Padding="6,4" />
+
+            <TextBlock Text="Idioma" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
+            <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}"
+                      Padding="6,4" HorizontalAlignment="Left" MinWidth="120" />
+            <TextBlock Foreground="#888" FontSize="11" Margin="0,4,0,0"
+                       Text="Trocar o idioma recarrega o modelo e leva alguns segundos." />
+
+            <TextBlock Text="Modo de escuta" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
+            <CheckBox IsChecked="{Binding UsePushToTalk}" Content="Usar push-to-talk" />
+            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Text="Desmarcado, o app escuta sempre que o jogo estiver em foco. Marcado, só enquanto a tecla estiver pressionada." />
+
+            <StackPanel Margin="0,8,0,0">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding UsePushToTalk}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBlock Text="Tecla" FontSize="11" Foreground="#888" />
+                <TextBox Text="{Binding PushToTalkKey, UpdateSourceTrigger=PropertyChanged}"
+                         Padding="6,4" HorizontalAlignment="Left" MinWidth="200" />
+                <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                           Text="{Binding PushToTalkWarning}" />
+            </StackPanel>
+
+            <TextBlock Text="Limiar de confiança" FontWeight="SemiBold" FontSize="13"
+                       Margin="0,20,0,4" />
+            <DockPanel>
+                <TextBlock DockPanel.Dock="Right" Width="46" Margin="8,0,0,0"
+                           Text="{Binding ConfidenceThreshold, StringFormat=0.00}" />
+                <Slider Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True"
+                        Value="{Binding ConfidenceThreshold}" />
+            </DockPanel>
+            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Text="Zero desliga. Suba só se o app disparar ordens sem você querer — cada passo torna o reconhecimento mais exigente." />
+
+            <Button Content="Salvar" Padding="18,6" Margin="0,24,0,0"
+                    HorizontalAlignment="Left" Command="{Binding SaveCommand}" />
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
