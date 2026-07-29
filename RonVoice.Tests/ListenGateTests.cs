@@ -44,4 +44,65 @@ public class ListenGateTests
 
         Assert.Equal([ListenState.Idle, ListenState.Listening], states);
     }
+
+    [Theory]
+    // Em PTT, o foco do jogo continua valendo E a tecla precisa estar pressionada.
+    [InlineData(true, true, true)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    public void PushToTalkAlsoRequiresTheKey(bool focused, bool keyDown, bool expected)
+    {
+        var gate = new ListenGate(
+            () => focused, () => false, ListenMode.PushToTalk, () => keyDown);
+        Assert.Equal(expected, gate.ShouldProcess());
+    }
+
+    [Fact]
+    public void PushToTalkWithTheKeyUpReportsWaitingForKey()
+    {
+        var gate = new ListenGate(
+            () => true, () => false, ListenMode.PushToTalk, () => false);
+        Assert.Equal(ListenState.WaitingForKey, gate.State);
+    }
+
+    [Fact]
+    public void MuteStillWinsOverPushToTalk()
+    {
+        var gate = new ListenGate(
+            () => true, () => true, ListenMode.PushToTalk, () => true);
+        Assert.Equal(ListenState.Muted, gate.State);
+        Assert.False(gate.ShouldProcess());
+    }
+
+    [Fact]
+    public void SwitchingModeAtRuntimeTakesEffect()
+    {
+        var gate = new ListenGate(() => true, () => false, ListenMode.PushToTalk, () => false);
+        Assert.False(gate.ShouldProcess());
+
+        gate.Mode = ListenMode.AlwaysOn;
+        Assert.True(gate.ShouldProcess());
+    }
+
+    /// <summary>
+    /// Na aba de teste quem esta em foco e' a janela do app, nao o jogo. Sem
+    /// esta excecao o teste de voz nunca ouviria nada.
+    /// </summary>
+    [Fact]
+    public void TestBypassOpensTheGateRegardlessOfFocusAndMode()
+    {
+        var gate = new ListenGate(() => false, () => false, ListenMode.PushToTalk, () => false);
+        Assert.False(gate.ShouldProcess());
+
+        gate.TestBypass = true;
+        Assert.True(gate.ShouldProcess());
+        Assert.Equal(ListenState.Listening, gate.State);
+    }
+
+    [Fact]
+    public void TestBypassDoesNotOverrideMute()
+    {
+        var gate = new ListenGate(() => true, () => true) { TestBypass = true };
+        Assert.False(gate.ShouldProcess());
+    }
 }
