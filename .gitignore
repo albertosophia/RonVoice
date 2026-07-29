@@ -10,3 +10,6 @@ data/models/
 # python
 __pycache__/
 *.pyc
+
+# publish output
+dist/

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RonVoice.Core\RonVoice.Core.csproj" />
+    <ProjectReference Include="..\RonVoice.Cli\RonVoice.Cli.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../data/ron_commands.json" Link="data/ron_commands.json"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="fixtures/**" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="corpus/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

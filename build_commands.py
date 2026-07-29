@@ -280,7 +280,7 @@ DOC = {
         "hold_command": "LeftShift",
         "back": "Tab",
         "select_gold": "F5", "select_blue": "F6", "select_red": "F7",
-        "command_keys": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        "command_keys": ["One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"],
         "interact_yell": "F",
         "_nota": "o perfil v5.1 usava Space como default_command; confirme no Input.ini",
     },

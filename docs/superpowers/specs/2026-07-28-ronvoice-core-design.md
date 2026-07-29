@@ -393,8 +393,11 @@ peso(t)  = log(1 + N / (1 + df(t)))      N = frases do idioma, df = em quantas o
 score    = 2 · Σ peso(A ∩ B) / (Σ peso(A) + Σ peso(B))       sobre conjuntos de tokens
 ```
 
-Com isso, `open the door with flashbang` dá `0.832` para `door.open.flashbang` contra
-`0.728` para `door.toggle`.
+Com isso, `open the door with flashbang` dá `0.839` para `door.open.flashbang` contra
+`0.711` para `door.toggle` — margem `0.128`, folgada sobre o portão de `0.05`.
+
+(Medido no mapa já com as remoções da seção 10.1. Antes delas os valores eram
+`0.832` e `0.728`: tirar frases muda as frequências e portanto os pesos IDF.)
 
 **Stopwords são por idioma, nunca uma lista só.** `do` é artigo em português (*de+o*) e
 verbo em inglês; uma lista compartilhada esvazia a frase inglesa `do it`, que passa a
@@ -566,7 +569,22 @@ e preservar a frase idiomática.
 
 Verificado: após as cinco remoções, as 70 ordens continuam alcançáveis nos dois idiomas.
 
-### 10.2 Campo `close_menu`
+### 10.2 `command_keys` passa a usar nomes de tecla UE
+
+Descoberto durante a implementação da Task 6. O bloco `keybind_defaults` é o fallback
+para valores que viriam do `Input.ini`, e o `Input.ini` escreve `Key=One`, não `Key=1`.
+Todos os campos irmãos já eram nomes de tecla (`Z`, `LeftShift`, `Tab`, `F5`, `F`);
+`command_keys` era a exceção, com dígitos literais que o `KeyCatalog` não resolve.
+
+```
+"command_keys": ["1", ... "9"]      ->  ["One", ... "Nine"]
+```
+
+Sem isso, toda ordem cujo dígito do menu caísse no fallback — jogador que remapeou, ou
+`Input.ini` ausente — seria rejeitada. `build_commands.py` foi atualizado junto, para o
+gerador não divergir do mapa.
+
+### 10.3 Campo `close_menu`
 
 Adição de um campo booleano opcional por ordem. Aditivo: ausente é `false`.
 
@@ -593,6 +611,21 @@ Corrigir a lista em jogo é o **primeiro teste da etapa 4**, como a §5.4 do bri
 ---
 
 ## 11. Pendências para validação em jogo
+
+### Confirmado em jogo em 2026-07-28
+
+- **Elevação é requisito, não recomendação.** Com o app não-elevado, nenhuma tecla chega
+  ao jogo e não há erro em lugar nenhum: o `SendInput` retorna sucesso e os eventos entram
+  na fila do Windows, mas o UIPI os descarta antes do jogo. Medido: o processo do jogo
+  nega `PROCESS_VM_READ` com acesso negado a um processo do mesmo usuário, o que só
+  ocorre com integridade diferente. Confirma a §5.8 do brief.
+- **Não há anti-cheat bloqueando `SendInput`.** Com o app elevado as teclas chegam e o
+  menu responde. Resolve a quarta pergunta da §10 do brief.
+- **O nome do processo varia por loja.** A build Steam chama-se
+  `ReadyOrNotSteam-Win64-Shipping`, não `ReadyOrNot-Win64-Shipping`. O `ForegroundGuard`
+  passou a casar por prefixo, com `--process` como escape.
+
+### Ainda abertas
 
 Não bloqueiam a implementação; bloqueiam o "pronto" da etapa 4.
 

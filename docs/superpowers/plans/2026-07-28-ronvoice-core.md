@@ -144,10 +144,15 @@ Create `Directory.Build.props` na raiz:
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 </Project>
 ```
+
+**Não ligue `InvariantGlobalization`.** Em modo invariante o .NET não carrega o ICU e
+`string.Normalize(NormalizationForm.FormD)` deixa de decompor — os acentos param de ser
+dobrados e o `TextNormalizer` da Task 7 quebra, levando junto todo o modo português.
+A proteção contra lowercase culture-sensitive vem do `ToLowerInvariant()` explícito na
+chamada, não de um flag de projeto.
 
 Remova a linha `<TargetFramework>` de cada um dos três `.csproj`, para que herdem daqui.
 
@@ -1149,10 +1154,11 @@ public class CommandResolverTests
     [Fact]
     public void QueuedOrderWithoutCloseMenuDoesNotClose()
     {
-        // door.stack.auto = MENU 1 4, sem close_menu
+        // door.stack.auto = MENU 1 4, sem close_menu.
+        // 5 passos: MENU + digito do meio + (Down/Press/Up envolvendo a ultima).
         var seq = Resolver().Resolve(new Intent(null, "door.stack.auto", true));
         Assert.Equal(StepKind.Up, seq.Steps[^1].Kind);
-        Assert.Equal(4, seq.Steps.Count);
+        Assert.Equal(5, seq.Steps.Count);
     }
 
     [Fact]
@@ -1181,6 +1187,71 @@ public class CommandResolverTests
         var seq = new CommandResolver(Map(), binds)
             .Resolve(new Intent(null, "door.stack.left", false));
         Assert.Equal(Mmb, seq.Steps[0].Token);
+    }
+
+    [Fact]
+    public void RejectsABindWeCannotSendInsteadOfUsingTheDefault()
+    {
+        // Bind ausente cai no default; bind PRESENTE que não sabemos enviar não
+        // pode cair no default — mandaria a tecla que o jogador rebindou para
+        // longe, sem erro nenhum.
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "MouseScrollUp",
+        };
+        var ex = Assert.Throws<ResolveException>(
+            () => new CommandResolver(Map(), binds)
+                .Resolve(new Intent(null, "door.stack.left", false)));
+        Assert.Contains("OpenSwatCommand", ex.Message);
+        Assert.Contains("MouseScrollUp", ex.Message);
+    }
+
+    [Fact]
+    public void PrefersTheRealBindsOverTheDefaults()
+    {
+        // Todo bind do Input.ini real coincide com o keybind_defaults, então
+        // nenhum outro teste distingue "leu o bind" de "usou o default". Este é o
+        // único que falha se as teclas voltarem a ser fixas (§5.7 do brief).
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["SelectElementRed"] = "F2",
+            ["OpenSwatCommand"] = "ThumbMouseButton",
+            ["SwatInputKeyOne"] = "Q",
+            ["SwatInputKeyTwo"] = "L",
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent("red", "door.stack.left", false));
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x3C), 35, 35),
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 100, 60),
+                new KeyStep(StepKind.Press, Sc(0x10), 35, 35),
+                new KeyStep(StepKind.Press, Sc(0x26), 35, 35),
+            },
+            seq.Steps);
+    }
+
+    [Fact]
+    public void MenuTimingFollowsTheMenuTokenNotTheKindOfKeyItResolvedTo()
+    {
+        var binds = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["OpenSwatCommand"] = "G",
+            ["SwatInputKeyOne"] = "ThumbMouseButton",
+        };
+        var seq = new CommandResolver(Map(), binds)
+            .Resolve(new Intent(null, "door.stack.left", false));
+
+        Assert.Equal(
+            new[]
+            {
+                new KeyStep(StepKind.Press, Sc(0x22), 100, 60),
+                new KeyStep(StepKind.Press, new MouseToken(MouseButton.X1), 35, 35),
+                new KeyStep(StepKind.Press, Sc(0x03), 35, 35),
+            },
+            seq.Steps);
     }
 
     [Fact]
@@ -1366,7 +1437,10 @@ public sealed class CommandResolver
         {
             var token = ResolvePathToken(order.Path[i]);
             var isLast = i == order.Path.Count - 1;
-            var isMenu = token is MouseToken;
+            // "é o passo que abre o menu?", não "resolveu para um botão de mouse?":
+            // o hold de 100 e o settle de 60 são do clique que abre o menu, e
+            // seguem sendo dele se o jogador rebindar OpenSwatCommand no teclado.
+            var isMenu = order.Path[i] == "MENU";
 
             if (isLast && intent.Queue)
             {
@@ -1434,13 +1508,22 @@ public sealed class CommandResolver
         throw new ResolveException($"token de path desconhecido: {token}");
     }
 
-    /// <summary>Bind real do jogo; se ausente ou irreconhecível, o default do mapa.</summary>
+    /// <summary>
+    /// Bind real do jogo. Bind ausente cai no default do mapa; bind presente mas
+    /// fora do KeyCatalog rejeita a ordem e nomeia a tecla — colar as duas
+    /// situações num único && manda a tecla errada em silêncio para quem
+    /// rebindou a ação para algo que não sabemos enviar (a roda do mouse, por
+    /// exemplo, que o jogo usa por padrão em ações de SWAT).
+    /// </summary>
     InputToken ResolveAction(string action, string fallbackKeyName)
     {
-        if (_binds.TryGetValue(action, out var bound)
-            && KeyCatalog.TryResolve(bound, out var token))
-            return token;
-        return ResolveKeyName(fallbackKeyName);
+        if (!_binds.TryGetValue(action, out var bound))
+            return ResolveKeyName(fallbackKeyName);
+
+        return KeyCatalog.TryResolve(bound, out var token)
+            ? token
+            : throw new ResolveException(
+                $"a ação {action} está ligada a {bound}, que não sabemos enviar");
     }
 
     static InputToken ResolveKeyName(string keyName) =>
@@ -1456,7 +1539,7 @@ public sealed class CommandResolver
 dotnet test --filter CommandResolverTests
 ```
 
-Esperado: 10 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 5 passos em vez de 4, confira se `door.stack.auto` recebeu `close_menu` por engano na Task 3.
+Esperado: 13 testes passando. Se `QueuedOrderWithoutCloseMenuDoesNotClose` falhar com 6 passos em vez de 5, `door.stack.auto` recebeu `close_menu` por engano na Task 3 — ela não deve ter o campo.
 
 - [ ] **Step 7: Commit**
 
@@ -1988,7 +2071,9 @@ public sealed class PhraseMatcher
     /// Remove a primeira ocorrência da sequência mais longa que couber.
     /// A lista já vem ordenada por tamanho decrescente.
     /// </summary>
-    static (IReadOnlyList<string> Rest, string[]? Found) StripLongest(
+    // "Rest" nao pode ser nome de elemento de tupla (CS8126): colide com o campo
+    // Rest do ValueTuple. Dai "Remaining".
+    static (IReadOnlyList<string> Remaining, string[]? Found) StripLongest(
         IReadOnlyList<string> tokens, IReadOnlyList<string[]> candidates)
     {
         foreach (var candidate in candidates)
@@ -2320,7 +2405,10 @@ Esperado: `en.tsv: 399 linhas` e `pt.tsv: 371 linhas`. Se vierem 402 e 373, a Ta
 dotnet run --project RonVoice.Cli -- test "red team, open the door with flashbang"
 ```
 
-Esperado: `intent : element=red order=door.open.flashbang queue=False`, seguido de três passos (F7, mouse do meio, `Scan(0x03)`).
+Esperado: `intent : element=red order=door.open.flashbang queue=False`, seguido de
+**quatro** passos — `Scan(0x41)` (F7), `Mouse(Middle)`, `Scan(0x03)`, `Scan(0x03)`.
+O `path` é `MENU 2 2`: dois níveis de menu, ambos na tecla 2, então o `Scan(0x03)`
+aparece duas vezes. É exatamente o `F7 MMB 2 2` do exemplo de abertura do `BRIEF.md`.
 
 ```
 dotnet run --project RonVoice.Cli -- keymap
