@@ -31,6 +31,13 @@ public sealed class OrderRowViewModel : ObservableBase
     public string Context => _order.Context;
 
     /// <summary>
+    /// O título que a tela mostra. O id continua visível em letra pequena, e não
+    /// por capricho: é a chave que vai no minhas_frases.json, e quem for editar
+    /// aquele arquivo à mão precisa saber qual é.
+    /// </summary>
+    public string Title => _order.Title;
+
+    /// <summary>
     /// As 25 ordens marcadas `confidence: "verify"` nunca foram confirmadas em
     /// jogo. Sem o aviso, quem usar vai concluir que estão quebradas.
     /// </summary>
@@ -90,7 +97,11 @@ public sealed class OrderRowViewModel : ObservableBase
 
     internal IEnumerable<string> SearchableText()
     {
+        yield return Title;
         yield return Id;
+        // O contexto entra para "porta" achar as 48 ordens de porta mesmo quando
+        // a palavra não está na frase.
+        yield return Context;
         foreach (var p in PhrasesEn) yield return p;
         foreach (var p in PhrasesPt) yield return p;
         foreach (var p in CustomPhrases) yield return p;

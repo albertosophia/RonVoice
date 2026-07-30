@@ -161,18 +161,36 @@ public sealed class CommandsViewModel : ObservableBase
             ? $"{TotalShown} ordens"
             : $"{TotalShown} de {_all.Count} ordens";
 
+    /// <summary>
+    /// Cada palavra digitada precisa aparecer em algum lugar da ordem, em
+    /// qualquer posição e em qualquer campo.
+    ///
+    /// Antes era substring contígua sobre um campo só de cada vez, e isso
+    /// falhava no jeito que as pessoas realmente buscam: "flash porta" não
+    /// achava "abre a porta com flash" porque as palavras estão fora de ordem, e
+    /// "porta flash" não achava nada porque nenhum campo isolado tem as duas.
+    ///
+    /// A dobra de formas verbais entra junto, então "abra" acha "abre".
+    /// </summary>
     IReadOnlyList<OrderRowViewModel> Filter(string search)
     {
-        // Mesma normalização do matcher: busca sem acento e sem caixa, para
-        // "posição" e "posicao" acharem a mesma coisa.
-        var needle = string.Join(' ', TextNormalizer.Tokenize(search));
-        if (needle.Length == 0) return _all;
+        var terms = VerbForms.Fold(TextNormalizer.Tokenize(search), _language);
+        if (terms.Count == 0) return _all;
 
-        return _all
-            .Where(o => o.SearchableText().Any(t =>
-                string.Join(' ', TextNormalizer.Tokenize(t))
-                      .Contains(needle, StringComparison.Ordinal)))
-            .ToList();
+        return _all.Where(o => Matches(o, terms)).ToList();
+    }
+
+    bool Matches(OrderRowViewModel row, IReadOnlyList<string> terms)
+    {
+        // Um saco de palavras por ordem, montado uma vez por linha.
+        var words = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var text in row.SearchableText())
+            foreach (var token in VerbForms.Fold(TextNormalizer.Tokenize(text), _language))
+                words.Add(token);
+
+        // Prefixo, não igualdade: quem digita "empil" ainda está no meio da
+        // palavra e já quer ver o resultado.
+        return terms.All(t => words.Any(w => w.StartsWith(t, StringComparison.Ordinal)));
     }
 
     static IReadOnlyList<CommandGroupViewModel> Group(IReadOnlyList<OrderRowViewModel> rows) =>

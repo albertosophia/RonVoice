@@ -142,7 +142,8 @@
    },
    "ronspeech": [
     "Eight"
-   ]
+   ],
+   "name": "Empilhar na porta"
   },
   {
    "id": "door.stack.split",
@@ -169,7 +170,8 @@
      "divide o time",
      "separa"
     ]
-   }
+   },
+   "name": "Dividir nos dois lados da porta"
   },
   {
    "id": "door.stack.left",
@@ -196,7 +198,8 @@
      "lado esquerdo",
      "pela esquerda"
     ]
-   }
+   },
+   "name": "Empilhar à esquerda"
   },
   {
    "id": "door.stack.right",
@@ -223,7 +226,8 @@
      "lado direito",
      "pela direita"
     ]
-   }
+   },
+   "name": "Empilhar à direita"
   },
   {
    "id": "door.scan.slide",
@@ -248,7 +252,8 @@
      "desliza",
      "escaneia deslizando"
     ]
-   }
+   },
+   "name": "Passar a câmera por baixo da porta"
   },
   {
    "id": "door.scan.pie",
@@ -273,7 +278,8 @@
      "fatia",
      "fatia a porta"
     ]
-   }
+   },
+   "name": "Varrer o cômodo em leque"
   },
   {
    "id": "door.scan.peek",
@@ -302,7 +308,8 @@
    "ronspeech": [
     "F13",
     "F23"
-   ]
+   ],
+   "name": "Espiar pela porta"
   },
   {
    "id": "door.mirror",
@@ -330,7 +337,8 @@
    },
    "ronspeech": [
     "F23"
-   ]
+   ],
+   "name": "Usar o espelho na porta"
   },
   {
    "id": "door.wedge",
@@ -361,7 +369,8 @@
     "F13",
     "F22",
     "F14"
-   ]
+   ],
+   "name": "Calçar a porta"
   },
   {
    "id": "door.cover",
@@ -389,7 +398,8 @@
    "ronspeech": [
     "F13",
     "F14"
-   ]
+   ],
+   "name": "Cobrir a porta"
   },
   {
    "id": "door.toggle",
@@ -418,7 +428,8 @@
    },
    "ronspeech": [
     "PageDown"
-   ]
+   ],
+   "name": "Abrir ou fechar a porta"
   },
   {
    "id": "door.picklock",
@@ -446,7 +457,8 @@
    },
    "ronspeech": [
     "Multiply"
-   ]
+   ],
+   "name": "Abrir a fechadura"
   },
   {
    "id": "door.disarm",
@@ -475,7 +487,8 @@
    },
    "ronspeech": [
     "F14"
-   ]
+   ],
+   "name": "Desarmar a armadilha"
   },
   {
    "id": "move.to",
@@ -506,7 +519,8 @@
    "ronspeech": [
     "F13",
     "PageUp"
-   ]
+   ],
+   "name": "Ir até onde eu estou olhando"
   },
   {
    "id": "move.fallin",
@@ -541,7 +555,8 @@
    },
    "ronspeech": [
     "PageUp"
-   ]
+   ],
+   "name": "Reagrupar comigo"
   },
   {
    "id": "move.formation.single",
@@ -569,7 +584,8 @@
      "em fila",
      "formacao em fila"
     ]
-   }
+   },
+   "name": "Formação: fila indiana"
   },
   {
    "id": "move.formation.double",
@@ -599,7 +615,8 @@
    "ronspeech": [
     "F22",
     "PageUp"
-   ]
+   ],
+   "name": "Formação: fila dupla"
   },
   {
    "id": "move.formation.diamond",
@@ -629,7 +646,8 @@
    "ronspeech": [
     "Nine",
     "PageUp"
-   ]
+   ],
+   "name": "Formação: diamante"
   },
   {
    "id": "move.formation.wedge",
@@ -660,7 +678,8 @@
     "F22",
     "F13",
     "PageUp"
-   ]
+   ],
+   "name": "Formação: cunha"
   },
   {
    "id": "hold",
@@ -692,7 +711,8 @@
    },
    "ronspeech": [
     "Seven"
-   ]
+   ],
+   "name": "Aguardar no lugar"
   },
   {
    "id": "cover",
@@ -722,7 +742,8 @@
    "ronspeech": [
     "F13",
     "F14"
-   ]
+   ],
+   "name": "Cobrir a minha posição"
   },
   {
    "id": "search",
@@ -756,7 +777,8 @@
    "ronspeech": [
     "F13",
     "F20"
-   ]
+   ],
+   "name": "Vasculhar e garantir o cômodo"
   },
   {
    "id": "deploy.flashbang",
@@ -788,7 +810,8 @@
    "ronspeech": [
     "F13",
     "F19"
-   ]
+   ],
+   "name": "Jogar flash"
   },
   {
    "id": "deploy.stinger",
@@ -818,7 +841,8 @@
    "ronspeech": [
     "F22",
     "F19"
-   ]
+   ],
+   "name": "Jogar stinger"
   },
   {
    "id": "deploy.gas",
@@ -850,7 +874,8 @@
     "F13",
     "F22",
     "F19"
-   ]
+   ],
+   "name": "Jogar gás"
   },
   {
    "id": "deploy.chemlight",
@@ -875,7 +900,8 @@
      "joga chemlight",
      "marca com luz"
     ]
-   }
+   },
+   "name": "Jogar chemlight"
   },
   {
    "id": "deploy.shield",
@@ -901,7 +927,8 @@
      "poe o escudo",
      "traz o escudo"
     ]
-   }
+   },
+   "name": "Pôr o escudo"
   },
   {
    "id": "person.restrain",
@@ -932,7 +959,8 @@
    },
    "ronspeech": [
     "F20"
-   ]
+   ],
+   "name": "Algemar a pessoa"
   },
   {
    "id": "person.moveto",
@@ -960,7 +988,8 @@
    "ronspeech": [
     "F22",
     "F8"
-   ]
+   ],
+   "name": "Mandar a pessoa até mim"
   },
   {
    "id": "player.yell",
@@ -992,7 +1021,8 @@
    },
    "ronspeech": [
     "F8"
-   ]
+   ],
+   "name": "Gritar por rendição"
   },
   {
    "id": "player.chemlight",
@@ -1015,7 +1045,8 @@
      "solta luz",
      "marca aqui"
     ]
-   }
+   },
+   "name": "Eu jogo um chemlight"
   },
   {
    "id": "player.fireselect",
@@ -1040,7 +1071,8 @@
      "automatico",
      "semi automatico"
     ]
-   }
+   },
+   "name": "Trocar o meu modo de tiro"
   },
   {
    "id": "player.exfil",
@@ -1066,7 +1098,8 @@
      "liberado pra sair",
      "missao completa"
     ]
-   }
+   },
+   "name": "Encerrar a missão"
   },
   {
    "id": "confirm.default",
@@ -1093,7 +1126,8 @@
      "positivo",
      "confirma"
     ]
-   }
+   },
+   "name": "Executar a ordem padrão"
   },
   {
    "id": "door.open.clear",
@@ -1126,7 +1160,8 @@
    },
    "ronspeech": [
     "Zero"
-   ]
+   ],
+   "name": "Abrir a porta e limpar"
   },
   {
    "id": "door.open.flashbang",
@@ -1163,7 +1198,8 @@
    },
    "ronspeech": [
     "F15"
-   ]
+   ],
+   "name": "Abrir a porta com flash"
   },
   {
    "id": "door.open.stinger",
@@ -1199,7 +1235,8 @@
    },
    "ronspeech": [
     "F17"
-   ]
+   ],
+   "name": "Abrir a porta com stinger"
   },
   {
    "id": "door.open.gas",
@@ -1234,7 +1271,8 @@
    },
    "ronspeech": [
     "F16"
-   ]
+   ],
+   "name": "Abrir a porta com gás"
   },
   {
    "id": "door.open.launcher",
@@ -1263,7 +1301,8 @@
      "entra com lancador",
      "entra com lanca granadas"
     ]
-   }
+   },
+   "name": "Abrir a porta com lançador"
   },
   {
    "id": "door.open.leader",
@@ -1293,7 +1332,8 @@
      "entra com lider",
      "entra espera por mim"
     ]
-   }
+   },
+   "name": "Abrir a porta com granada do líder"
   },
   {
    "id": "door.breach.kick.clear",
@@ -1331,7 +1371,8 @@
      "arromba chutando e limpa",
      "arromba chutando limpa"
     ]
-   }
+   },
+   "name": "Chutar a porta e limpar"
   },
   {
    "id": "door.breach.kick.flashbang",
@@ -1369,7 +1410,8 @@
      "chuta a porta flash e limpa",
      "chuta a porta com granada de luz"
     ]
-   }
+   },
+   "name": "Chutar a porta com flash"
   },
   {
    "id": "door.breach.kick.stinger",
@@ -1407,7 +1449,8 @@
      "chuta a porta stinger e limpa",
      "chuta a porta com bola de borracha"
     ]
-   }
+   },
+   "name": "Chutar a porta com stinger"
   },
   {
    "id": "door.breach.kick.gas",
@@ -1445,7 +1488,8 @@
      "arromba chutando com gas",
      "arromba chutando com gas lacrimogeneo"
     ]
-   }
+   },
+   "name": "Chutar a porta com gás"
   },
   {
    "id": "door.breach.kick.launcher",
@@ -1481,7 +1525,8 @@
      "arromba chutando com lancador",
      "arromba chutando com lanca granadas"
     ]
-   }
+   },
+   "name": "Chutar a porta com lançador"
   },
   {
    "id": "door.breach.kick.leader",
@@ -1519,7 +1564,8 @@
      "arromba chutando com lider",
      "arromba chutando espera por mim"
     ]
-   }
+   },
+   "name": "Chutar a porta com granada do líder"
   },
   {
    "id": "door.breach.shotgun.clear",
@@ -1560,7 +1606,8 @@
    },
    "ronspeech": [
     "F18"
-   ]
+   ],
+   "name": "Escopeta na dobradiça e limpar"
   },
   {
    "id": "door.breach.shotgun.flashbang",
@@ -1601,7 +1648,8 @@
    },
    "ronspeech": [
     "F19"
-   ]
+   ],
+   "name": "Escopeta na dobradiça com flash"
   },
   {
    "id": "door.breach.shotgun.stinger",
@@ -1642,7 +1690,8 @@
    },
    "ronspeech": [
     "F24"
-   ]
+   ],
+   "name": "Escopeta na dobradiça com stinger"
   },
   {
    "id": "door.breach.shotgun.gas",
@@ -1683,7 +1732,8 @@
    },
    "ronspeech": [
     "F21"
-   ]
+   ],
+   "name": "Escopeta na dobradiça com gás"
   },
   {
    "id": "door.breach.shotgun.launcher",
@@ -1719,7 +1769,8 @@
      "atira na dobradica com lancador",
      "atira na dobradica com lanca granadas"
     ]
-   }
+   },
+   "name": "Escopeta na dobradiça com lançador"
   },
   {
    "id": "door.breach.shotgun.leader",
@@ -1757,7 +1808,8 @@
      "atira na dobradica com lider",
      "atira na dobradica espera por mim"
     ]
-   }
+   },
+   "name": "Escopeta na dobradiça com granada do líder"
   },
   {
    "id": "door.breach.c2.clear",
@@ -1798,7 +1850,8 @@
    },
    "ronspeech": [
     "Subtract"
-   ]
+   ],
+   "name": "C2 na porta e limpar"
   },
   {
    "id": "door.breach.c2.flashbang",
@@ -1839,7 +1892,8 @@
    },
    "ronspeech": [
     "Add"
-   ]
+   ],
+   "name": "C2 na porta com flash"
   },
   {
    "id": "door.breach.c2.stinger",
@@ -1877,7 +1931,8 @@
      "explode stinger e limpa",
      "explode com bola de borracha"
     ]
-   }
+   },
+   "name": "C2 na porta com stinger"
   },
   {
    "id": "door.breach.c2.gas",
@@ -1915,7 +1970,8 @@
      "explode a porta com gas",
      "explode a porta com gas lacrimogeneo"
     ]
-   }
+   },
+   "name": "C2 na porta com gás"
   },
   {
    "id": "door.breach.c2.launcher",
@@ -1953,7 +2009,8 @@
      "detona a porta com lancador",
      "detona a porta com lanca granadas"
     ]
-   }
+   },
+   "name": "C2 na porta com lançador"
   },
   {
    "id": "door.breach.c2.leader",
@@ -1991,7 +2048,8 @@
      "explode a porta com lider",
      "explode a porta espera por mim"
     ]
-   }
+   },
+   "name": "C2 na porta com granada do líder"
   },
   {
    "id": "door.breach.ram.clear",
@@ -2029,7 +2087,8 @@
      "arromba na marra e limpa",
      "arromba na marra limpa"
     ]
-   }
+   },
+   "name": "Aríete na porta e limpar"
   },
   {
    "id": "door.breach.ram.flashbang",
@@ -2067,7 +2126,8 @@
      "arromba com ariete flash e limpa",
      "arromba com ariete com granada de luz"
     ]
-   }
+   },
+   "name": "Aríete na porta com flash"
   },
   {
    "id": "door.breach.ram.stinger",
@@ -2105,7 +2165,8 @@
      "arromba com ariete stinger e limpa",
      "arromba com ariete com bola de borracha"
     ]
-   }
+   },
+   "name": "Aríete na porta com stinger"
   },
   {
    "id": "door.breach.ram.gas",
@@ -2143,7 +2204,8 @@
      "arromba na marra com gas",
      "arromba na marra com gas lacrimogeneo"
     ]
-   }
+   },
+   "name": "Aríete na porta com gás"
   },
   {
    "id": "door.breach.ram.launcher",
@@ -2179,7 +2241,8 @@
      "arromba na marra com lancador",
      "arromba na marra com lanca granadas"
     ]
-   }
+   },
+   "name": "Aríete na porta com lançador"
   },
   {
    "id": "door.breach.ram.leader",
@@ -2217,7 +2280,8 @@
      "arromba na marra com lider",
      "arromba na marra espera por mim"
     ]
-   }
+   },
+   "name": "Aríete na porta com granada do líder"
   },
   {
    "id": "door.breach.leader.clear",
@@ -2255,7 +2319,8 @@
      "arromba pra mim e limpa",
      "arromba pra mim limpa"
     ]
-   }
+   },
+   "name": "Líder arromba e limpar"
   },
   {
    "id": "door.breach.leader.flashbang",
@@ -2293,7 +2358,8 @@
      "arromba e espera flash e limpa",
      "arromba e espera com granada de luz"
     ]
-   }
+   },
+   "name": "Líder arromba com flash"
   },
   {
    "id": "door.breach.leader.stinger",
@@ -2331,7 +2397,8 @@
      "arromba e espera stinger e limpa",
      "arromba e espera com bola de borracha"
     ]
-   }
+   },
+   "name": "Líder arromba com stinger"
   },
   {
    "id": "door.breach.leader.gas",
@@ -2369,7 +2436,8 @@
      "arromba pra mim com gas",
      "arromba pra mim com gas lacrimogeneo"
     ]
-   }
+   },
+   "name": "Líder arromba com gás"
   },
   {
    "id": "door.breach.leader.launcher",
@@ -2405,7 +2473,8 @@
      "arromba pra mim com lancador",
      "arromba pra mim com lanca granadas"
     ]
-   }
+   },
+   "name": "Líder arromba com lançador"
   },
   {
    "id": "door.breach.leader.leader",
@@ -2442,7 +2511,8 @@
      "arromba pra mim com lider",
      "arromba pra mim espera por mim"
     ]
-   }
+   },
+   "name": "Líder arromba com granada do líder"
   }
  ]
 }

@@ -12,6 +12,11 @@ namespace RonVoice.Core.Commands;
 /// ele não age sobre eles com espera nenhuma entre 60 e 800 ms. Por este
 /// caminho o esquadrão obedece em VR — está verificado em jogo.
 /// </param>
+/// <param name="Name">
+/// Título legível, para a tela e a busca. O <paramref name="Id"/> continua sendo
+/// a chave — é ele que vai no minhas_frases.json e em qualquer perfil trocado
+/// entre pessoas, então renomear nunca pode quebrar arquivo de ninguém.
+/// </param>
 public sealed record OrderDefinition(
     string Id,
     string Context,
@@ -19,7 +24,12 @@ public sealed record OrderDefinition(
     bool CloseMenu,
     string Confidence,
     IReadOnlyDictionary<string, IReadOnlyList<string>> Phrases,
-    IReadOnlyList<string>? RonSpeechKeys = null);
+    IReadOnlyList<string>? RonSpeechKeys = null,
+    string? Name = null)
+{
+    /// <summary>O nome quando existe, senão o id — a tela nunca fica sem título.</summary>
+    public string Title => Name is { Length: > 0 } ? Name : Id;
+}
 
 public sealed record ElementDefinition(
     string Name,

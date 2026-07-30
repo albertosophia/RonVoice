@@ -88,11 +88,19 @@
 
                                                 <StackPanel Grid.Column="0">
                                                     <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Title}"
+                                                                   FontWeight="SemiBold" FontSize="13" />
+                                                        <!--
+                                                            O id continua visivel, e nao por capricho:
+                                                            e' a chave do minhas_frases.json, e quem
+                                                            editar aquele arquivo precisa dela.
+                                                        -->
                                                         <TextBlock Text="{Binding Id}"
-                                                                   FontWeight="SemiBold" />
+                                                                   Foreground="#AAA" FontSize="10"
+                                                                   Margin="8,3,0,0" />
                                                         <TextBlock Text="{Binding PathText}"
-                                                                   Foreground="#999" FontSize="11"
-                                                                   Margin="10,1,0,0" />
+                                                                   Foreground="#CCC" FontSize="10"
+                                                                   Margin="8,3,0,0" />
                                                         <!--
                                                             As 25 ordens confidence: verify nunca
                                                             foram confirmadas em jogo. Sem o selo,
