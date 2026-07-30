@@ -62,7 +62,7 @@
                 <TextBlock Text="{Binding Summary}" TextWrapping="Wrap"
                            FontSize="12" FontWeight="SemiBold">
                     <TextBlock.Style>
-                        <Style TargetType="TextBlock">
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="Foreground" Value="{StaticResource CritInk}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Ready}" Value="True">

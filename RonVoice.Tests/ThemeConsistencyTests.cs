@@ -58,6 +58,47 @@ public class ThemeConsistencyTests
         Assert.Empty(offenders);
     }
 
+    /// <summary>
+    /// Tipos que o tema estiliza. Uma Style local para um deles SEM BasedOn não
+    /// estende a do tema: ela a SUBSTITUI, e o controle volta ao visual padrão
+    /// do Windows — claro, no meio de um app escuro.
+    ///
+    /// Foi assim que o botão "Testar minha voz" ficou cinza-claro: o Style local
+    /// existia só para trocar o texto conforme a gravação, e de brinde jogou o
+    /// tema inteiro fora.
+    /// </summary>
+    static readonly string[] ThemedTypes =
+    [
+        "Button", "TextBlock", "TextBox", "ComboBox", "ComboBoxItem",
+        "CheckBox", "Slider", "TabItem", "TabControl",
+    ];
+
+    [Fact]
+    public void NoLocalStyleThrowsAwayTheThemeStyle()
+    {
+        var style = new Regex(@"<Style\b[^>]*?>", RegexOptions.Singleline);
+        var target = new Regex(@"TargetType=""(?<t>\w+)""");
+        var offenders = new List<string>();
+
+        foreach (var file in AppXaml())
+        {
+            var text = File.ReadAllText(file.FullName);
+            foreach (Match m in style.Matches(text))
+            {
+                var t = target.Match(m.Value);
+                if (!t.Success || !ThemedTypes.Contains(t.Groups["t"].Value)) continue;
+                if (m.Value.Contains("BasedOn", StringComparison.Ordinal)) continue;
+
+                var line = text[..m.Index].Count(c => c == '\n') + 1;
+                offenders.Add(
+                    $"{file.Name}:{line} Style TargetType=\"{t.Groups["t"].Value}\" sem BasedOn — "
+                    + "substitui a Style do tema em vez de estendê-la");
+            }
+        }
+
+        Assert.Empty(offenders);
+    }
+
     static double Luminance(string hex)
     {
         var v = hex.TrimStart('#');

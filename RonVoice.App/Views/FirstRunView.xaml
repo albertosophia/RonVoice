@@ -16,7 +16,7 @@
         <Button x:Name="RetryButton" Content="Tentar de novo" Padding="14,5" Margin="0,16,0,0"
                 HorizontalAlignment="Left">
             <Button.Style>
-                <Style TargetType="Button">
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Failed}" Value="True">

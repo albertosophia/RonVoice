@@ -6,7 +6,7 @@
     <UserControl.Resources>
 
         <!-- Botao do filtro. Pressionado ganha fundo e o numero em ambar. -->
-        <Style x:Key="SegButton" TargetType="Button">
+        <Style x:Key="SegButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Background" Value="{StaticResource Ground}" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="13,7" />
@@ -29,7 +29,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="SegCount" TargetType="TextBlock">
+        <Style x:Key="SegCount" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Foreground" Value="{StaticResource Dim}" />

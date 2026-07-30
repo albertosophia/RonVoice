@@ -14,7 +14,7 @@
         <Button Padding="16,10" FontSize="14" HorizontalAlignment="Left"
                 Command="{Binding ToggleRecordingCommand}">
             <Button.Style>
-                <Style TargetType="Button">
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                     <Setter Property="Content" Value="Testar minha voz" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsRecording}" Value="True">
@@ -63,7 +63,7 @@
                 <TextBlock Text="{Binding Verdict}" TextWrapping="Wrap"
                            FontSize="14" FontWeight="SemiBold">
                     <TextBlock.Style>
-                        <Style TargetType="TextBlock">
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
                             <Setter Property="Foreground" Value="{StaticResource CritInk}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Succeeded}" Value="True">
