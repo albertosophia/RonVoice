@@ -22,7 +22,13 @@ public static class ProbeCommand
     /// <param name="Phrase">O que mandar.</param>
     /// <param name="Why">Por que esta ordem está na bateria.</param>
     /// <param name="Observe">O que olhar no jogo para saber se funcionou.</param>
-    sealed record Probe(string Phrase, string Why, string Observe);
+    /// <param name="SettleMs">
+    /// Espera entre abrir o menu e o primeiro dígito, ou null para o valor do
+    /// mapa. A bateria varre vários porque o valor certo em VR é uma medição,
+    /// não um palpite: se o dígito chega antes do menu aceitar input, ele é
+    /// engolido e o menu fica aberto à mercê de para onde o jogador olha.
+    /// </param>
+    sealed record Probe(string Phrase, string Why, string Observe, int? SettleMs = null);
 
     static readonly Probe[] Battery =
     [
@@ -30,8 +36,12 @@ public static class ProbeCommand
             "o indicador de modo de tiro no HUD muda"),
         new("hands up", "tecla pura (F), nenhum mouse, nenhum menu",
             "seu personagem grita"),
-        new("stack up", "abre o menu SWAT e navega",
-            "o esquadrão se posiciona na porta (mire numa porta)"),
+        new("stack up", "menu + digitos, espera atual de 60ms",
+            "o esquadrão se posiciona (MIRE NUMA PORTA)", 60),
+        new("stack up", "menu + digitos, espera de 300ms",
+            "o esquadrão se posiciona (MIRE NUMA PORTA)", 300),
+        new("stack up", "menu + digitos, espera de 800ms",
+            "o esquadrão se posiciona (MIRE NUMA PORTA)", 800),
     ];
 
     public static int Run(string[] args)
@@ -76,11 +86,18 @@ public static class ProbeCommand
         Console.WriteLine("\r        ");
 
         var clock = Stopwatch.StartNew();
-        var resolver = new CommandResolver(map, binds);
         var matcher = new PhraseMatcher(map, lang);
 
         foreach (var probe in Battery)
         {
+            // Cada entrada resolve com os SEUS tempos, para a varredura de
+            // espera do menu ser uma medição e não um palpite.
+            var resolver = new CommandResolver(
+                probe.SettleMs is { } ms
+                    ? map.WithTiming(map.Timing with { MenuOpenSettleMs = ms })
+                    : map,
+                binds);
+
             Log($"--- {clock.Elapsed.TotalSeconds,5:0.0}s  \"{probe.Phrase}\"");
             Log($"    porque : {probe.Why}");
             Log($"    olhe   : {probe.Observe}");

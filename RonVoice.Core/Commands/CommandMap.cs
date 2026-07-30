@@ -36,6 +36,14 @@ public sealed class CommandMap
     public CommandMap WithOrders(IReadOnlyDictionary<string, OrderDefinition> orders) =>
         new(orders, Elements, Queue, Defaults, Timing);
 
+    /// <summary>
+    /// Cópia com outros tempos. Existe para poder MEDIR o tempo certo em vez de
+    /// escolhê-lo por intuição: em VR a latência entre o clique e o menu aceitar
+    /// input é outra, e 60 ms podem chegar antes do menu estar pronto.
+    /// </summary>
+    public CommandMap WithTiming(TimingSettings timing) =>
+        new(Orders, Elements, Queue, Defaults, timing);
+
     public static CommandMap Load(string path)
     {
         using var doc = JsonDocument.Parse(File.ReadAllText(path));
