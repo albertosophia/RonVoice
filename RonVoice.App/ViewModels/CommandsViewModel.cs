@@ -27,8 +27,10 @@ public sealed class CommandsViewModel : ObservableBase
         IReadOnlyDictionary<string, IReadOnlyList<string>>? custom = null,
         IReadOnlyList<PhraseIssue>? issues = null,
         string? storePath = null,
-        string language = "en")
+        string language = "en",
+        bool sendingViaMod = false)
     {
+        SendingViaMod = sendingViaMod;
         _map = map;
         _storePath = storePath;
         _language = language;
@@ -47,11 +49,28 @@ public sealed class CommandsViewModel : ObservableBase
     /// <summary>A edição só existe quando há onde gravar.</summary>
     public bool CanEdit => _storePath is not null;
 
+    /// <summary>
+    /// As ordens estão saindo pelo mod UE4SS em vez do menu. Muda o catálogo:
+    /// as que o mod não cobre precisam aparecer marcadas, senão falar uma delas
+    /// não faz nada e parece bug.
+    /// </summary>
+    public bool SendingViaMod { get; }
+
+    public int UnavailableCount => _all.Count(o => o.UnavailableInCurrentMode);
+
+    public bool HasUnavailable => UnavailableCount > 0;
+
+    public string UnavailableText =>
+        $"Modo RoNSpeech: {UnavailableCount} destas ordens não existem no mod e "
+        + "não vão fazer nada. Estão marcadas abaixo.";
+
     OrderRowViewModel Build(
         OrderDefinition order, IReadOnlyDictionary<string, IReadOnlyList<string>>? custom)
     {
         var row = new OrderRowViewModel(
-            order, custom is not null && custom.TryGetValue(order.Id, out var c) ? c : null);
+            order,
+            custom is not null && custom.TryGetValue(order.Id, out var c) ? c : null,
+            SendingViaMod);
 
         row.AddCommand = new RelayCommand(_ => AddPhrase(row), _ => CanEdit);
         row.RemoveCommand = new RelayCommand(

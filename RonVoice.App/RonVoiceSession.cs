@@ -65,7 +65,7 @@ public sealed class RonVoiceSession : IDisposable
             ? KeybindReader.Read(ini)
             : new Dictionary<string, string>();
 
-        _resolver = new CommandResolver(_map, _binds);
+        _resolver = new CommandResolver(_map, _binds) { Mode = settings.SendMode };
         _processNames = ProcessNamesFrom(settings);
 
         // O modo já nasce certo em vez de virar push-to-talk depois: entre abrir
@@ -108,6 +108,7 @@ public sealed class RonVoiceSession : IDisposable
         _main.StatusBar.Elevated = ForegroundGuard.IsElevated();
         _main.StatusBar.Portable = portable;
         _main.StatusBar.Language = settings.Language;
+        _main.StatusBar.SendMode = settings.SendMode;
         // Uma fonte só para o que grava e para o que a barra diz. Antes eram
         // duas contas diferentes, e a barra podia nomear um dispositivo que
         // não era o que estava gravando.
@@ -123,10 +124,16 @@ public sealed class RonVoiceSession : IDisposable
 
         _main.Commands = new CommandsViewModel(
             _map, custom.Accepted, custom.Issues,
-            CustomPhrasesPath(settingsPath), settings.Language);
+            CustomPhrasesPath(settingsPath), settings.Language,
+            sendingViaMod: settings.SendMode == SendMode.RonSpeech);
         _main.Test = new TestViewModel();
         _main.Checks = new ChecksViewModel();
-        _main.Settings = new SettingsViewModel(settings, devices, _binds);
+        _main.Settings = new SettingsViewModel(settings, devices, _binds)
+        {
+            RonSpeechTotal = _map.Orders.Count,
+            RonSpeechMissing = _map.Orders.Values
+                .Count(o => o.RonSpeechKeys is not { Count: > 0 }),
+        };
 
         WireCommands();
 
@@ -227,18 +234,25 @@ public sealed class RonVoiceSession : IDisposable
     /// a gramática é imutável na vida de um VoskRecognizer, então as frases novas
     /// só passam a ser ouvidas ao reabrir. A mensagem diz isso — esconder seria pior.
     /// </summary>
-    void ReloadCustomPhrases()
+    /// <param name="silent">
+    /// Sem a caixa de mensagem. É o caminho de quando quem pediu a recarga foi a
+    /// troca de modo, não o botão Recarregar: duas caixas seguidas confundiriam.
+    /// </param>
+    void ReloadCustomPhrases(bool silent = false)
     {
         var custom = CustomPhrases.Apply(
             LoadRawMap(), CustomPhrasesPath(_settingsPath), _settings.Language);
 
         _main.Commands = new CommandsViewModel(
             custom.Map, custom.Accepted, custom.Issues,
-            CustomPhrasesPath(_settingsPath), _settings.Language);
+            CustomPhrasesPath(_settingsPath), _settings.Language,
+            sendingViaMod: _settings.SendMode == SendMode.RonSpeech);
         _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
         _main.Commands.SendCommand = new RelayCommand(
             p => _ = SendToGameAsync((OrderRowViewModel)p!), _ => GameIsRunning());
         _main.RaiseCommandsChanged();
+
+        if (silent) return;
 
         var accepted = custom.Accepted.Values.Sum(v => v.Count);
         MessageBox.Show(
@@ -396,9 +410,19 @@ public sealed class RonVoiceSession : IDisposable
         // Aplica a quente o que dá; trocar idioma exigiria recriar modelo e
         // reconhecedor, então isso pede reabrir o app.
         var languageChanged = updated.Language != _settings.Language;
+        var sendModeChanged = updated.SendMode != _settings.SendMode;
         _settings = updated;
         _processNames = ProcessNamesFrom(updated);
         var talkKeyProblem = ApplyListenMode(updated);
+
+        // A quente: o resolvedor é o mesmo objeto que o pipeline guarda.
+        _resolver.Mode = updated.SendMode;
+        _main.StatusBar.SendMode = updated.SendMode;
+
+        // O catálogo marca as ordens que o modo novo não alcança, então precisa
+        // ser reconstruído — senão os selos ficam falando do modo anterior.
+        if (sendModeChanged) ReloadCustomPhrases(silent: true);
+
         _main.Commands.SendCommand.RaiseCanExecuteChanged();
 
         if (talkKeyProblem is not null)

@@ -32,6 +32,20 @@
             <TextBlock Foreground="#888" FontSize="11" Margin="0,4,0,0"
                        Text="Trocar o idioma recarrega o modelo e leva alguns segundos." />
 
+            <!--
+                O modo de envio existe por causa do VR: la' o menu SWAT abre mas
+                nao aceita os digitos, com espera nenhuma de 60 a 800ms. Pelo mod
+                UE4SS e' uma tecla so', sem menu, e funciona.
+            -->
+            <TextBlock Text="Como mandar as ordens" FontWeight="SemiBold" FontSize="13"
+                       Margin="0,20,0,4" />
+            <CheckBox IsChecked="{Binding UseRonSpeech}"
+                      Content="Usar o mod RoNSpeech (necessário em VR)" />
+            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Text="Desmarcado, o app abre o menu SWAT e navega — funciona sem mod nenhum, mas não funciona em VR. Marcado, manda uma tecla que o mod UE4SS RoNSpeech traduz numa chamada direta ao jogo." />
+            <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Text="{Binding RonSpeechWarning}" />
+
             <TextBlock Text="Modo de escuta" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
             <CheckBox IsChecked="{Binding UsePushToTalk}" Content="Usar push-to-talk" />
             <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"

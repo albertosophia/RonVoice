@@ -1,3 +1,5 @@
+using RonVoice.Core.Commands;
+
 namespace RonVoice.Core.Config;
 
 public enum ListenModeSetting
@@ -17,6 +19,11 @@ public enum ListenModeSetting
 /// quando um dispositivo entra ou sai — o que acontece ao entrar em VR, e faz o
 /// app gravar do microfone errado sem erro nenhum.
 /// </param>
+/// <param name="SendMode">
+/// Menu (padrão, não precisa de mod) ou RonSpeech (uma tecla do mod UE4SS, que
+/// é o que funciona em VR). Fica no settings porque é escolha de instalação, não
+/// de sessão.
+/// </param>
 public sealed record AppSettings(
     string Language,
     string? GameExecutablePath,
@@ -24,7 +31,8 @@ public sealed record AppSettings(
     ListenModeSetting Mode,
     string? PushToTalkKey,
     double ConfidenceThreshold,
-    string? MicrophoneName = null)
+    string? MicrophoneName = null,
+    SendMode SendMode = SendMode.Menu)
 {
     /// <summary>
     /// Sempre-ligado é o padrão por decisão do autor; PTT existe para quem
@@ -38,5 +46,6 @@ public sealed record AppSettings(
         Mode: ListenModeSetting.AlwaysOn,
         PushToTalkKey: null,
         ConfidenceThreshold: 0.0,
-        MicrophoneName: null);
+        MicrophoneName: null,
+        SendMode: SendMode.Menu);
 }

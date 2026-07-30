@@ -5,6 +5,18 @@ namespace RonVoice.Core.Commands;
 
 public sealed class ResolveException(string message) : Exception(message);
 
+public enum SendMode
+{
+    /// <summary>Abre o menu SWAT e navega. Não precisa de mod nenhum.</summary>
+    Menu,
+
+    /// <summary>
+    /// Uma tecla do mod UE4SS RoNSpeech, que chama as funções do jogo direto.
+    /// É o que funciona em VR, onde o menu abre mas não aceita os dígitos.
+    /// </summary>
+    RonSpeech,
+}
+
 /// <summary>
 /// Intent + binds do jogo -> KeySequence. Quando a resolução é incerta, lança:
 /// nunca inventa uma tecla plausível.
@@ -106,8 +118,16 @@ public sealed class CommandResolver
         return new KeySequence(steps);
     }
 
+    /// <summary>
+    /// Trocável a quente: mudar de modo na aba Configuração não pode exigir
+    /// reabrir o app, e o pipeline guarda este resolvedor.
+    /// </summary>
+    public SendMode Mode { get; set; } = SendMode.Menu;
+
     public KeySequence Resolve(Intent intent)
     {
+        if (Mode == SendMode.RonSpeech) return ResolveViaRonSpeech(intent);
+
         var steps = new List<KeyStep>();
         var hold = _map.Timing.KeyHoldMs;
         var gap = _map.Timing.GapBetweenKeysMs;

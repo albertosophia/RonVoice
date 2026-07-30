@@ -1,3 +1,4 @@
+using RonVoice.Core.Commands;
 using RonVoice.Core.Pipeline;
 
 namespace RonVoice.App.ViewModels;
@@ -16,6 +17,7 @@ public sealed class StatusBarViewModel : ObservableBase
     string? _activeElement;
     string? _talkKeyProblem;
     string? _microphoneProblem;
+    SendMode _sendMode = SendMode.Menu;
     ListenState _listenState = ListenState.Idle;
 
     public bool Elevated
@@ -46,6 +48,17 @@ public sealed class StatusBarViewModel : ObservableBase
     {
         get => _activeElement;
         set { if (Set(ref _activeElement, value)) Raise(nameof(Summary)); }
+    }
+
+    /// <summary>
+    /// Por onde as ordens estão saindo. Fica na barra porque é a diferença entre
+    /// "não funciona" e "não funciona neste modo" — e sem isso quem ligou o modo
+    /// do mod não tem como saber que ligou.
+    /// </summary>
+    public SendMode SendMode
+    {
+        get => _sendMode;
+        set { if (Set(ref _sendMode, value)) Raise(nameof(Summary)); }
     }
 
     /// <summary>
@@ -99,6 +112,7 @@ public sealed class StatusBarViewModel : ObservableBase
                 Elevated ? "elevado" : "SEM ELEVAÇÃO — as teclas não chegam ao jogo",
                 $"microfone: {MicrophoneName}",
                 $"modelo: {Language}",
+                SendMode == SendMode.RonSpeech ? "envio: mod RoNSpeech" : "envio: menu",
                 StateText,
             };
             if (ActiveElement is { } e) parts.Add($"elemento: {e}");

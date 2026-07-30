@@ -10,9 +10,15 @@ public sealed class OrderRowViewModel : ObservableBase
     string _draft = "";
     string? _draftError;
 
-    public OrderRowViewModel(OrderDefinition order, IEnumerable<string>? customPhrases = null)
+    readonly bool _sendingViaMod;
+
+    public OrderRowViewModel(
+        OrderDefinition order,
+        IEnumerable<string>? customPhrases = null,
+        bool sendingViaMod = false)
     {
         _order = order;
+        _sendingViaMod = sendingViaMod;
         CustomPhrases = new ObservableCollection<string>(customPhrases ?? []);
         CustomPhrases.CollectionChanged += (_, _) =>
         {
@@ -30,6 +36,16 @@ public sealed class OrderRowViewModel : ObservableBase
     /// </summary>
     public bool NeedsVerification =>
         string.Equals(_order.Confidence, "verify", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>O mod UE4SS tem tecla para esta ordem.</summary>
+    public bool SupportsRonSpeech => _order.RonSpeechKeys is { Count: > 0 };
+
+    /// <summary>
+    /// Está ligado o modo do mod E esta ordem não existe nele — ou seja, falar
+    /// esta frase agora não faz nada. Um bool só, porque é o que a tela precisa
+    /// perguntar, e sem ele o silêncio pareceria bug.
+    /// </summary>
+    public bool UnavailableInCurrentMode => _sendingViaMod && !SupportsRonSpeech;
 
     public IReadOnlyList<string> PhrasesEn =>
         _order.Phrases.TryGetValue("en", out var p) ? p : [];

@@ -46,6 +46,30 @@ proposito: o microfone fica sempre ligado, e o foco no jogo e' o que impede
 conversa comum de virar ordem.
 
 
+EM VR
+-----
+
+O RonVoice funciona em VR (testado com o Ready Or Not VRO Mod), mas so' com
+uma opcao ligada.
+
+O jeito normal dele mandar as ordens e' abrir o menu SWAT e navegar. Em VR
+isso nao funciona: o menu abre, mas nao aceita a escolha, e quem escolhe passa
+a ser para onde voce esta olhando. Nao e' lentidao — testamos com espera de
+60, 300 e 800 ms e nao muda nada.
+
+A saida e' nao usar o menu. Na aba Configuracao, marque
+"Usar o mod RoNSpeech". Nesse modo cada ordem sai como UMA tecla, que o mod
+traduz numa chamada direta ao jogo. Sem menu, nada de olhar interferindo.
+
+Voce precisa do UE4SS + do mod RoNSpeech instalados na pasta do jogo. Sem
+eles, o modo nao da erro: simplesmente nada acontece.
+
+O mod nao cobre todas as 70 ordens — hoje sao 32. Nesse modo, a aba Comandos
+marca em vermelho as que ficam de fora, e falar uma delas e' recusado em vez
+de fazer nada em silencio. As ordens que nao usam o menu (gritar, modo de
+tiro, chemlight) funcionam em VR nos dois modos.
+
+
 SO QUANDO EU APERTAR UMA TECLA (PUSH-TO-TALK)
 ---------------------------------------------
 

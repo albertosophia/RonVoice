@@ -51,6 +51,13 @@
                            Text="Suas frases já estão gravadas. Reabra o RonVoice para o reconhecimento passar a ouvi-las — a gramática só é montada na abertura." />
             </Border>
 
+            <!-- Quantas ordens o modo atual deixa de fora, dito antes da lista. -->
+            <Border Background="#FFE0E0" CornerRadius="4" Padding="10,8" Margin="0,0,0,8"
+                    Visibility="{Binding HasUnavailable, Converter={StaticResource Bool2Vis}}">
+                <TextBlock Text="{Binding UnavailableText}" TextWrapping="Wrap"
+                           FontSize="11" Foreground="#B71C1C" />
+            </Border>
+
             <DockPanel>
                 <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0"
                            Foreground="#888" Text="{Binding CountText}" />
@@ -106,6 +113,19 @@
                                                             </Border.Style>
                                                             <TextBlock Text="não verificado em jogo"
                                                                        FontSize="10" Foreground="#856404" />
+                                                        </Border>
+
+                                                        <!--
+                                                            No modo RoNSpeech esta ordem nao existe no
+                                                            mod: falar ela nao faz NADA. Sem o selo, o
+                                                            silencio pareceria bug do programa.
+                                                        -->
+                                                        <Border Background="#FFE0E0" CornerRadius="3"
+                                                                Padding="5,1" Margin="6,0,0,0"
+                                                                Visibility="{Binding UnavailableInCurrentMode,
+                                                                             Converter={StaticResource Bool2Vis}}">
+                                                            <TextBlock Text="não existe no mod"
+                                                                       FontSize="10" Foreground="#B71C1C" />
                                                         </Border>
                                                     </StackPanel>
 

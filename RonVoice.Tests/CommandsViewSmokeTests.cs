@@ -84,6 +84,31 @@ public class CommandsViewSmokeTests
         finally { if (File.Exists(path)) File.Delete(path); }
     }
 
+    /// <summary>
+    /// O selo "não existe no mod" usa um recurso e um converter próprios. Uma
+    /// chave errada só apareceria quando alguém ligasse o modo — exatamente
+    /// quando a informação mais importa.
+    /// </summary>
+    [Fact]
+    public void TheCatalogueLoadsWithTheModModeMarkersOn()
+    {
+        var loaded = OnStaThread(() =>
+        {
+            var view = new CommandsView
+            {
+                DataContext = new CommandsViewModel(
+                    CommandMap.Load(CommandMapTests.MapPath),
+                    null, null, null, "en", sendingViaMod: true),
+            };
+            view.Measure(new Size(1000, 8000));
+            view.Arrange(new Rect(0, 0, 1000, 8000));
+            view.UpdateLayout();
+            return view;
+        });
+
+        Assert.NotNull(loaded);
+    }
+
     static IEnumerable<Button> Buttons(DependencyObject root)
     {
         var count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(root);
