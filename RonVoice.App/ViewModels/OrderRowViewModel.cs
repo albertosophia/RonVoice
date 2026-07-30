@@ -48,6 +48,15 @@ public sealed class OrderRowViewModel : ObservableBase
     public bool SupportsRonSpeech => _order.RonSpeechKeys is { Count: > 0 };
 
     /// <summary>
+    /// A tecla que sai, à vista. No modo do mod cada ordem é UMA tecla, e é com
+    /// ela que se depura quando algo não acontece — esconder isso obrigava a
+    /// abrir o JSON para descobrir o que foi mandado.
+    /// </summary>
+    public string KeysText => _order.RonSpeechKeys is { Count: > 0 } k
+        ? string.Join(" + ", k)
+        : "";
+
+    /// <summary>
     /// Está ligado o modo do mod E esta ordem não existe nele — ou seja, falar
     /// esta frase agora não faz nada. Um bool só, porque é o que a tela precisa
     /// perguntar, e sem ele o silêncio pareceria bug.

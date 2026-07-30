@@ -7,11 +7,11 @@
         <views:CheckStatusBrushConverter x:Key="StatusBrush" />
     </UserControl.Resources>
 
-    <Border BorderBrush="#DDD" BorderThickness="1" CornerRadius="4" Padding="14">
+    <Border BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4" Padding="14">
         <StackPanel>
 
             <TextBlock Text="Está tudo certo?" FontSize="14" FontWeight="SemiBold" />
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,8"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,8"
                        Text="Verifica elevação, modelo de voz, microfone, jogo e teclas. A do microfone pede que você fale." />
 
             <Button Content="Verificar tudo" Padding="14,5" HorizontalAlignment="Left"
@@ -37,7 +37,7 @@
                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold"
                                            FontSize="12" />
                                 <TextBlock Text="{Binding Message}" TextWrapping="Wrap"
-                                           FontSize="11" Foreground="#666" />
+                                           FontSize="11" Foreground="{StaticResource Dim}" />
                             </StackPanel>
                         </DockPanel>
                     </DataTemplate>

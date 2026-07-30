@@ -10,31 +10,14 @@ namespace RonVoice.Tests;
 /// Um erro de XAML — chave de recurso trocada, propriedade que nao existe —
 /// so' aparece quando a tela abre. Este teste abre a tela.
 /// </summary>
-public class CommandsViewSmokeTests
+[Collection(WpfCollection.Name)]
+public class CommandsViewSmokeTests(WpfFixture wpf)
 {
-    /// <summary>WPF exige STA; o xUnit roda em MTA.</summary>
-    static T OnStaThread<T>(Func<T> work)
-    {
-        T result = default!;
-        Exception? failure = null;
-
-        var thread = new Thread(() =>
-        {
-            try { result = work(); }
-            catch (Exception ex) { failure = ex; }
-        });
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (failure is not null) throw new Xunit.Sdk.XunitException(failure.ToString());
-        return result;
-    }
 
     [Fact]
     public void TheCatalogueScreenLoadsAndBindsToTheViewModel()
     {
-        var loaded = OnStaThread(() =>
+        var loaded = wpf.Run(() =>
         {
             var view = new CommandsView
             {
@@ -62,7 +45,7 @@ public class CommandsViewSmokeTests
         var path = Path.Combine(Path.GetTempPath(), $"ronvoice-view-{Guid.NewGuid():N}.json");
         try
         {
-            var enabled = OnStaThread(() =>
+            var enabled = wpf.Run(() =>
             {
                 var vm = new CommandsViewModel(
                     CommandMap.Load(CommandMapTests.MapPath), null, null, path, "pt");
@@ -92,7 +75,7 @@ public class CommandsViewSmokeTests
     [Fact]
     public void TheCatalogueLoadsWithTheModModeMarkersOn()
     {
-        var loaded = OnStaThread(() =>
+        var loaded = wpf.Run(() =>
         {
             var view = new CommandsView
             {

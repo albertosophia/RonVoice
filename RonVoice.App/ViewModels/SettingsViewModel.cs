@@ -14,7 +14,6 @@ public sealed class SettingsViewModel : ObservableBase
     bool _usePushToTalk;
     string? _pushToTalkKey;
     double _confidenceThreshold;
-    bool _useRonSpeech;
 
     public SettingsViewModel(
         AppSettings initial,
@@ -33,7 +32,7 @@ public sealed class SettingsViewModel : ObservableBase
         _usePushToTalk = initial.Mode == ListenModeSetting.PushToTalk;
         _pushToTalkKey = initial.PushToTalkKey;
         _confidenceThreshold = initial.ConfidenceThreshold;
-        _useRonSpeech = initial.SendMode == SendMode.RonSpeech;
+        UseRonSpeech = initial.SendMode == SendMode.RonSpeech;
 
         SaveCommand = new RelayCommand(_ => { }, _ => false);
         BrowseCommand = new RelayCommand(_ => { }, _ => false);
@@ -113,29 +112,11 @@ public sealed class SettingsViewModel : ObservableBase
     }
 
     /// <summary>
-    /// Mandar pelo mod UE4SS RoNSpeech em vez de navegar o menu SWAT. É o que
-    /// funciona em VR, onde o menu abre mas não aceita os dígitos.
+    /// O caminho de envio, so' para ida e volta ao arquivo. Nao ha interruptor
+    /// na tela: o mod RoNSpeech e' requisito. Quem editar o settings.json a mao
+    /// para voltar ao menu tem a escolha preservada em vez de sobrescrita.
     /// </summary>
-    public bool UseRonSpeech
-    {
-        get => _useRonSpeech;
-        set { if (Set(ref _useRonSpeech, value)) Raise(nameof(RonSpeechWarning)); }
-    }
-
-    /// <summary>
-    /// Quantas ordens ficam de fora nesse modo. Precisa estar dito na tela: quem
-    /// liga o modo e fala uma das que faltam não recebe nada, e sem este aviso
-    /// concluiria que o modo está quebrado.
-    /// </summary>
-    public string? RonSpeechWarning => UseRonSpeech
-        ? $"Precisa do mod UE4SS RoNSpeech instalado. {RonSpeechMissing} das "
-          + $"{RonSpeechTotal} ordens não têm equivalente nele e são recusadas — "
-          + "a aba Comandos marca quais."
-        : null;
-
-    /// <summary>Contados do mapa, não fixos: mudam se a tabela do mod crescer.</summary>
-    public int RonSpeechTotal { get; init; }
-    public int RonSpeechMissing { get; init; }
+    public bool UseRonSpeech { get; }
 
     /// <summary>Ligados na integração, que é quem sabe persistir e reaplicar.</summary>
     public RelayCommand SaveCommand { get; set; }

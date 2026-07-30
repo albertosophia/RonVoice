@@ -6,7 +6,7 @@
     <StackPanel Margin="24" VerticalAlignment="Center">
 
         <TextBlock Text="Preparando o RonVoice" FontSize="16" FontWeight="SemiBold" />
-        <TextBlock Foreground="#888" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,16"
+        <TextBlock Foreground="{StaticResource Muted}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,16"
                    Text="O reconhecimento de voz precisa de um modelo que não vem junto do programa. Isso acontece só uma vez." />
 
         <ProgressBar Height="20" Minimum="0" Maximum="1" Value="{Binding Progress, Mode=OneWay}" />

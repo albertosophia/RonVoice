@@ -1,0 +1,280 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:RonVoice.App.ViewModels">
+
+    <!--
+        Console de operador. Escuro de proposito, nao por moda: o app fica ao
+        lado de um jogo escuro, e uma tela branca cega quem alt-tabeia no meio
+        de uma missao.
+
+        Acento e' o ambar do HUD do proprio Ready or Not. Cor SEMANTICA e'
+        separada do acento: Good verde, Bad vermelho. E ausencia de um recurso
+        NAO usa vermelho — cinza apagado — senao a cor perde o significado
+        justamente quando 38 das 70 ordens ainda nao existem no mod.
+    -->
+
+    <Color x:Key="GroundColor">#FF14161A</Color>
+    <Color x:Key="PanelColor">#FF1C1F25</Color>
+    <Color x:Key="RaisedColor">#FF22262E</Color>
+    <Color x:Key="LineColor">#FF2A2F37</Color>
+    <Color x:Key="SignalColor">#FFE8A33D</Color>
+
+    <SolidColorBrush x:Key="Ground" Color="{StaticResource GroundColor}" />
+    <SolidColorBrush x:Key="Panel"  Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="Raised" Color="{StaticResource RaisedColor}" />
+    <SolidColorBrush x:Key="Line"   Color="{StaticResource LineColor}" />
+    <SolidColorBrush x:Key="Deep"   Color="#FF101216" />
+
+    <!-- Cinzas com vies azul: um cinza neutro puro parece nao escolhido. -->
+    <SolidColorBrush x:Key="Ink"    Color="#FFE6E9EE" />
+    <SolidColorBrush x:Key="Muted"  Color="#FF8A929E" />
+    <SolidColorBrush x:Key="Dim"    Color="#FF5C6473" />
+    <SolidColorBrush x:Key="Faint"  Color="#FF454C58" />
+
+    <SolidColorBrush x:Key="Signal" Color="{StaticResource SignalColor}" />
+    <SolidColorBrush x:Key="SignalInk"  Color="#FF1A1206" />
+    <SolidColorBrush x:Key="SignalFill" Color="#FF2A2418" />
+    <SolidColorBrush x:Key="SignalLine" Color="#FF4A3C1E" />
+
+    <SolidColorBrush x:Key="Ok"      Color="#FF5FB37A" />
+    <SolidColorBrush x:Key="OkInk"   Color="#FFA7D9B8" />
+    <SolidColorBrush x:Key="OkFill"  Color="#FF1B2A20" />
+    <SolidColorBrush x:Key="OkLine"  Color="#FF2F4A38" />
+
+    <SolidColorBrush x:Key="Crit"     Color="#FFE05252" />
+    <SolidColorBrush x:Key="CritInk"  Color="#FFF3B4B4" />
+    <SolidColorBrush x:Key="CritFill" Color="#FF241A1B" />
+    <SolidColorBrush x:Key="CritLine" Color="#FF4A2A2A" />
+
+    <!--
+        Bahnschrift e' a DIN condensada que vem no Windows 10+; e' a cara de
+        sinalizacao tecnica que combina com uma sala de briefing. Cascadia Mono
+        para tecla, id e nome de dispositivo: sao coisas que se comparam
+        caractere a caractere quando algo esta errado.
+    -->
+    <FontFamily x:Key="TechFont">Bahnschrift SemiBold, Bahnschrift, Segoe UI Semibold</FontFamily>
+    <FontFamily x:Key="BodyFont">Segoe UI</FontFamily>
+    <FontFamily x:Key="MonoFont">Cascadia Mono, Consolas</FontFamily>
+
+    <BooleanToVisibilityConverter x:Key="Bool2Vis" />
+
+    <!-- tipografia -->
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="Eyebrow" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource TechFont}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource Dim}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="SectionTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource TechFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Margin" Value="0,20,0,4" />
+    </Style>
+
+    <Style x:Key="Hint" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource Muted}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Warn" TargetType="TextBlock" BasedOn="{StaticResource Hint}">
+        <Setter Property="Foreground" Value="{StaticResource Signal}" />
+    </Style>
+
+    <Style x:Key="Mono" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{StaticResource Dim}" />
+    </Style>
+
+    <!-- controles -->
+
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Background" Value="{StaticResource Raised}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="bg" CornerRadius="3"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bg" Property="BorderBrush"
+                                    Value="{StaticResource Dim}" />
+                        </Trigger>
+                        <!-- Foco tem que ser visivel: teclado tambem opera isto. -->
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="bg" Property="BorderBrush"
+                                    Value="{StaticResource Signal}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource Faint}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="GhostButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource Muted}" />
+    </Style>
+
+    <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Background" Value="{StaticResource Signal}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Signal}" />
+        <Setter Property="Foreground" Value="{StaticResource SignalInk}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Background" Value="{StaticResource Ground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="CaretBrush" Value="{StaticResource Signal}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource Signal}" />
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="BorderBrush" Value="{StaticResource Signal}" />
+            </Trigger>
+            <Trigger Property="IsReadOnly" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ComboBox">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Background" Value="{StaticResource Raised}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+    </Style>
+
+    <Style TargetType="CheckBox">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style TargetType="Slider">
+        <Setter Property="Foreground" Value="{StaticResource Signal}" />
+    </Style>
+
+    <!-- abas -->
+
+    <Style TargetType="TabControl">
+        <Setter Property="Background" Value="{StaticResource Panel}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style TargetType="TabItem">
+        <Setter Property="FontFamily" Value="{StaticResource TechFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Muted}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <!-- A aba ativa e' marcada por uma regua ambar embaixo. -->
+                    <Border x:Name="bg" Background="Transparent"
+                            BorderBrush="Transparent" BorderThickness="0,0,0,2"
+                            Padding="16,10,16,8">
+                        <ContentPresenter ContentSource="Header" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+                            <Setter TargetName="bg" Property="BorderBrush"
+                                    Value="{StaticResource Signal}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Foreground" Value="{StaticResource Ink}" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- fichas de estado -->
+
+    <Style x:Key="Chip" TargetType="Border">
+        <Setter Property="CornerRadius" Value="3" />
+        <Setter Property="Padding" Value="9,3" />
+        <Setter Property="Background" Value="{StaticResource Raised}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <DataTemplate x:Key="StatusChipTemplate" DataType="{x:Type vm:StatusChip}">
+        <Border Style="{StaticResource Chip}" Margin="0,0,6,0">
+            <Border.Resources>
+                <Style TargetType="Ellipse">
+                    <Setter Property="Width" Value="7" />
+                    <Setter Property="Height" Value="7" />
+                    <Setter Property="Fill" Value="{StaticResource Dim}" />
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="0,0,6,0" />
+                </Style>
+            </Border.Resources>
+            <StackPanel Orientation="Horizontal">
+                <Ellipse x:Name="dot" />
+                <TextBlock x:Name="label" Text="{Binding Label}" FontSize="12"
+                           Foreground="{StaticResource Muted}" VerticalAlignment="Center" />
+                <TextBlock x:Name="value" Text="{Binding Value}" Margin="6,0,0,0"
+                           FontFamily="{StaticResource MonoFont}" FontSize="11"
+                           Foreground="{StaticResource Dim}" VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis" MaxWidth="220" />
+            </StackPanel>
+        </Border>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Value}" Value="{x:Null}">
+                <Setter TargetName="value" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Level}" Value="Good">
+                <Setter TargetName="dot" Property="Fill" Value="{StaticResource Ok}" />
+                <Setter TargetName="label" Property="Foreground" Value="{StaticResource Ink}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Level}" Value="Bad">
+                <Setter TargetName="dot" Property="Fill" Value="{StaticResource Crit}" />
+                <Setter TargetName="label" Property="Foreground" Value="{StaticResource CritInk}" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -10,16 +10,16 @@
                               Margin="0,0,0,20" />
 
             <TextBlock Text="Jogo" FontWeight="SemiBold" FontSize="13" />
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,4"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,4"
                        Text="O nome do processo muda conforme a loja. Escolha o executável para o app saber quando o jogo está em foco." />
             <DockPanel>
                 <Button DockPanel.Dock="Right" Content="Procurar..." Padding="10,4"
                         Margin="6,0,0,0" Command="{Binding BrowseCommand}" />
                 <TextBox Text="{Binding GameExecutablePath}" IsReadOnly="True" Padding="6,4" />
             </DockPanel>
-            <TextBlock Foreground="#666" FontSize="11" Margin="0,4,0,0"
+            <TextBlock Foreground="{StaticResource Dim}" FontSize="11" Margin="0,4,0,0"
                        Text="{Binding GameProcessName, StringFormat=processo: {0}}" />
-            <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"
+            <TextBlock Foreground="{StaticResource Signal}" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,0"
                        Text="{Binding GameWarning}" />
 
             <TextBlock Text="Microfone" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
@@ -29,26 +29,13 @@
             <TextBlock Text="Idioma" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
             <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}"
                       Padding="6,4" HorizontalAlignment="Left" MinWidth="120" />
-            <TextBlock Foreground="#888" FontSize="11" Margin="0,4,0,0"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" Margin="0,4,0,0"
                        Text="Trocar o idioma recarrega o modelo e leva alguns segundos." />
 
-            <!--
-                O modo de envio existe por causa do VR: la' o menu SWAT abre mas
-                nao aceita os digitos, com espera nenhuma de 60 a 800ms. Pelo mod
-                UE4SS e' uma tecla so', sem menu, e funciona.
-            -->
-            <TextBlock Text="Como mandar as ordens" FontWeight="SemiBold" FontSize="13"
-                       Margin="0,20,0,4" />
-            <CheckBox IsChecked="{Binding UseRonSpeech}"
-                      Content="Usar o mod RoNSpeech (necessário em VR)" />
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
-                       Text="Desmarcado, o app abre o menu SWAT e navega — funciona sem mod nenhum, mas não funciona em VR. Marcado, manda uma tecla que o mod UE4SS RoNSpeech traduz numa chamada direta ao jogo." />
-            <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
-                       Text="{Binding RonSpeechWarning}" />
 
             <TextBlock Text="Modo de escuta" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
             <CheckBox IsChecked="{Binding UsePushToTalk}" Content="Usar push-to-talk" />
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
                        Text="Desmarcado, o app escuta sempre que o jogo estiver em foco. Marcado, só enquanto a tecla estiver pressionada." />
 
             <StackPanel Margin="0,8,0,0">
@@ -62,12 +49,12 @@
                         </Style.Triggers>
                     </Style>
                 </StackPanel.Style>
-                <TextBlock Text="Tecla" FontSize="11" Foreground="#888" />
+                <TextBlock Text="Tecla" FontSize="11" Foreground="{StaticResource Muted}" />
                 <views:KeyCaptureBox KeyName="{Binding PushToTalkKey, Mode=TwoWay}"
                                      Padding="10,5" HorizontalAlignment="Left" MinWidth="220" />
-                <TextBlock Foreground="#888" FontSize="11" Margin="0,3,0,0"
+                <TextBlock Foreground="{StaticResource Muted}" FontSize="11" Margin="0,3,0,0"
                            Text="Clique e aperte a tecla, ou um botão lateral do mouse. Esc cancela." />
-                <TextBlock Foreground="#B8860B" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                <TextBlock Foreground="{StaticResource Signal}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
                            Text="{Binding PushToTalkWarning}" />
             </StackPanel>
 
@@ -79,7 +66,7 @@
                 <Slider Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True"
                         Value="{Binding ConfidenceThreshold}" />
             </DockPanel>
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
                        Text="Zero desliga. Suba só se o app disparar ordens sem você querer — cada passo torna o reconhecimento mais exigente." />
 
             <Button Content="Salvar" Padding="18,6" Margin="0,24,0,0"

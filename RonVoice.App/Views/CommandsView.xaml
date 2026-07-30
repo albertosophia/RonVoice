@@ -1,233 +1,399 @@
 <UserControl x:Class="RonVoice.App.Views.CommandsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{StaticResource Panel}">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="Bool2Vis" />
+
+        <!-- Botao do filtro. Pressionado ganha fundo e o numero em ambar. -->
+        <Style x:Key="SegButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Ground}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="13,7" />
+            <Setter Property="Foreground" Value="{StaticResource Muted}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Ink}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SegCount" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource Dim}" />
+            <Setter Property="Margin" Value="6,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
     </UserControl.Resources>
 
-    <DockPanel Margin="6">
+    <DockPanel Margin="18,14,18,0">
 
-        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
-            <TextBlock Text="O que você pode falar" FontSize="16" FontWeight="SemiBold" />
-            <TextBlock Foreground="#888" FontSize="11" TextWrapping="Wrap" Margin="0,2,0,6"
-                       Text="Fale qualquer uma das frases abaixo com o jogo em foco. O contexto diz para onde você precisa estar olhando." />
+        <StackPanel DockPanel.Dock="Top">
+
             <!--
                 Avisos do minhas_frases.json. Ficam na tela, nao num log: quem
                 escreveu o arquivo precisa ver que uma linha dele foi recusada.
             -->
-            <Border Background="#FFF3CD" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding HasIssues}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
+            <Border Background="{StaticResource CritFill}"
+                    BorderBrush="{StaticResource CritLine}" BorderThickness="1"
+                    CornerRadius="4" Padding="12,9" Margin="0,0,0,10"
+                    Visibility="{Binding HasIssues, Converter={StaticResource Bool2Vis}}">
                 <DockPanel>
-                    <Button DockPanel.Dock="Right" Content="Recarregar" Padding="10,4"
-                            Margin="10,0,0,0" VerticalAlignment="Top"
-                            Command="{Binding ReloadCommand}" />
+                    <Button DockPanel.Dock="Right" Content="Recarregar" Margin="12,0,0,0"
+                            VerticalAlignment="Top" Command="{Binding ReloadCommand}" />
                     <StackPanel>
-                        <TextBlock Text="Suas frases — algumas não entraram:"
-                                   FontWeight="SemiBold" FontSize="12" Foreground="#856404" />
+                        <TextBlock Text="Suas frases — algumas não entraram"
+                                   FontWeight="SemiBold" FontSize="12"
+                                   Foreground="{StaticResource CritInk}" />
                         <TextBlock Text="{Binding IssuesText}" TextWrapping="Wrap"
-                                   FontSize="11" Foreground="#856404" Margin="0,4,0,0" />
+                                   FontSize="12" Foreground="{StaticResource CritInk}"
+                                   Opacity=".85" Margin="0,4,0,0" />
                     </StackPanel>
                 </DockPanel>
             </Border>
 
             <!--
                 A frase entra no catalogo na hora, mas a gramatica do Vosk e'
-                montada na abertura e e' imutavel. Sem este aviso o usuario
-                fala a frase nova, nada acontece, e nao ha erro nenhum.
+                montada na abertura e e' imutavel. Sem este aviso o usuario fala
+                a frase nova, nada acontece, e nao ha erro nenhum.
             -->
-            <Border Background="#E3F2FD" CornerRadius="4" Padding="10,8" Margin="0,0,0,8"
+            <Border Background="{StaticResource SignalFill}"
+                    BorderBrush="{StaticResource SignalLine}" BorderThickness="1"
+                    CornerRadius="4" Padding="12,9" Margin="0,0,0,10"
                     Visibility="{Binding PendingRestart, Converter={StaticResource Bool2Vis}}">
-                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#0D47A1"
+                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{StaticResource Signal}"
                            Text="Suas frases já estão gravadas. Reabra o RonVoice para o reconhecimento passar a ouvi-las — a gramática só é montada na abertura." />
             </Border>
 
-            <!-- Quantas ordens o modo atual deixa de fora, dito antes da lista. -->
-            <Border Background="#FFE0E0" CornerRadius="4" Padding="10,8" Margin="0,0,0,8"
-                    Visibility="{Binding HasUnavailable, Converter={StaticResource Bool2Vis}}">
-                <TextBlock Text="{Binding UnavailableText}" TextWrapping="Wrap"
-                           FontSize="11" Foreground="#B71C1C" />
-            </Border>
+            <DockPanel Margin="0,0,0,4">
+                <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="10,0,0,0"
+                           Style="{StaticResource Mono}" Text="{Binding CountText}" />
 
-            <DockPanel>
-                <TextBlock DockPanel.Dock="Right" VerticalAlignment="Center" Margin="8,0,0,0"
-                           Foreground="#888" Text="{Binding CountText}" />
+                <!--
+                    Filtro por disponibilidade. Abre em Funcionam: com o mod
+                    obrigatorio, 38 das 70 ordens nao tem equivalente, e mostrar
+                    as 70 de cara deixaria mais da metade da tela inicial
+                    marcada sem que nada ali esteja quebrado.
+                -->
+                <Border DockPanel.Dock="Right" Margin="10,0,0,0"
+                        BorderBrush="{StaticResource Line}" BorderThickness="1"
+                        CornerRadius="4" ClipToBounds="True"
+                        Visibility="{Binding CanFilterByAvailability,
+                                     Converter={StaticResource Bool2Vis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource SegButton}"
+                                Command="{Binding ShowCommand}" CommandParameter="Working">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Funcionam" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground,
+                                             RelativeSource={RelativeSource AncestorType=Button}}" />
+                                <TextBlock Style="{StaticResource SegCount}"
+                                           Text="{Binding WorkingCount}" />
+                            </StackPanel>
+                        </Button>
+                        <Border Width="1" Background="{StaticResource Line}" />
+                        <Button Style="{StaticResource SegButton}"
+                                Command="{Binding ShowCommand}" CommandParameter="Pending">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Ainda não" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground,
+                                             RelativeSource={RelativeSource AncestorType=Button}}" />
+                                <TextBlock Style="{StaticResource SegCount}"
+                                           Text="{Binding UnavailableCount}" />
+                            </StackPanel>
+                        </Button>
+                        <Border Width="1" Background="{StaticResource Line}" />
+                        <Button Style="{StaticResource SegButton}"
+                                Command="{Binding ShowCommand}" CommandParameter="All">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Todas" VerticalAlignment="Center"
+                                           Foreground="{Binding Foreground,
+                                             RelativeSource={RelativeSource AncestorType=Button}}" />
+                                <TextBlock Style="{StaticResource SegCount}"
+                                           Text="{Binding TotalCount}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
                 <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}"
-                         Padding="6,4" FontSize="13" />
+                         FontSize="14" MinWidth="200" />
             </DockPanel>
+
+            <TextBlock Style="{StaticResource Hint}" Margin="0,4,0,10"
+                       Text="Fale qualquer uma das frases abaixo com o jogo em foco. O contexto diz para onde você precisa estar olhando." />
+
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Groups}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="0,0,0,14">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,6,0">
+            <StackPanel>
 
-                            <TextBlock Text="{Binding Header}" FontWeight="SemiBold"
-                                       FontSize="13" Margin="0,0,0,4" Foreground="#3A6EA5" />
+                <ItemsControl ItemsSource="{Binding Groups}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,18">
 
-                            <ItemsControl ItemsSource="{Binding Orders}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border BorderBrush="#DDD" BorderThickness="0,0,0,1"
-                                                Padding="6,6">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Header}" Style="{StaticResource Eyebrow}"
+                                           Margin="0,0,0,2" />
 
-                                                <StackPanel Grid.Column="0">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   FontWeight="SemiBold" FontSize="13" />
-                                                        <!--
-                                                            O id continua visivel, e nao por capricho:
-                                                            e' a chave do minhas_frases.json, e quem
-                                                            editar aquele arquivo precisa dela.
-                                                        -->
-                                                        <TextBlock Text="{Binding Id}"
-                                                                   Foreground="#AAA" FontSize="10"
-                                                                   Margin="8,3,0,0" />
-                                                        <TextBlock Text="{Binding PathText}"
-                                                                   Foreground="#CCC" FontSize="10"
-                                                                   Margin="8,3,0,0" />
-                                                        <!--
-                                                            As 25 ordens confidence: verify nunca
-                                                            foram confirmadas em jogo. Sem o selo,
-                                                            viram "esse comando esta quebrado".
-                                                        -->
-                                                        <Border Background="#FFF3CD"
-                                                                CornerRadius="3" Padding="5,1"
-                                                                Margin="10,0,0,0">
-                                                            <Border.Style>
-                                                                <Style TargetType="Border">
-                                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding NeedsVerification}" Value="True">
-                                                                            <Setter Property="Visibility" Value="Visible" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Border.Style>
-                                                            <TextBlock Text="não verificado em jogo"
-                                                                       FontSize="10" Foreground="#856404" />
-                                                        </Border>
+                                <ItemsControl ItemsSource="{Binding Orders}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border x:Name="row"
+                                                    BorderBrush="{StaticResource Line}"
+                                                    BorderThickness="0,0,0,1"
+                                                    Background="Transparent" Padding="2,11">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
 
-                                                        <!--
-                                                            No modo RoNSpeech esta ordem nao existe no
-                                                            mod: falar ela nao faz NADA. Sem o selo, o
-                                                            silencio pareceria bug do programa.
-                                                        -->
-                                                        <Border Background="#FFE0E0" CornerRadius="3"
-                                                                Padding="5,1" Margin="6,0,0,0"
-                                                                Visibility="{Binding UnavailableInCurrentMode,
-                                                                             Converter={StaticResource Bool2Vis}}">
-                                                            <TextBlock Text="não existe no mod"
-                                                                       FontSize="10" Foreground="#B71C1C" />
-                                                        </Border>
-                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="0">
 
-                                                    <TextBlock Text="{Binding PhrasesEnText}"
-                                                               TextWrapping="Wrap" Margin="0,3,0,0"
-                                                               FontSize="12" />
-                                                    <TextBlock Text="{Binding PhrasesPtText}"
-                                                               TextWrapping="Wrap"
-                                                               FontSize="12" Foreground="#666" />
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock x:Name="title"
+                                                                       Text="{Binding Title}"
+                                                                       FontSize="15"
+                                                                       FontWeight="SemiBold"
+                                                                       VerticalAlignment="Center" />
 
-                                                    <!--
-                                                        Frases do usuario, uma por ficha, com o
-                                                        x que remove. Sao dele: da' para tirar.
-                                                    -->
-                                                    <ItemsControl ItemsSource="{Binding CustomPhrases}"
-                                                                  Margin="0,2,0,0"
-                                                                  Visibility="{Binding HasCustomPhrases,
-                                                                               Converter={StaticResource Bool2Vis}}">
-                                                        <ItemsControl.ItemsPanel>
-                                                            <ItemsPanelTemplate>
-                                                                <WrapPanel />
-                                                            </ItemsPanelTemplate>
-                                                        </ItemsControl.ItemsPanel>
-                                                        <ItemsControl.ItemTemplate>
                                                             <!--
-                                                                No x, o ItemsControl mais proximo e' o
-                                                                das fichas: o DataContext dele e' a ordem.
+                                                                A tecla que sai, a' vista: no modo do
+                                                                mod cada ordem e' UMA tecla, e e' com
+                                                                ela que se depura quando nada sai.
                                                             -->
-                                                            <DataTemplate>
-                                                                <Border Background="#E8F5E9" CornerRadius="3"
-                                                                        Padding="6,1" Margin="0,2,4,0">
-                                                                    <StackPanel Orientation="Horizontal">
-                                                                        <TextBlock Text="{Binding}" FontSize="12"
-                                                                                   Foreground="#2E7D32"
-                                                                                   VerticalAlignment="Center" />
-                                                                        <Button Content="✕" FontSize="10" Padding="4,0"
-                                                                                Margin="5,0,0,0" BorderThickness="0"
-                                                                                Background="Transparent"
-                                                                                Foreground="#2E7D32"
-                                                                                ToolTip="Remover esta frase"
-                                                                                Command="{Binding DataContext.RemoveCommand,
-                                                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                                                CommandParameter="{Binding}" />
-                                                                    </StackPanel>
-                                                                </Border>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
-                                                    </ItemsControl>
+                                                            <Border CornerRadius="3" Padding="7,2"
+                                                                    Margin="9,1,0,0"
+                                                                    Background="{StaticResource SignalFill}"
+                                                                    BorderBrush="{StaticResource SignalLine}"
+                                                                    BorderThickness="1"
+                                                                    VerticalAlignment="Center">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding SupportsRonSpeech}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Visible" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock Text="{Binding KeysText}"
+                                                                           FontFamily="{StaticResource MonoFont}"
+                                                                           FontSize="11"
+                                                                           Foreground="{StaticResource Signal}" />
+                                                            </Border>
 
-                                                    <!-- Editor, escondido ate' pedirem: sao 70 linhas. -->
-                                                    <StackPanel Margin="0,6,0,0"
-                                                                Visibility="{Binding IsChecked, ElementName=EditToggle,
-                                                                             Converter={StaticResource Bool2Vis}}">
-                                                        <DockPanel>
-                                                            <Button DockPanel.Dock="Right" Content="Adicionar"
-                                                                    Padding="10,3" Margin="6,0,0,0"
-                                                                    Command="{Binding AddCommand}" />
-                                                            <TextBox Padding="5,3" FontSize="12"
-                                                                     Text="{Binding Draft, UpdateSourceTrigger=PropertyChanged}">
-                                                                <TextBox.InputBindings>
-                                                                    <KeyBinding Key="Return"
-                                                                                Command="{Binding AddCommand}" />
-                                                                </TextBox.InputBindings>
-                                                            </TextBox>
-                                                        </DockPanel>
-                                                        <TextBlock Text="{Binding DraftError}" TextWrapping="Wrap"
-                                                                   FontSize="11" Foreground="#C62828" Margin="0,3,0,0"
-                                                                   Visibility="{Binding HasDraftError,
-                                                                                Converter={StaticResource Bool2Vis}}" />
+                                                            <!--
+                                                                Ausencia, nao erro: o mod ainda nao tem
+                                                                esta ordem. Cinza tracejado, nunca
+                                                                vermelho — vermelho e' falha de verdade.
+                                                            -->
+                                                            <Border CornerRadius="3" Padding="7,2"
+                                                                    Margin="9,1,0,0"
+                                                                    Background="{StaticResource Raised}"
+                                                                    BorderBrush="{StaticResource Line}"
+                                                                    BorderThickness="1"
+                                                                    VerticalAlignment="Center"
+                                                                    Visibility="{Binding UnavailableInCurrentMode,
+                                                                                 Converter={StaticResource Bool2Vis}}">
+                                                                <TextBlock Text="sem tecla no mod"
+                                                                           Style="{StaticResource Mono}" />
+                                                            </Border>
+
+                                                            <!--
+                                                                As 25 ordens confidence: verify nunca
+                                                                foram confirmadas em jogo. Sem o selo,
+                                                                viram "esse comando esta quebrado".
+                                                            -->
+                                                            <Border CornerRadius="3" Padding="7,2"
+                                                                    Margin="9,1,0,0"
+                                                                    Background="{StaticResource SignalFill}"
+                                                                    BorderBrush="{StaticResource SignalLine}"
+                                                                    BorderThickness="1"
+                                                                    VerticalAlignment="Center">
+                                                                <Border.Style>
+                                                                    <Style TargetType="Border">
+                                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding NeedsVerification}" Value="True">
+                                                                                <Setter Property="Visibility" Value="Visible" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Border.Style>
+                                                                <TextBlock Text="não verificado em jogo"
+                                                                           FontSize="10"
+                                                                           Foreground="{StaticResource Signal}" />
+                                                            </Border>
+
+                                                            <!--
+                                                                O id continua a' vista, e nao por
+                                                                capricho: e' a chave do
+                                                                minhas_frases.json, e quem editar
+                                                                aquele arquivo precisa dela.
+                                                            -->
+                                                            <TextBlock x:Name="id" Text="{Binding Id}"
+                                                                       Style="{StaticResource Mono}"
+                                                                       Margin="9,3,0,0" />
+                                                        </StackPanel>
+
+                                                        <TextBlock x:Name="en"
+                                                                   Text="{Binding PhrasesEnText}"
+                                                                   TextWrapping="Wrap" Margin="0,5,0,0"
+                                                                   FontSize="12"
+                                                                   Foreground="{StaticResource Muted}" />
+                                                        <TextBlock x:Name="pt"
+                                                                   Text="{Binding PhrasesPtText}"
+                                                                   TextWrapping="Wrap"
+                                                                   FontSize="12"
+                                                                   Foreground="{StaticResource Dim}" />
+
+                                                        <!-- Frases do usuario, uma por ficha, com o x. -->
+                                                        <ItemsControl ItemsSource="{Binding CustomPhrases}"
+                                                                      Margin="0,6,0,0"
+                                                                      Visibility="{Binding HasCustomPhrases,
+                                                                                   Converter={StaticResource Bool2Vis}}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate>
+                                                                    <WrapPanel />
+                                                                </ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <!--
+                                                                    No x, o ItemsControl mais proximo
+                                                                    e' o das fichas: o DataContext
+                                                                    dele e' a ordem.
+                                                                -->
+                                                                <DataTemplate>
+                                                                    <Border Background="{StaticResource OkFill}"
+                                                                            BorderBrush="{StaticResource OkLine}"
+                                                                            BorderThickness="1"
+                                                                            CornerRadius="3"
+                                                                            Padding="9,2,5,2" Margin="0,0,5,4">
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="{Binding}"
+                                                                                       FontSize="12"
+                                                                                       Foreground="{StaticResource OkInk}"
+                                                                                       VerticalAlignment="Center" />
+                                                                            <Button Content="✕" FontSize="10"
+                                                                                    Padding="5,0" Margin="6,0,0,0"
+                                                                                    Style="{StaticResource GhostButton}"
+                                                                                    Foreground="{StaticResource Ok}"
+                                                                                    ToolTip="Remover esta frase"
+                                                                                    Command="{Binding DataContext.RemoveCommand,
+                                                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                    CommandParameter="{Binding}" />
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+
+                                                        <!-- Editor, escondido ate' pedirem: sao 70 linhas. -->
+                                                        <StackPanel Margin="0,8,0,0"
+                                                                    Visibility="{Binding IsChecked, ElementName=EditToggle,
+                                                                                 Converter={StaticResource Bool2Vis}}">
+                                                            <DockPanel>
+                                                                <Button DockPanel.Dock="Right"
+                                                                        Content="Adicionar" Margin="7,0,0,0"
+                                                                        Style="{StaticResource PrimaryButton}"
+                                                                        Command="{Binding AddCommand}" />
+                                                                <TextBox Text="{Binding Draft, UpdateSourceTrigger=PropertyChanged}"
+                                                                         FontSize="13">
+                                                                    <TextBox.InputBindings>
+                                                                        <KeyBinding Key="Return"
+                                                                                    Command="{Binding AddCommand}" />
+                                                                    </TextBox.InputBindings>
+                                                                </TextBox>
+                                                            </DockPanel>
+                                                            <TextBlock Text="{Binding DraftError}"
+                                                                       TextWrapping="Wrap" FontSize="12"
+                                                                       Foreground="{StaticResource CritInk}"
+                                                                       Margin="0,5,0,0"
+                                                                       Visibility="{Binding HasDraftError,
+                                                                                    Converter={StaticResource Bool2Vis}}" />
+                                                        </StackPanel>
+
                                                     </StackPanel>
-                                                </StackPanel>
 
-                                                <StackPanel Grid.Column="1" Margin="10,0,0,0"
-                                                            VerticalAlignment="Top">
-                                                    <Button Content="Enviar ao jogo" Padding="10,4"
-                                                            Command="{Binding DataContext.SendCommand,
-                                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                            CommandParameter="{Binding}" />
-                                                    <ToggleButton x:Name="EditToggle" Content="+ minha frase"
-                                                                  Padding="10,3" Margin="0,4,0,0" FontSize="11"
-                                                                  Visibility="{Binding DataContext.CanEdit,
-                                                                               RelativeSource={RelativeSource AncestorType=UserControl},
-                                                                               Converter={StaticResource Bool2Vis}}" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                                    <StackPanel Grid.Column="1" Margin="12,0,0,0"
+                                                                VerticalAlignment="Top">
+                                                        <Button Content="Enviar ao jogo"
+                                                                Command="{Binding DataContext.SendCommand,
+                                                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}" />
+                                                        <ToggleButton x:Name="EditToggle"
+                                                                      Content="+ minha frase"
+                                                                      Margin="0,5,0,0" FontSize="11"
+                                                                      Padding="10,4" Cursor="Hand"
+                                                                      Background="Transparent"
+                                                                      Foreground="{StaticResource Muted}"
+                                                                      BorderBrush="{StaticResource Line}"
+                                                                      Visibility="{Binding DataContext.CanEdit,
+                                                                                   RelativeSource={RelativeSource AncestorType=UserControl},
+                                                                                   Converter={StaticResource Bool2Vis}}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
 
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                            <DataTemplate.Triggers>
+                                                <!-- Apagada, nao alarmada. -->
+                                                <DataTrigger Binding="{Binding UnavailableInCurrentMode}" Value="True">
+                                                    <Setter TargetName="title" Property="Foreground"
+                                                            Value="{StaticResource Dim}" />
+                                                    <Setter TargetName="en" Property="Foreground"
+                                                            Value="{StaticResource Dim}" />
+                                                    <Setter TargetName="pt" Property="Foreground"
+                                                            Value="{StaticResource Faint}" />
+                                                    <Setter TargetName="id" Property="Foreground"
+                                                            Value="{StaticResource Faint}" />
+                                                </DataTrigger>
+                                                <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="row" Property="Background"
+                                                            Value="#FF191C22" />
+                                                </Trigger>
+                                            </DataTemplate.Triggers>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!--
+                    A lacuna dita por extenso, no fim da lista e nao no topo: e'
+                    contexto, nao alarme.
+                -->
+                <Border Background="{StaticResource Ground}"
+                        BorderBrush="{StaticResource Line}" BorderThickness="1,1,1,1"
+                        CornerRadius="3" Padding="12,10" Margin="0,4,0,20"
+                        Visibility="{Binding HasUnavailable, Converter={StaticResource Bool2Vis}}">
+                    <StackPanel>
+                        <TextBlock Text="{Binding UnavailableText}" TextWrapping="Wrap"
+                                   FontSize="12" Foreground="{StaticResource Muted}" />
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,4,0,0"
+                                   Text="O método de arrombamento é parâmetro da função do jogo, então estender o Lua do mod fecha a lacuna." />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
         </ScrollViewer>
 
     </DockPanel>

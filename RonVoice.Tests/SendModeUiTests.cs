@@ -16,9 +16,14 @@ public class SendModeUiTests
     static CommandsViewModel Catalogue(bool viaMod) =>
         new(Map(), null, null, null, "en", sendingViaMod: viaMod);
 
+    /// <summary>
+    /// O mod passou a ser requisito do RonVoice, entao e' o padrao e nao ha
+    /// interruptor na tela. O caminho do menu sobrevive no codigo porque em VR
+    /// ele nao funciona e oferecer os dois convidava a escolher o que quebra.
+    /// </summary>
     [Fact]
-    public void TheMenuIsTheDefaultBecauseItNeedsNoModInstalled() =>
-        Assert.Equal(SendMode.Menu, AppSettings.Default.SendMode);
+    public void TheModIsTheDefaultBecauseItIsNowRequired() =>
+        Assert.Equal(SendMode.RonSpeech, AppSettings.Default.SendMode);
 
     [Fact]
     public void NothingIsMarkedUnavailableOnTheMenuPath()
@@ -54,8 +59,12 @@ public class SendModeUiTests
     {
         const string id = "door.breach.ram.launcher";
 
-        var viaMod = Catalogue(viaMod: true).Groups
-            .SelectMany(g => g.Orders).First(o => o.Id == id);
+        // O catálogo abre filtrado em Funcionam, então esta ordem só aparece
+        // quando se pede a lista das que ainda não têm tecla no mod.
+        var pending = Catalogue(viaMod: true);
+        pending.Shown = Availability.Pending;
+
+        var viaMod = pending.Groups.SelectMany(g => g.Orders).First(o => o.Id == id);
         var viaMenu = Catalogue(viaMod: false).Groups
             .SelectMany(g => g.Orders).First(o => o.Id == id);
 
@@ -67,46 +76,22 @@ public class SendModeUiTests
     // ---- aba Configuracao ----
 
     static SettingsViewModel Settings(AppSettings initial) =>
-        new(initial, ["Microfone (WIND)"], new Dictionary<string, string>())
-        {
-            RonSpeechTotal = 70,
-            RonSpeechMissing = 38,
-        };
-
-    [Fact]
-    public void TheCheckboxReflectsTheSavedMode()
-    {
-        Assert.False(Settings(AppSettings.Default).UseRonSpeech);
-        Assert.True(Settings(AppSettings.Default with { SendMode = SendMode.RonSpeech })
-            .UseRonSpeech);
-    }
-
-    [Fact]
-    public void TheModeRoundTripsThroughToSettings()
-    {
-        var vm = Settings(AppSettings.Default);
-        vm.UseRonSpeech = true;
-
-        Assert.Equal(SendMode.RonSpeech, vm.ToSettings().SendMode);
-    }
+        new(initial, ["Microfone (WIND)"], new Dictionary<string, string>());
 
     /// <summary>
-    /// O aviso tem que dizer que o mod é necessário E quantas ordens faltam.
-    /// Ligar o modo sem o mod instalado não dá erro nenhum: nada acontece.
+    /// Nao ha interruptor, mas a escolha de quem editou o settings.json a mao
+    /// tem que sobreviver ao salvar — senao o app a sobrescreveria calado.
     /// </summary>
     [Fact]
-    public void TurningItOnWarnsAboutTheModAndTheGaps()
+    public void AHandEditedMenuChoiceSurvivesSaving()
     {
-        var vm = Settings(AppSettings.Default);
-        Assert.Null(vm.RonSpeechWarning);
-
-        vm.UseRonSpeech = true;
-
-        Assert.NotNull(vm.RonSpeechWarning);
-        Assert.Contains("RoNSpeech", vm.RonSpeechWarning);
-        Assert.Contains("38", vm.RonSpeechWarning);
-        Assert.Contains("70", vm.RonSpeechWarning);
+        var vm = Settings(AppSettings.Default with { SendMode = SendMode.Menu });
+        Assert.Equal(SendMode.Menu, vm.ToSettings().SendMode);
     }
+
+    [Fact]
+    public void TheModeRoundTripsThroughToSettings() =>
+        Assert.Equal(SendMode.RonSpeech, Settings(AppSettings.Default).ToSettings().SendMode);
 
     // ---- barra de estado ----
 

@@ -128,12 +128,7 @@ public sealed class RonVoiceSession : IDisposable
             sendingViaMod: settings.SendMode == SendMode.RonSpeech);
         _main.Test = new TestViewModel();
         _main.Checks = new ChecksViewModel();
-        _main.Settings = new SettingsViewModel(settings, devices, _binds)
-        {
-            RonSpeechTotal = _map.Orders.Count,
-            RonSpeechMissing = _map.Orders.Values
-                .Count(o => o.RonSpeechKeys is not { Count: > 0 }),
-        };
+        _main.Settings = new SettingsViewModel(settings, devices, _binds);
 
         WireCommands();
 

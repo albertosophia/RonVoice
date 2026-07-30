@@ -20,9 +20,11 @@ public enum ListenModeSetting
 /// app gravar do microfone errado sem erro nenhum.
 /// </param>
 /// <param name="SendMode">
-/// Menu (padrão, não precisa de mod) ou RonSpeech (uma tecla do mod UE4SS, que
-/// é o que funciona em VR). Fica no settings porque é escolha de instalação, não
-/// de sessão.
+/// RonSpeech é o padrão e não tem interruptor na tela: o mod passou a ser
+/// requisito do RonVoice. O caminho do menu continua existindo no código e
+/// aceita ser escolhido editando este arquivo à mão — serve para depurar e para
+/// quem jogue só na tela — mas não é mais oferecido, porque em VR ele não
+/// funciona e oferecer as duas coisas convidava a escolher a que quebra.
 /// </param>
 public sealed record AppSettings(
     string Language,
@@ -32,7 +34,7 @@ public sealed record AppSettings(
     string? PushToTalkKey,
     double ConfidenceThreshold,
     string? MicrophoneName = null,
-    SendMode SendMode = SendMode.Menu)
+    SendMode SendMode = SendMode.RonSpeech)
 {
     /// <summary>
     /// Sempre-ligado é o padrão por decisão do autor; PTT existe para quem
@@ -47,5 +49,5 @@ public sealed record AppSettings(
         PushToTalkKey: null,
         ConfidenceThreshold: 0.0,
         MicrophoneName: null,
-        SendMode: SendMode.Menu);
+        SendMode: SendMode.RonSpeech);
 }

@@ -8,7 +8,7 @@
     <StackPanel Margin="20" MaxWidth="620" HorizontalAlignment="Left">
 
         <TextBlock Text="A minha voz está funcionando?" FontSize="16" FontWeight="SemiBold" />
-        <TextBlock Foreground="#888" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,16"
+        <TextBlock Foreground="{StaticResource Muted}" FontSize="12" TextWrapping="Wrap" Margin="0,4,0,16"
                    Text="Clique no botão, fale uma frase de comando, e clique de novo para parar. Nada é enviado ao jogo neste teste." />
 
         <Button Padding="16,10" FontSize="14" HorizontalAlignment="Left"
@@ -32,10 +32,10 @@
         -->
         <StackPanel Margin="0,16,0,0"
                     Visibility="{Binding IsRecording, Converter={StaticResource BoolToVis}}">
-            <TextBlock Text="nível de entrada" Foreground="#888" FontSize="11" />
+            <TextBlock Text="nível de entrada" Foreground="{StaticResource Muted}" FontSize="11" />
             <ProgressBar Height="18" Minimum="0" Maximum="1"
                          Value="{Binding Level, Mode=OneWay}" />
-            <TextBlock Foreground="#888" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" Margin="0,4,0,0" TextWrapping="Wrap"
                        Text="Se esta barra não se mexer enquanto você fala, o problema é o microfone — não a pronúncia." />
         </StackPanel>
 
@@ -55,7 +55,7 @@
                 <TextBlock Text="{Binding Verdict}" TextWrapping="Wrap"
                            FontSize="14" FontWeight="SemiBold" />
                 <TextBlock Text="{Binding Detail}" TextWrapping="Wrap"
-                           FontSize="11" Foreground="#555" Margin="0,8,0,0" />
+                           FontSize="11" Foreground="{StaticResource Dim}" Margin="0,8,0,0" />
             </StackPanel>
         </Border>
 

@@ -23,31 +23,31 @@ public sealed class StatusBarViewModel : ObservableBase
     public bool Elevated
     {
         get => _elevated;
-        set { if (Set(ref _elevated, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _elevated, value)) RaiseStatus(); }
     }
 
     public bool Portable
     {
         get => _portable;
-        set { if (Set(ref _portable, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _portable, value)) RaiseStatus(); }
     }
 
     public string MicrophoneName
     {
         get => _microphoneName;
-        set { if (Set(ref _microphoneName, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _microphoneName, value)) RaiseStatus(); }
     }
 
     public string Language
     {
         get => _language;
-        set { if (Set(ref _language, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _language, value)) RaiseStatus(); }
     }
 
     public string? ActiveElement
     {
         get => _activeElement;
-        set { if (Set(ref _activeElement, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _activeElement, value)) RaiseStatus(); }
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public sealed class StatusBarViewModel : ObservableBase
     public SendMode SendMode
     {
         get => _sendMode;
-        set { if (Set(ref _sendMode, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _sendMode, value)) RaiseStatus(); }
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public sealed class StatusBarViewModel : ObservableBase
     public string? MicrophoneProblem
     {
         get => _microphoneProblem;
-        set { if (Set(ref _microphoneProblem, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _microphoneProblem, value)) RaiseStatus(); }
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public sealed class StatusBarViewModel : ObservableBase
     public string? TalkKeyProblem
     {
         get => _talkKeyProblem;
-        set { if (Set(ref _talkKeyProblem, value)) Raise(nameof(Summary)); }
+        set { if (Set(ref _talkKeyProblem, value)) RaiseStatus(); }
     }
 
     public ListenState ListenState
@@ -90,7 +90,7 @@ public sealed class StatusBarViewModel : ObservableBase
         {
             if (!Set(ref _listenState, value)) return;
             Raise(nameof(StateText));
-            Raise(nameof(Summary));
+            RaiseStatus();
         }
     }
 
@@ -103,23 +103,52 @@ public sealed class StatusBarViewModel : ObservableBase
         _ => "",
     };
 
-    public string Summary
+    void RaiseStatus()
+    {
+        Raise(nameof(Chips));
+        Raise(nameof(Summary));
+    }
+
+    /// <summary>
+    /// As fichas da barra, em ordem de quem responde primeiro "por que não está
+    /// funcionando". O que está falhando vem na frente: numa linha corrida de
+    /// texto o problema ficava no meio e ninguém achava.
+    /// </summary>
+    public IReadOnlyList<StatusChip> Chips
     {
         get
         {
-            var parts = new List<string>
-            {
-                Elevated ? "elevado" : "SEM ELEVAÇÃO — as teclas não chegam ao jogo",
-                $"microfone: {MicrophoneName}",
-                $"modelo: {Language}",
-                SendMode == SendMode.RonSpeech ? "envio: mod RoNSpeech" : "envio: menu",
+            var chips = new List<StatusChip>();
+
+            if (!Elevated)
+                chips.Add(new StatusChip(
+                    "sem elevação — as teclas não chegam ao jogo", Level: ChipLevel.Bad));
+
+            if (MicrophoneProblem is { } m) chips.Add(new StatusChip(m, Level: ChipLevel.Bad));
+            if (TalkKeyProblem is { } t) chips.Add(new StatusChip(t, Level: ChipLevel.Bad));
+
+            chips.Add(new StatusChip(
                 StateText,
-            };
-            if (ActiveElement is { } e) parts.Add($"elemento: {e}");
-            if (MicrophoneProblem is { } m) parts.Add(m);
-            if (TalkKeyProblem is { } t) parts.Add(t);
-            if (!Portable) parts.Add("configuração fora da pasta — modo portable desligado");
-            return string.Join("   ·   ", parts);
+                Level: ListenState == ListenState.Listening ? ChipLevel.Good : ChipLevel.Neutral));
+
+            if (ActiveElement is { } e) chips.Add(new StatusChip("elemento", e));
+
+            chips.Add(new StatusChip("microfone", MicrophoneName));
+            chips.Add(new StatusChip("modelo", Language));
+            chips.Add(new StatusChip(
+                "envio", SendMode == SendMode.RonSpeech ? "mod RoNSpeech" : "menu"));
+
+            if (!Portable)
+                chips.Add(new StatusChip("configuração fora da pasta do programa"));
+
+            return chips;
         }
     }
+
+    /// <summary>
+    /// A mesma informação em uma linha, para o tooltip do ícone da bandeja e para
+    /// os testes. A barra usa <see cref="Chips"/>.
+    /// </summary>
+    public string Summary =>
+        string.Join("   ·   ", Chips.Select(c => c.Value is null ? c.Label : $"{c.Label}: {c.Value}"));
 }

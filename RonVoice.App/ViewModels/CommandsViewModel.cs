@@ -4,6 +4,16 @@ using RonVoice.Core.Matching;
 
 namespace RonVoice.App.ViewModels;
 
+/// <summary>O que o catálogo está mostrando.</summary>
+public enum Availability
+{
+    /// <summary>As que o modo de envio atual alcança.</summary>
+    Working,
+    /// <summary>As que ele não alcança — ausentes, não quebradas.</summary>
+    Pending,
+    All,
+}
+
 /// <summary>
 /// A tela inicial. O primeiro problema de quem instala não é depurar
 /// reconhecimento: é não saber o que pode falar. São 70 ordens e 770 frases.
@@ -41,7 +51,7 @@ public sealed class CommandsViewModel : ObservableBase
             .OrderBy(o => o.Id, StringComparer.Ordinal)
             .Select(o => Build(o, custom))
             .ToList();
-        Groups = Group(_all);
+        Groups = Group(Filter(""));
         SendCommand = new RelayCommand(_ => { }, _ => false);
         ReloadCommand = new RelayCommand(_ => { }, _ => false);
     }
@@ -61,8 +71,52 @@ public sealed class CommandsViewModel : ObservableBase
     public bool HasUnavailable => UnavailableCount > 0;
 
     public string UnavailableText =>
-        $"Modo RoNSpeech: {UnavailableCount} destas ordens não existem no mod e "
-        + "não vão fazer nada. Estão marcadas abaixo.";
+        $"{UnavailableCount} ordens ainda não têm tecla no mod RoNSpeech. Não estão "
+        + "quebradas — o mod não as implementa.";
+
+    public int WorkingCount => _all.Count - UnavailableCount;
+    public int TotalCount => _all.Count;
+
+    /// <summary>
+    /// Abre em Funcionam de propósito. Com o mod obrigatório, 38 das 70 ordens
+    /// não têm equivalente, e mostrar as 70 de cara deixaria mais da metade da
+    /// tela inicial marcada — sem que nada ali esteja quebrado. A lacuna fica
+    /// contada e a um clique, em vez de gritando.
+    /// </summary>
+    public Availability Shown
+    {
+        get => _shown;
+        set
+        {
+            if (!Set(ref _shown, value)) return;
+            Regroup();
+        }
+    }
+
+    Availability _shown = Availability.Working;
+
+    public bool ShowingWorking => Shown == Availability.Working;
+    public bool ShowingPending => Shown == Availability.Pending;
+    public bool ShowingAll => Shown == Availability.All;
+
+    /// <summary>Só faz sentido quando há ordens fora do alcance do modo atual.</summary>
+    public bool CanFilterByAvailability => HasUnavailable;
+
+    public RelayCommand ShowCommand => _showCommand ??= new RelayCommand(p =>
+        Shown = Enum.Parse<Availability>((string)p!, ignoreCase: true));
+
+    RelayCommand? _showCommand;
+
+    void Regroup()
+    {
+        Groups = Group(Filter(_search));
+        Raise(nameof(Groups));
+        Raise(nameof(TotalShown));
+        Raise(nameof(CountText));
+        Raise(nameof(ShowingWorking));
+        Raise(nameof(ShowingPending));
+        Raise(nameof(ShowingAll));
+    }
 
     OrderRowViewModel Build(
         OrderDefinition order, IReadOnlyDictionary<string, IReadOnlyList<string>>? custom)
@@ -142,24 +196,32 @@ public sealed class CommandsViewModel : ObservableBase
     public string Search
     {
         get => _search;
-        set
-        {
-            if (!Set(ref _search, value)) return;
-            Groups = Group(Filter(value));
-            Raise(nameof(Groups));
-            Raise(nameof(TotalShown));
-            Raise(nameof(CountText));
-        }
+        set { if (Set(ref _search, value)) Regroup(); }
     }
 
     public IReadOnlyList<CommandGroupViewModel> Groups { get; private set; }
 
     public int TotalShown => Groups.Sum(g => g.Count);
 
-    public string CountText =>
-        TotalShown == _all.Count
-            ? $"{TotalShown} ordens"
-            : $"{TotalShown} de {_all.Count} ordens";
+    /// <summary>
+    /// Conta contra o universo do filtro, não contra as 70: em "Ainda não",
+    /// dizer "3 de 70" faria pensar que 67 estão escondidas por busca.
+    /// </summary>
+    public string CountText
+    {
+        get
+        {
+            var universe = Shown switch
+            {
+                Availability.Working => WorkingCount,
+                Availability.Pending => UnavailableCount,
+                _ => _all.Count,
+            };
+            return TotalShown == universe
+                ? $"{TotalShown} ordens"
+                : $"{TotalShown} de {universe} ordens";
+        }
+    }
 
     /// <summary>
     /// Cada palavra digitada precisa aparecer em algum lugar da ordem, em
@@ -174,10 +236,17 @@ public sealed class CommandsViewModel : ObservableBase
     /// </summary>
     IReadOnlyList<OrderRowViewModel> Filter(string search)
     {
-        var terms = VerbForms.Fold(TextNormalizer.Tokenize(search), _language);
-        if (terms.Count == 0) return _all;
+        var pool = Shown switch
+        {
+            Availability.Working => _all.Where(o => !o.UnavailableInCurrentMode),
+            Availability.Pending => _all.Where(o => o.UnavailableInCurrentMode),
+            _ => _all,
+        };
 
-        return _all.Where(o => Matches(o, terms)).ToList();
+        var terms = VerbForms.Fold(TextNormalizer.Tokenize(search), _language);
+        if (terms.Count > 0) pool = pool.Where(o => Matches(o, terms));
+
+        return pool.ToList();
     }
 
     bool Matches(OrderRowViewModel row, IReadOnlyList<string> terms)

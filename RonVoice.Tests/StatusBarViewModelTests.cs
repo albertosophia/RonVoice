@@ -33,13 +33,20 @@ public class StatusBarViewModelTests
         Assert.Contains("sem elevação", vm.Summary, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// A asserção é sobre o SENTIDO, não sobre a palavra "portable": a barra
+    /// deixou de usar o jargão e passou a dizer onde a configuração está, que é
+    /// o que a pessoa reconhece.
+    /// </summary>
     [Fact]
     public void NotPortableIsCalledOut()
     {
         var vm = Vm();
         vm.Elevated = true;
         vm.Portable = false;
-        Assert.Contains("portable", vm.Summary, StringComparison.OrdinalIgnoreCase);
+
+        Assert.Contains("fora da pasta", vm.Summary, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("fora da pasta", Vm().Summary, StringComparison.OrdinalIgnoreCase);
     }
 
     [Theory]

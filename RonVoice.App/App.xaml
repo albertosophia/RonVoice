@@ -5,5 +5,11 @@
         Sem StartupUri: a janela e' criada em App.xaml.cs, depois de carregar a
         configuracao e, na primeira execucao, de baixar o modelo.
     -->
-    <Application.Resources />
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
