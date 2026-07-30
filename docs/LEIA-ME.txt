@@ -124,9 +124,29 @@ As frases ficam num arquivo minhas_frases.json nesta pasta, assim:
       "hold": ["fica quieto"]
     }
 
-A chave e' o nome da ordem, que aparece na aba Comandos. Da' para editar esse
-arquivo na mao e clicar em Recarregar, ou mandar o arquivo para um amigo. As
-frases novas somam com as que ja existem; nada e' removido.
+A chave e' o nome da ordem, que aparece na aba Comandos em cinza pequeno. Da'
+para editar esse arquivo na mao e clicar em Recarregar.
+
+
+TROCAR FRASES COM ALGUEM
+------------------------
+
+Na aba Comandos, "Exportar" grava suas frases num arquivo, e "Importar perfil"
+soma as frases de um arquivo as suas.
+
+O perfil leva SO as frases e o idioma. Microfone, caminho do jogo e tecla de
+push-to-talk ficam de fora de proposito: sao da maquina de quem exportou, e
+importar isso apontaria o seu app para um microfone que voce nao tem.
+
+Importar SOMA, nunca substitui — o que era seu continua la'. E cada frase do
+arquivo e' conferida antes de entrar: se alguma bater com uma ordem diferente
+da sua, ela e' recusada e ele diz qual foi. Isso e' proposital, e e' o motivo
+de a importacao existir com validacao: duas ordens com a mesma frase fariam as
+DUAS pararem de funcionar, sem erro nenhum.
+
+Se o perfil for de outro idioma, ele avisa. As frases entram, mas so' serao
+ouvidas quando voce trocar o idioma — a lista de palavras do reconhecimento e'
+montada por idioma.
 
 
 DEPURAR SEM FALAR

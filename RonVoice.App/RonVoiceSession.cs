@@ -221,7 +221,89 @@ public sealed class RonVoiceSession : IDisposable
         _main.Settings.SaveCommand = new RelayCommand(_ => SaveSettings());
 
         _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
+        _main.Commands.ExportCommand = new RelayCommand(
+            _ => ExportProfile(), _ => _main.Commands.HasOwnPhrases);
+        _main.Commands.ImportCommand = new RelayCommand(_ => ImportProfile());
         _main.Checks.RunCommand = new RelayCommand(_ => _ = RunChecksAsync());
+    }
+
+    void ExportProfile()
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            FileName = PhraseProfiles.SuggestedFileName(_settings.Language),
+            Filter = "Perfil do RonVoice (*.json)|*.json",
+            Title = "Exportar suas frases",
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        try
+        {
+            PhraseProfiles.Export(
+                dialog.FileName, _settings.Language, _main.Commands.PhrasesForExport());
+        }
+        catch (IOException ex)
+        {
+            MessageBox.Show($"Não deu para gravar:\n\n{ex.Message}",
+                            "RonVoice", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        MessageBox.Show(
+            "Perfil exportado.\n\nEle leva só as suas frases e o idioma. Microfone, "
+            + "caminho do jogo e tecla de push-to-talk ficaram de fora de propósito: "
+            + "são da sua máquina.",
+            "RonVoice", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    /// <summary>
+    /// Soma o perfil ao que já existe. A validação de colisão é obrigatória: uma
+    /// frase do perfil de outra pessoa que caia numa ordem diferente da sua
+    /// deixaria as DUAS ordens sem funcionar, sem erro nenhum.
+    /// </summary>
+    void ImportProfile()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "Perfil do RonVoice (*.json)|*.json|Todos os arquivos|*.*",
+            Title = "Importar perfil de frases",
+        };
+        if (dialog.ShowDialog() != true) return;
+
+        if (PhraseProfiles.TryRead(dialog.FileName, out var problem) is not { } profile)
+        {
+            MessageBox.Show($"Não deu para importar:\n\n{problem}",
+                            "RonVoice", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var store = CustomPhraseStore.Read(CustomPhrasesPath(_settingsPath));
+        var result = PhraseProfiles.Merge(_map, _settings.Language, profile, store);
+
+        if (result.Added > 0)
+            CustomPhraseStore.Write(CustomPhrasesPath(_settingsPath), store);
+
+        var message = $"{result.Added} frase(s) importada(s).";
+
+        if (result.Issues.Count > 0)
+            message += $"\n\n{result.Issues.Count} não entrou(entraram):\n"
+                       + string.Join('\n', result.Issues.Take(8).Select(i => $"· {i.Message}"))
+                       + (result.Issues.Count > 8 ? "\n· ..." : "");
+
+        if (result.LanguageMismatch)
+            message += $"\n\nATENÇÃO: o perfil é para \"{profile.Language}\" e o app está em "
+                       + $"\"{_settings.Language}\". Essas frases não serão ouvidas até você "
+                       + "trocar o idioma — a gramática é montada por idioma.";
+
+        if (result.Added > 0)
+            message += "\n\nReabra o RonVoice para o reconhecimento passar a ouvi-las.";
+
+        MessageBox.Show(message, "RonVoice", MessageBoxButton.OK,
+                        result.Issues.Count > 0 || result.LanguageMismatch
+                            ? MessageBoxImage.Warning
+                            : MessageBoxImage.Information);
+
+        if (result.Added > 0) ReloadCustomPhrases(silent: true);
     }
 
     /// <summary>

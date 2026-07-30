@@ -187,6 +187,20 @@ public sealed class CommandsViewModel : ObservableBase
     public RelayCommand ReloadCommand { get; set; }
 
     /// <summary>
+    /// Exportar e importar perfil de frases. Ligados na integração, que é quem
+    /// sabe abrir a caixa de arquivo do Windows.
+    /// </summary>
+    public RelayCommand ExportCommand { get; set; } = new(_ => { }, _ => false);
+    public RelayCommand ImportCommand { get; set; } = new(_ => { }, _ => false);
+
+    /// <summary>As frases do usuário como estão agora, para exportar.</summary>
+    public Dictionary<string, List<string>> PhrasesForExport() =>
+        _store.ToDictionary(kv => kv.Key, kv => new List<string>(kv.Value), StringComparer.Ordinal);
+
+    /// <summary>Há algo para exportar.</summary>
+    public bool HasOwnPhrases => _store.Any(kv => kv.Value.Count > 0);
+
+    /// <summary>
     /// "Enviar ao jogo" de cada linha. Nasce desabilitado e é substituído na
     /// integração, que é quem sabe minimizar a janela e devolver o foco ao jogo —
     /// sem isso o ForegroundGuard recusaria, porque quem está em foco é o app.
