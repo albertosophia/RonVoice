@@ -139,7 +139,10 @@
      "forma na porta",
      "posiciona na porta"
     ]
-   }
+   },
+   "ronspeech": [
+    "Eight"
+   ]
   },
   {
    "id": "door.stack.split",
@@ -295,7 +298,11 @@
      "espia",
      "da uma espiada"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F23"
+   ]
   },
   {
    "id": "door.mirror",
@@ -320,7 +327,10 @@
      "espelho embaixo da porta",
      "olha embaixo da porta"
     ]
-   }
+   },
+   "ronspeech": [
+    "F23"
+   ]
   },
   {
    "id": "door.wedge",
@@ -346,7 +356,12 @@
      "calca a porta",
      "poe a cunha"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F22",
+    "F14"
+   ]
   },
   {
    "id": "door.cover",
@@ -370,7 +385,11 @@
      "vigia a porta",
      "fica na porta"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F14"
+   ]
   },
   {
    "id": "door.toggle",
@@ -396,7 +415,10 @@
      "fecha a porta",
      "so abre a porta"
     ]
-   }
+   },
+   "ronspeech": [
+    "PageDown"
+   ]
   },
   {
    "id": "door.picklock",
@@ -421,7 +443,10 @@
      "arromba a fechadura",
      "destranca"
     ]
-   }
+   },
+   "ronspeech": [
+    "Multiply"
+   ]
   },
   {
    "id": "door.disarm",
@@ -447,7 +472,10 @@
      "desarma isso",
      "neutraliza a armadilha"
     ]
-   }
+   },
+   "ronspeech": [
+    "F14"
+   ]
   },
   {
    "id": "move.to",
@@ -474,7 +502,11 @@
      "move pra la",
      "vai ali"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "PageUp"
+   ]
   },
   {
    "id": "move.fallin",
@@ -506,7 +538,10 @@
      "reagrupa",
      "me segue"
     ]
-   }
+   },
+   "ronspeech": [
+    "PageUp"
+   ]
   },
   {
    "id": "move.formation.single",
@@ -560,7 +595,11 @@
      "fila dupla",
      "formacao dupla"
     ]
-   }
+   },
+   "ronspeech": [
+    "F22",
+    "PageUp"
+   ]
   },
   {
    "id": "move.formation.diamond",
@@ -586,7 +625,11 @@
      "diamante",
      "formacao diamante"
     ]
-   }
+   },
+   "ronspeech": [
+    "Nine",
+    "PageUp"
+   ]
   },
   {
    "id": "move.formation.wedge",
@@ -612,7 +655,12 @@
      "cunha",
      "formacao cunha"
     ]
-   }
+   },
+   "ronspeech": [
+    "F22",
+    "F13",
+    "PageUp"
+   ]
   },
   {
    "id": "hold",
@@ -641,7 +689,10 @@
      "parado",
      "espera ai"
     ]
-   }
+   },
+   "ronspeech": [
+    "Seven"
+   ]
   },
   {
    "id": "cover",
@@ -667,7 +718,11 @@
      "cobre minhas costas",
      "fica de olho atras"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F14"
+   ]
   },
   {
    "id": "search",
@@ -697,7 +752,11 @@
      "varre o comodo",
      "assegura a area"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F20"
+   ]
   },
   {
    "id": "deploy.flashbang",
@@ -725,7 +784,11 @@
      "solta flashbang",
      "joga granada de luz"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F19"
+   ]
   },
   {
    "id": "deploy.stinger",
@@ -751,7 +814,11 @@
      "joga stinger",
      "solta stinger"
     ]
-   }
+   },
+   "ronspeech": [
+    "F22",
+    "F19"
+   ]
   },
   {
    "id": "deploy.gas",
@@ -778,7 +845,12 @@
      "solta gas lacrimogeneo",
      "gaseia"
     ]
-   }
+   },
+   "ronspeech": [
+    "F13",
+    "F22",
+    "F19"
+   ]
   },
   {
    "id": "deploy.chemlight",
@@ -857,7 +929,10 @@
      "amarra ele",
      "algema"
     ]
-   }
+   },
+   "ronspeech": [
+    "F20"
+   ]
   },
   {
    "id": "person.moveto",
@@ -881,7 +956,11 @@
      "move o suspeito",
      "tira ele dai"
     ]
-   }
+   },
+   "ronspeech": [
+    "F22",
+    "F8"
+   ]
   },
   {
    "id": "player.yell",
@@ -910,7 +989,10 @@
      "no chao",
      "manda deitar"
     ]
-   }
+   },
+   "ronspeech": [
+    "F8"
+   ]
   },
   {
    "id": "player.chemlight",
@@ -1041,7 +1123,10 @@
      "entra e limpa",
      "entra limpa"
     ]
-   }
+   },
+   "ronspeech": [
+    "Zero"
+   ]
   },
   {
    "id": "door.open.flashbang",
@@ -1075,7 +1160,10 @@
      "entra com flash",
      "entra com flashbang"
     ]
-   }
+   },
+   "ronspeech": [
+    "F15"
+   ]
   },
   {
    "id": "door.open.stinger",
@@ -1108,7 +1196,10 @@
      "entra com stinger",
      "entra com sting"
     ]
-   }
+   },
+   "ronspeech": [
+    "F17"
+   ]
   },
   {
    "id": "door.open.gas",
@@ -1140,7 +1231,10 @@
      "entra com gas",
      "entra com gas lacrimogeneo"
     ]
-   }
+   },
+   "ronspeech": [
+    "F16"
+   ]
   },
   {
    "id": "door.open.launcher",
@@ -1463,7 +1557,10 @@
      "atira na dobradica e limpa",
      "atira na dobradica limpa"
     ]
-   }
+   },
+   "ronspeech": [
+    "F18"
+   ]
   },
   {
    "id": "door.breach.shotgun.flashbang",
@@ -1501,7 +1598,10 @@
      "arromba com escopeta flash e limpa",
      "arromba com escopeta com granada de luz"
     ]
-   }
+   },
+   "ronspeech": [
+    "F19"
+   ]
   },
   {
    "id": "door.breach.shotgun.stinger",
@@ -1539,7 +1639,10 @@
      "arromba com escopeta stinger e limpa",
      "arromba com escopeta com bola de borracha"
     ]
-   }
+   },
+   "ronspeech": [
+    "F24"
+   ]
   },
   {
    "id": "door.breach.shotgun.gas",
@@ -1577,7 +1680,10 @@
      "atira na dobradica com gas",
      "atira na dobradica com gas lacrimogeneo"
     ]
-   }
+   },
+   "ronspeech": [
+    "F21"
+   ]
   },
   {
    "id": "door.breach.shotgun.launcher",
@@ -1689,7 +1795,10 @@
      "explode a porta e limpa",
      "explode a porta limpa"
     ]
-   }
+   },
+   "ronspeech": [
+    "Subtract"
+   ]
   },
   {
    "id": "door.breach.c2.flashbang",
@@ -1727,7 +1836,10 @@
      "explode flash e limpa",
      "explode com granada de luz"
     ]
-   }
+   },
+   "ronspeech": [
+    "Add"
+   ]
   },
   {
    "id": "door.breach.c2.stinger",

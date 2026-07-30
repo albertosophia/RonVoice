@@ -45,6 +45,67 @@ public sealed class CommandResolver
         _holdMenuOpen = holdMenuOpen;
     }
 
+    /// <summary>
+    /// "on my command" no mod é o 9 apertado ANTES da tecla do comando. Não é o
+    /// mesmo mecanismo do menu, que segura LShift em volta do último passo.
+    /// </summary>
+    const string RonSpeechQueueKey = "Nine";
+
+    /// <summary>
+    /// Resolve pelo mod UE4SS RoNSpeech: uma tecla por ordem, sem abrir menu.
+    /// É o caminho que funciona em VR, onde o menu abre mas não aceita dígitos.
+    ///
+    /// Lança quando o mod não cobre a ordem. Cair no caminho do menu como
+    /// reserva seria o pior dos dois mundos: em VR ele não funciona, e o jogador
+    /// veria o menu abrir sozinho e nada acontecer — de novo sem erro.
+    /// </summary>
+    public KeySequence ResolveViaRonSpeech(Intent intent)
+    {
+        var steps = new List<KeyStep>();
+        var hold = _map.Timing.KeyHoldMs;
+        var gap = _map.Timing.GapBetweenKeysMs;
+
+        // A seleção de elemento é a MESMA tecla nos dois caminhos: o mod escuta
+        // F5/F6/F7 e guarda o time nele, e o jogo também seleciona. Nada muda.
+        if (intent.Element is { } element)
+            steps.Add(new KeyStep(StepKind.Press, ResolveElement(element), hold, gap));
+
+        if (intent.OrderId is not { } orderId)
+        {
+            if (steps.Count == 0)
+                throw new ResolveException("intent vazio: sem elemento e sem ordem");
+            return new KeySequence(steps);
+        }
+
+        if (!_map.Orders.TryGetValue(orderId, out var order))
+            throw new ResolveException($"ordem desconhecida: {orderId}");
+
+        if (order.RonSpeechKeys is not { Count: > 0 } keys)
+            throw new ResolveException(
+                $"o mod RoNSpeech não tem equivalente para {orderId} — "
+                + "essa ordem só funciona pelo menu, na tela");
+
+        var names = new List<string>();
+
+        // O 9 vem antes de tudo. Nas ordens de formação o 9 já significa a
+        // própria formação, e enfileirar não faz sentido ali — repetir a tecla
+        // trocaria o comando em vez de enfileirá-lo.
+        if (intent.Queue && !keys.Contains(RonSpeechQueueKey, StringComparer.OrdinalIgnoreCase))
+            names.Add(RonSpeechQueueKey);
+
+        names.AddRange(keys);
+
+        foreach (var name in names)
+        {
+            if (!KeyCatalog.TryResolve(name, out var token))
+                throw new ResolveException(
+                    $"não sabemos mandar a tecla {name}, que {orderId} precisa no RoNSpeech");
+            steps.Add(new KeyStep(StepKind.Press, token, hold, gap));
+        }
+
+        return new KeySequence(steps);
+    }
+
     public KeySequence Resolve(Intent intent)
     {
         var steps = new List<KeyStep>();

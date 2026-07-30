@@ -62,7 +62,8 @@ public sealed class CommandMap
                 StringList(o.GetProperty("path")),
                 o.TryGetProperty("close_menu", out var cm) && cm.GetBoolean(),
                 o.GetProperty("confidence").GetString()!,
-                PhraseMap(o.GetProperty("phrases")));
+                PhraseMap(o.GetProperty("phrases")),
+                o.TryGetProperty("ronspeech", out var rs) ? StringList(rs) : null);
         }
 
         var elements = new Dictionary<string, ElementDefinition>(StringComparer.Ordinal);

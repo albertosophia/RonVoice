@@ -241,6 +241,72 @@ SINGLES = [
 ]
 
 
+# Teclas do mod UE4SS RoNSpeech, por ordem. Este caminho NAO abre o menu SWAT:
+# o mod registra as teclas dele pelo hook do UE4SS e chama as funcoes do jogo
+# direto (GiveBreachAndClearCommand, GiveFallInCommand, ...). E' o unico caminho
+# que funciona em VR, onde o menu abre mas nao aceita os digitos.
+#
+# Extraido dos RegisterKeyBind do main.lua e do perfil ReadyOrNot.xml, que e'
+# quem revela os modificadores. ATENCAO: o significado do modificador e'
+# CONTEXTUAL no mod. "Nine" e' "on my command" num arrombamento e "diamante"
+# num fall-in; F13 e F22 mudam de sentido conforme a tecla que vem depois.
+# Por isso a tabela e' por ordem, e nao uma regra.
+RONSPEECH = {
+    # esquadrao e porta
+    "door.stack.auto":                ["Eight"],
+    "hold":                           ["Seven"],
+    "cover":                          ["F13", "F14"],
+    "door.cover":                     ["F13", "F14"],
+    "search":                         ["F13", "F20"],
+    "door.toggle":                    ["PageDown"],
+    "door.picklock":                  ["Multiply"],
+    "door.disarm":                    ["F14"],
+    "door.wedge":                     ["F13", "F22", "F14"],
+    "door.mirror":                    ["F23"],
+    "door.scan.peek":                 ["F13", "F23"],
+    # movimento
+    "move.fallin":                    ["PageUp"],
+    "move.formation.double":          ["F22", "PageUp"],
+    "move.formation.diamond":         ["Nine", "PageUp"],
+    "move.formation.wedge":           ["F22", "F13", "PageUp"],
+    "move.to":                        ["F13", "PageUp"],
+    # pessoas
+    "person.restrain":                ["F20"],
+    "person.moveto":                  ["F22", "F8"],
+    "player.yell":                    ["F8"],
+    # abrir e limpar
+    "door.open.clear":                ["Zero"],
+    "door.open.flashbang":            ["F15"],
+    "door.open.gas":                  ["F16"],
+    "door.open.stinger":              ["F17"],
+    # escopeta
+    "door.breach.shotgun.clear":      ["F18"],
+    "door.breach.shotgun.flashbang":  ["F19"],
+    "door.breach.shotgun.gas":        ["F21"],
+    "door.breach.shotgun.stinger":    ["F24"],
+    # C2
+    "door.breach.c2.clear":           ["Subtract"],
+    "door.breach.c2.flashbang":       ["Add"],
+    # granadas jogadas pelo jogador
+    "deploy.flashbang":               ["F13", "F19"],
+    "deploy.stinger":                 ["F22", "F19"],
+    "deploy.gas":                     ["F13", "F22", "F19"],
+}
+
+# "on my command" no mod e' o Nine apertado ANTES da tecla do comando. Nao vale
+# para as ordens cujo Nine ja' significa outra coisa (formacao), nem para as que
+# nao sao enfileiraveis.
+RONSPEECH_QUEUE_KEY = "Nine"
+
+
+def attach_ronspeech(orders):
+    for o in orders:
+        keys = RONSPEECH.get(o["id"])
+        if keys:
+            o["ronspeech"] = keys
+    return orders
+
+
 def singles():
     out = []
     for cid, ctx, path, mpath, conf, en, pt in SINGLES:
@@ -296,10 +362,17 @@ DOC = {
 
 
 def main():
-    orders = singles() + open_matrix() + breach_matrix()
+    orders = attach_ronspeech(singles() + open_matrix() + breach_matrix())
     DOC["orders"] = orders
     with open('ron_commands.json', 'w') as f:
         json.dump(DOC, f, indent=1, ensure_ascii=False)
+
+    unknown = sorted(set(RONSPEECH) - {o['id'] for o in orders})
+    if unknown:
+        raise SystemExit('RONSPEECH aponta para ordens que nao existem: %s' % unknown)
+    print('com tecla do RoNSpeech: %d de %d'
+          % (sum(1 for o in orders if 'ronspeech' in o), len(orders)))
+
     conf = sum(1 for o in orders if o['confidence'] == 'confirmed')
     print('ordens: %d (%d confirmadas, %d a verificar)'
           % (len(orders), conf, len(orders) - conf))

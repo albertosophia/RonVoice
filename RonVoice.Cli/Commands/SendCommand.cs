@@ -12,7 +12,7 @@ public static class SendCommand
         {
             Console.Error.WriteLine(
                 "uso: ronvoice send \"<frase>\" [--lang en|pt] [--dry-run] [--force] "
-                + "[--delay <segundos>] [--process <nome>]");
+                + "[--delay <segundos>] [--process <nome>] [--ronspeech]");
             return 1;
         }
 
@@ -60,10 +60,15 @@ public static class SendCommand
             return 2;
         }
 
+        // --ronspeech manda pelo mod UE4SS em vez de navegar o menu SWAT. É o
+        // caminho que funciona em VR, onde o menu abre mas não aceita dígitos.
+        var viaMod = Cli.Flag(args, "--ronspeech");
+
         KeySequence seq;
         try
         {
-            seq = new CommandResolver(map, binds).Resolve(intent);
+            var resolver = new CommandResolver(map, binds);
+            seq = viaMod ? resolver.ResolveViaRonSpeech(intent) : resolver.Resolve(intent);
         }
         catch (ResolveException ex)
         {
