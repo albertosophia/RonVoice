@@ -28,20 +28,30 @@ public static class ProbeCommand
     /// não um palpite: se o dígito chega antes do menu aceitar input, ele é
     /// engolido e o menu fica aberto à mercê de para onde o jogador olha.
     /// </param>
-    sealed record Probe(string Phrase, string Why, string Observe, int? SettleMs = null);
+    /// <param name="HoldMenu">
+    /// Manter o botão do menu pressionado durante a navegação, em vez de clicar
+    /// e soltar antes dos dígitos.
+    /// </param>
+    sealed record Probe(
+        string Phrase, string Why, string Observe,
+        int? SettleMs = null, bool HoldMenu = false);
 
+    /// <summary>
+    /// A varredura de tempo (60/300/800 ms) já foi feita e não mudou nada, então
+    /// saiu: latência está descartada. O que sobra é a FORMA da sequência, e as
+    /// duas formas ficam lado a lado com o mesmo tempo para a comparação ser
+    /// sobre uma variável só.
+    /// </summary>
     static readonly Probe[] Battery =
     [
-        new("fire select", "tecla pura (X), nenhum mouse, nenhum menu",
+        new("fire select", "controle: tecla pura (X), nenhum menu",
             "o indicador de modo de tiro no HUD muda"),
-        new("hands up", "tecla pura (F), nenhum mouse, nenhum menu",
-            "seu personagem grita"),
-        new("stack up", "menu + digitos, espera atual de 60ms",
-            "o esquadrão se posiciona (MIRE NUMA PORTA)", 60),
-        new("stack up", "menu + digitos, espera de 300ms",
+        new("stack up", "FORMA A: clica e solta o menu, depois os digitos (atual)",
             "o esquadrão se posiciona (MIRE NUMA PORTA)", 300),
-        new("stack up", "menu + digitos, espera de 800ms",
-            "o esquadrão se posiciona (MIRE NUMA PORTA)", 800),
+        new("stack up", "FORMA B: SEGURA o menu, digita, e solta no fim",
+            "o esquadrão se posiciona (MIRE NUMA PORTA)", 300, HoldMenu: true),
+        new("open the door", "FORMA B numa ordem de um digito só",
+            "a porta é aberta (MIRE NUMA PORTA)", 300, HoldMenu: true),
     ];
 
     public static int Run(string[] args)
@@ -96,7 +106,9 @@ public static class ProbeCommand
                 probe.SettleMs is { } ms
                     ? map.WithTiming(map.Timing with { MenuOpenSettleMs = ms })
                     : map,
-                binds);
+                binds,
+                defaults: null,
+                holdMenuOpen: probe.HoldMenu);
 
             Log($"--- {clock.Elapsed.TotalSeconds,5:0.0}s  \"{probe.Phrase}\"");
             Log($"    porque : {probe.Why}");

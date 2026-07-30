@@ -20,15 +20,29 @@ public sealed class CommandResolver
     readonly CommandMap _map;
     readonly IReadOnlyDictionary<string, string> _binds;
     readonly KeybindDefaults _defaults;
+    readonly bool _holdMenuOpen;
 
+    /// <param name="holdMenuOpen">
+    /// Mantém a tecla do menu PRESSIONADA durante a navegação, soltando só no
+    /// fim, em vez de clicar e soltar antes dos dígitos.
+    ///
+    /// Existe para o VR. No desktop clicar e soltar funciona — o menu fica
+    /// travado aberto — e está provado por 412 testes e por jogo real. Em VR o
+    /// menu abre, o teclado comprovadamente chega (uma ordem de tecla pura
+    /// funciona), e ainda assim os dígitos não escolhem nada. A leitura é que
+    /// ali o menu radial é segure-e-aponte: soltar o botão o fecha, ou o deixa
+    /// num estado em que número não é caminho válido.
+    /// </param>
     public CommandResolver(
         CommandMap map,
         IReadOnlyDictionary<string, string> binds,
-        KeybindDefaults? defaults = null)
+        KeybindDefaults? defaults = null,
+        bool holdMenuOpen = false)
     {
         _map = map;
         _binds = binds;
         _defaults = defaults ?? map.Defaults;
+        _holdMenuOpen = holdMenuOpen;
     }
 
     public KeySequence Resolve(Intent intent)
@@ -36,6 +50,7 @@ public sealed class CommandResolver
         var steps = new List<KeyStep>();
         var hold = _map.Timing.KeyHoldMs;
         var gap = _map.Timing.GapBetweenKeysMs;
+        InputToken? heldMenu = null;
 
         if (intent.Element is { } element)
             steps.Add(new KeyStep(
@@ -62,7 +77,16 @@ public sealed class CommandResolver
             // deles igual, e um dígito que caia num botão de mouse não precisa.
             var isMenu = order.Path[i] == "MENU";
 
-            if (isLast && intent.Queue)
+            if (isMenu && _holdMenuOpen)
+            {
+                // Desce e NÃO solta. O Up entra depois de toda a navegação; o
+                // SendInputSender já solta o que ficou descido se a sequência
+                // abortar no meio, então o botão não fica preso.
+                steps.Add(new KeyStep(
+                    StepKind.Down, token, 0, _map.Timing.MenuOpenSettleMs));
+                heldMenu = token;
+            }
+            else if (isLast && intent.Queue)
             {
                 var shift = ResolveAction(ActionNames.HoldGoCode, _defaults.HoldCommand);
                 steps.Add(new KeyStep(StepKind.Down, shift, 0, 0));
@@ -77,6 +101,9 @@ public sealed class CommandResolver
                     isMenu ? _map.Timing.MenuOpenSettleMs : gap));
             }
         }
+
+        if (heldMenu is not null)
+            steps.Add(new KeyStep(StepKind.Up, heldMenu, 0, 0));
 
         // O clique de fechamento pertence ao modificador de fila, não à ordem.
         // Já nasce com GapAfterMs=0: é sempre o último passo, não precisa de
