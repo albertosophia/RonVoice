@@ -64,7 +64,10 @@ public static class VirtualKeys
 
         for (var c = 'A'; c <= 'Z'; c++) m[c.ToString()] = c;
 
-        for (var i = 1; i <= 12; i++) m["F" + i] = (ushort)(0x6F + i);
+        // F1..F12 são 0x70..0x7B e F13..F24 seguem em 0x7C..0x87, contíguos.
+        // A faixa alta existe para o mod UE4SS do RoNSpeech, que a usa porque
+        // teclado físico nenhum tem essas teclas.
+        for (var i = 1; i <= 24; i++) m["F" + i] = (ushort)(0x6F + i);
 
         return m;
     }

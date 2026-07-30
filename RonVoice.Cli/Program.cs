@@ -13,6 +13,7 @@ return command switch
     "listen" => ListenCommand.Run(rest),
     "focus" => FocusCommand.Run(rest),
     "probe" => ProbeCommand.Run(rest),
+    "key" => KeyCommand.Run(rest),
     _ => Help(),
 };
 
@@ -28,6 +29,7 @@ static int Help()
                         [--threshold F] [--dry-run] [--process <nome>]   escuta e envia
         ronvoice focus [--seconds N] [--out <arq>]   grava quem esta em foco (para depurar VR)
         ronvoice probe [--seconds N] [--gap N] [--out <arq>]   manda ordens de teste e grava tudo
+        ronvoice key <NOME>... [--delay <s>] [--gap <ms>]   manda teclas cruas (para o mod UE4SS)
         """);
     return 1;
 }

@@ -46,6 +46,13 @@ public static class KeyCatalog
         ["F5"] = K(0x3F), ["F6"] = K(0x40), ["F7"] = K(0x41), ["F8"] = K(0x42),
         ["F9"] = K(0x43), ["F10"] = K(0x44), ["F11"] = K(0x57), ["F12"] = K(0x58),
 
+        // F13-F24 não existem em teclado físico nenhum, e é justamente por isso
+        // que o mod UE4SS do RoNSpeech usa essa faixa: nada colide com elas.
+        // Só entram aqui para podermos acionar aquele mod — o jogo não as usa.
+        ["F13"] = K(0x64), ["F14"] = K(0x65), ["F15"] = K(0x66), ["F16"] = K(0x67),
+        ["F17"] = K(0x68), ["F18"] = K(0x69), ["F19"] = K(0x6A), ["F20"] = K(0x6B),
+        ["F21"] = K(0x6C), ["F22"] = K(0x6D), ["F23"] = K(0x6E), ["F24"] = K(0x76),
+
         // numpad — não são estendidas, exceto Divide e Enter
         ["NumPadSeven"] = K(0x47), ["NumPadEight"] = K(0x48), ["NumPadNine"] = K(0x49),
         ["Subtract"] = K(0x4A),

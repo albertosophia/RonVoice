@@ -99,4 +99,34 @@ public class KeyCatalogTests
             .ToList();
         Assert.Empty(unresolved);
     }
+
+    /// <summary>
+    /// O mod UE4SS do RoNSpeech registra as teclas dele na faixa F13-F24, que
+    /// teclado fisico nenhum tem. Sem elas nao ha como acionar aquele caminho,
+    /// que e' o unico que dispensa o menu SWAT.
+    /// </summary>
+    [Theory]
+    [InlineData("F13", 0x64)]
+    [InlineData("F15", 0x66)]
+    [InlineData("F19", 0x6A)]
+    [InlineData("F22", 0x6D)]
+    [InlineData("F24", 0x76)]
+    public void ResolvesTheHighFunctionKeysTheUe4ssModUses(string name, int scan) =>
+        Assert.Equal(scan, ((ScanCodeToken)Resolve(name)).Scan);
+
+    /// <summary>Toda tecla que o perfil do RoNSpeech exige tem que resolver.</summary>
+    [Fact]
+    public void ResolvesEveryKeyTheRoNSpeechProfileNeeds()
+    {
+        string[] needed =
+        [
+            "F5", "F6", "F7", "F8", "F13", "F14", "F15", "F16", "F17", "F18",
+            "F19", "F20", "F21", "F22", "F23", "F24",
+            "Seven", "Eight", "Nine", "Zero",
+            "PageUp", "PageDown", "Multiply", "Divide", "Add", "Subtract",
+        ];
+
+        var missing = needed.Where(n => !KeyCatalog.TryResolve(n, out _)).ToList();
+        Assert.Empty(missing);
+    }
 }
