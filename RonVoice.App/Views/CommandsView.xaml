@@ -384,7 +384,7 @@
                                                 </DataTrigger>
                                                 <Trigger SourceName="row" Property="IsMouseOver" Value="True">
                                                     <Setter TargetName="row" Property="Background"
-                                                            Value="#FF191C22" />
+                                                            Value="{StaticResource Hover}" />
                                                 </Trigger>
                                             </DataTemplate.Triggers>
                                         </DataTemplate>

@@ -44,20 +44,34 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Border Margin="0,12,0,0" Padding="10" CornerRadius="4"
+            <!-- Fundo e tinta mudam juntos, senao o veredito fica ilegivel. -->
+            <Border Margin="0,12,0,0" Padding="10" CornerRadius="4" BorderThickness="1"
                     Visibility="{Binding HasResults, Converter={StaticResource BoolToVis}}">
                 <Border.Style>
                     <Style TargetType="Border">
-                        <Setter Property="Background" Value="#F8D7DA" />
+                        <Setter Property="Background" Value="{StaticResource CritFill}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource CritLine}" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Ready}" Value="True">
-                                <Setter Property="Background" Value="#D4EDDA" />
+                                <Setter Property="Background" Value="{StaticResource OkFill}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource OkLine}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
                 <TextBlock Text="{Binding Summary}" TextWrapping="Wrap"
-                           FontSize="12" FontWeight="SemiBold" />
+                           FontSize="12" FontWeight="SemiBold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource CritInk}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Ready}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource OkInk}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
             </Border>
 
         </StackPanel>

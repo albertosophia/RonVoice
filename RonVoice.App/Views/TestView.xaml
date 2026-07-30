@@ -39,23 +39,42 @@
                        Text="Se esta barra não se mexer enquanto você fala, o problema é o microfone — não a pronúncia." />
         </StackPanel>
 
-        <Border Margin="0,20,0,0" Padding="14" CornerRadius="4"
+        <!--
+            O veredito. O fundo e a tinta mudam JUNTOS: um fundo claro com a
+            tinta clara do tema deixava o resultado ilegivel — que e' o pior
+            lugar possivel para isso, porque esta tela existe para ser lida
+            quando algo nao funciona.
+        -->
+        <Border Margin="0,20,0,0" Padding="14" CornerRadius="4" BorderThickness="1"
                 Visibility="{Binding HasResult, Converter={StaticResource BoolToVis}}">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Background" Value="#F8D7DA" />
+                    <Setter Property="Background" Value="{StaticResource CritFill}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource CritLine}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Succeeded}" Value="True">
-                            <Setter Property="Background" Value="#D4EDDA" />
+                            <Setter Property="Background" Value="{StaticResource OkFill}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource OkLine}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
             <StackPanel>
                 <TextBlock Text="{Binding Verdict}" TextWrapping="Wrap"
-                           FontSize="14" FontWeight="SemiBold" />
+                           FontSize="14" FontWeight="SemiBold">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource CritInk}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Succeeded}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource OkInk}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
                 <TextBlock Text="{Binding Detail}" TextWrapping="Wrap"
-                           FontSize="11" Foreground="{StaticResource Dim}" Margin="0,8,0,0" />
+                           FontSize="11" Foreground="{StaticResource Muted}" Margin="0,8,0,0" />
             </StackPanel>
         </Border>
 

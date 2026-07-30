@@ -24,6 +24,7 @@
     <SolidColorBrush x:Key="Raised" Color="{StaticResource RaisedColor}" />
     <SolidColorBrush x:Key="Line"   Color="{StaticResource LineColor}" />
     <SolidColorBrush x:Key="Deep"   Color="#FF101216" />
+    <SolidColorBrush x:Key="Hover"  Color="#FF191C22" />
 
     <!-- Cinzas com vies azul: um cinza neutro puro parece nao escolhido. -->
     <SolidColorBrush x:Key="Ink"    Color="#FFE6E9EE" />
@@ -170,13 +171,108 @@
         </Style.Triggers>
     </Style>
 
+    <!--
+        O ComboBox precisa de template proprio. O padrao do WPF desenha a caixa
+        com as cores do tema do Windows e IGNORA o Background que a Style
+        define: so' trocar as propriedades deixava duas caixas brancas gritando
+        no meio da tela escura. Nao ha atalho aqui.
+    -->
+    <Style x:Key="ComboToggle" TargetType="ToggleButton">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="ClickMode" Value="Press" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="bg" CornerRadius="3"
+                            Background="{StaticResource Ground}"
+                            BorderBrush="{StaticResource Line}" BorderThickness="1">
+                        <Path x:Name="arrow" HorizontalAlignment="Right" VerticalAlignment="Center"
+                              Margin="0,0,10,0" Data="M0,0 L4,4 L8,0"
+                              Stroke="{StaticResource Muted}" StrokeThickness="1.4" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bg" Property="BorderBrush"
+                                    Value="{StaticResource Dim}" />
+                            <Setter TargetName="arrow" Property="Stroke"
+                                    Value="{StaticResource Ink}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="bg" Property="BorderBrush"
+                                    Value="{StaticResource Signal}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="Padding" Value="9,6" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="bg" Background="Transparent"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="bg" Property="Background"
+                                    Value="{StaticResource Raised}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{StaticResource Signal}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="ComboBox">
         <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="Padding" Value="8,5" />
+        <Setter Property="Padding" Value="9,6" />
         <Setter Property="Foreground" Value="{StaticResource Ink}" />
-        <Setter Property="Background" Value="{StaticResource Raised}" />
-        <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Style="{StaticResource ComboToggle}"
+                                      IsChecked="{Binding IsDropDownOpen, Mode=TwoWay,
+                                                  RelativeSource={RelativeSource TemplatedParent}}" />
+                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                          HorizontalAlignment="Left" VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          IsHitTestVisible="False" />
+                        <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom"
+                               AllowsTransparency="True" Focusable="False"
+                               PopupAnimation="None">
+                            <Border Background="{StaticResource Panel}"
+                                    BorderBrush="{StaticResource Line}" BorderThickness="1"
+                                    CornerRadius="3" Margin="0,2,0,0"
+                                    MinWidth="{TemplateBinding ActualWidth}"
+                                    MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <ScrollViewer>
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource Faint}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style TargetType="CheckBox">
