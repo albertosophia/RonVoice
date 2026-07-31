@@ -32,6 +32,12 @@ public sealed class VoicePipeline
     public event Action<Rejection>? Rejected;
     public event Action<KeySequence>? Sent;
 
+    /// <summary>
+    /// Reconhece, casa e resolve normalmente, mas não aperta tecla nenhuma. É o
+    /// que deixa a aba de teste ser usada no meio de uma missão sem risco.
+    /// </summary>
+    public bool DryRun { get; set; }
+
     public VoicePipeline(
         ISpeechEngine engine,
         ListenGate gate,
@@ -114,12 +120,19 @@ public sealed class VoicePipeline
             return;
         }
 
-        var intent = _matcher.Match(result.Text);
-        if (intent is null)
+        var detail = _matcher.Explain(result.Text);
+        if (detail.Intent is null)
         {
-            Rejected?.Invoke(new Rejection(RejectionReason.NoMatch, result.Text));
+            // Ambíguo NÃO é "não é um comando": ali ele entendeu e a margem
+            // recusou de propósito. Quem está falando precisa saber a
+            // diferença — uma pede outra frase, a outra pede falar melhor.
+            Rejected?.Invoke(detail.Ambiguous
+                ? new Rejection(RejectionReason.Ambiguous, result.Text, detail.Closest)
+                : new Rejection(RejectionReason.NoMatch, result.Text));
             return;
         }
+
+        var intent = detail.Intent;
 
         Matched?.Invoke(intent);
 
@@ -131,7 +144,10 @@ public sealed class VoicePipeline
             return;
         }
 
-        _sender.Send(sequence);
+        // DryRun para a tecla antes do envio, mas NÃO antes do evento: a aba de
+        // teste precisa mostrar exatamente o que sairia, e é o único jeito de
+        // ela dizer a tecla sem mexer no jogo.
+        if (!DryRun) _sender.Send(sequence);
         Sent?.Invoke(sequence);
     }
 }

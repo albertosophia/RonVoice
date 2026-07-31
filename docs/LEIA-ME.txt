@@ -193,7 +193,18 @@ O microfone parou no meio do jogo
     que aconteceu. Nao precisa mais fechar e abrir.
 
 Reconhece errado ou dispara sozinho
-    A aba Teste mostra o que ele esta ouvindo, sem mandar tecla ao jogo.
+    Abra a aba Teste e fale. Cada frase sobe numa lista, com o que ele
+    entendeu e o que faria — e nada e' enviado ao jogo enquanto essa aba
+    estiver aberta.
+
+        verde     casou. Mostra a ordem e a tecla que sairia
+        cinza     entendeu, mas o mod ainda nao tem essa ordem
+        ambar     ficou entre duas ordens e recusou de proposito
+        vermelho  nao e' um comando, ou nao entendeu
+
+    As duas primeiras NAO sao falha sua: nas duas ele entendeu. Vermelho
+    e' o unico que pede falar diferente.
+
     Se disparar sem voce querer, suba o limiar na aba Configuracao em passos
     de 0.05.
 

@@ -1,79 +1,155 @@
-using RonVoice.Core.Speech;
+using System.Collections.ObjectModel;
+using RonVoice.Core.Commands;
+using RonVoice.Core.Matching;
+using RonVoice.Core.Pipeline;
 
 namespace RonVoice.App.ViewModels;
 
 /// <summary>
-/// Traduz o resultado interno do teste para o que a pessoa lê. O veredito diz o
-/// que fazer, não o que houve: os nomes internos são termos nossos e não ajudam
-/// quem acabou de instalar.
+/// O que aconteceu com uma fala. Cinco estados, não dois: "entendi mas o mod
+/// não tem essa ordem" e "ficou entre duas ordens" seriam mentira pintados de
+/// vermelho — nos dois ele ENTENDEU, e mandar a pessoa falar mais claro seria
+/// mandá-la caçar um problema que não existe.
+/// </summary>
+public enum TestOutcome
+{
+    /// <summary>Casou e resolveu. Verde.</summary>
+    Ok,
+    /// <summary>Casou, mas o mod RoNSpeech não tem essa ordem. Cinza.</summary>
+    NotInMod,
+    /// <summary>Ficou entre duas ordens e a margem recusou. Âmbar.</summary>
+    Ambiguous,
+    /// <summary>Ouviu palavras, mas não é comando. Vermelho.</summary>
+    NotACommand,
+    /// <summary>Veio fora do vocabulário: ruído, ou palavra que ele não conhece.</summary>
+    NotUnderstood,
+}
+
+/// <param name="Heard">O texto exato que o reconhecedor devolveu.</param>
+/// <param name="Title">A ordem, pelo nome legível, quando houve uma.</param>
+/// <param name="Keys">A tecla que sairia. É o que se depura quando nada acontece.</param>
+public sealed record TestEntry(
+    string Time, string Heard, TestOutcome Outcome, string Title, string Keys)
+{
+    public bool HasTitle => Title.Length > 0;
+    public bool HasKeys => Keys.Length > 0;
+
+    public bool IsOk => Outcome == TestOutcome.Ok;
+    public bool IsNotInMod => Outcome == TestOutcome.NotInMod;
+    public bool IsAmbiguous => Outcome == TestOutcome.Ambiguous;
+    public bool IsBad => Outcome is TestOutcome.NotACommand or TestOutcome.NotUnderstood;
+}
+
+/// <summary>
+/// A aba de teste é um fluxo contínuo, não uma gravação com veredito no fim.
+/// Você fala, a linha sobe. Sem botão de parar: escutar é o estado normal
+/// enquanto a aba está aberta.
 /// </summary>
 public sealed class TestViewModel : ObservableBase
 {
-    bool _isRecording;
-    double _level;
-    string _verdict = "";
-    string _detail = "";
-    bool _succeeded;
-    bool _hasResult;
+    /// <summary>
+    /// É um monitor, não um histórico. Lista sem teto comeria memória numa
+    /// sessão longa, e ninguém rola até a fala número trezentos.
+    /// </summary>
+    public const int MaxEntries = 50;
 
-    public bool IsRecording { get => _isRecording; private set => Set(ref _isRecording, value); }
+    readonly CommandMap? _map;
+    double _level;
+    bool _listening;
+
+    public TestViewModel(CommandMap? map = null) => _map = map;
+
+    public ObservableCollection<TestEntry> Entries { get; } = [];
+
     public double Level { get => _level; set => Set(ref _level, value); }
-    public string Verdict { get => _verdict; private set => Set(ref _verdict, value); }
-    public string Detail { get => _detail; private set => Set(ref _detail, value); }
-    public bool Succeeded { get => _succeeded; private set => Set(ref _succeeded, value); }
-    public bool HasResult { get => _hasResult; private set => Set(ref _hasResult, value); }
 
     /// <summary>
-    /// Alterna gravar e parar. Nasce inerte e é substituído na integração, que
-    /// é quem sabe abrir o portão de escuta — durante o teste quem está em foco
-    /// é a janela do app, e sem essa exceção nada seria ouvido.
+    /// Ligado enquanto a aba está aberta. Fica na tela porque, sem isso, uma
+    /// lista parada é indistinguível de um microfone morto.
     /// </summary>
-    public RelayCommand ToggleRecordingCommand { get; set; } =
-        new(_ => { }, _ => false);
-
-    public void BeginRecording()
+    public bool Listening
     {
-        IsRecording = true;
-        HasResult = false;
-        Verdict = "";
-        Detail = "";
-        Succeeded = false;
-        Level = 0;
+        get => _listening;
+        set { if (Set(ref _listening, value)) Raise(nameof(HasNothingYet)); }
     }
 
-    public void Show(VoiceTestResult result)
+    public bool HasNothingYet => Entries.Count == 0;
+
+    public RelayCommand ClearCommand => _clear ??= new RelayCommand(_ =>
     {
-        IsRecording = false;
-        HasResult = true;
-        Succeeded = result.Outcome == VoiceTestOutcome.Success;
+        Entries.Clear();
+        Raise(nameof(HasNothingYet));
+    });
 
-        Verdict = result.Outcome switch
+    RelayCommand? _clear;
+
+    public void Add(TestEntry entry)
+    {
+        // Mais recente no topo: é para onde o olho vai depois de falar.
+        Entries.Insert(0, entry);
+        while (Entries.Count > MaxEntries) Entries.RemoveAt(Entries.Count - 1);
+        Raise(nameof(HasNothingYet));
+    }
+
+    /// <summary>Casou e resolveu — a tecla é o que sairia se não fosse teste.</summary>
+    public void Matched(string heard, Intent intent, string keys) =>
+        Add(new TestEntry(Now(), heard, TestOutcome.Ok, Describe(intent), keys));
+
+    public void Rejected(Rejection rejection)
+    {
+        var (outcome, title) = rejection.Reason switch
         {
-            VoiceTestOutcome.Success =>
-                $"Funcionou: {result.Intent!.OrderId}"
-                + (result.Intent.Element is { } el ? $"  (elemento {el})" : "")
-                + (result.Intent.Queue ? "  (enfileirada)" : ""),
+            // A mensagem do resolvedor já diz "o mod RoNSpeech não tem
+            // equivalente para X". Só essa recusa é ausência; as outras são
+            // teclas que não sabemos mandar, e aí é falha mesmo.
+            RejectionReason.Unresolvable when rejection.Detail?.Contains("RoNSpeech") == true
+                => (TestOutcome.NotInMod, Name(OrderIdIn(rejection.Detail))),
 
-            VoiceTestOutcome.NoAudio =>
-                "Não ouvi nada. Confira o microfone selecionado na aba Configuração "
-                + "e o volume de entrada do Windows.",
+            RejectionReason.Unresolvable
+                => (TestOutcome.NotACommand, rejection.Detail ?? "não consegui resolver a tecla"),
 
-            VoiceTestOutcome.OutOfVocabulary =>
-                "Ouvi você, mas não era um comando conhecido. "
-                + "Veja a aba Comandos para as frases aceitas.",
+            RejectionReason.Ambiguous
+                => (TestOutcome.Ambiguous,
+                    rejection.Detail is { Length: > 0 } closest
+                        ? $"ficou entre esta e outra: {Name(closest)}"
+                        : "ficou entre duas ordens"),
 
-            VoiceTestOutcome.LowConfidence =>
-                "Entendi, mas com pouca certeza. Tente falar mais perto do microfone "
-                + "ou num ambiente mais silencioso.",
+            RejectionReason.LowConfidence
+                => (TestOutcome.NotUnderstood, "entendi com pouca certeza"),
 
-            VoiceTestOutcome.NoMatch =>
-                $"Ouvi \"{result.HeardText}\", mas isso não bate com nenhum comando.",
+            RejectionReason.Unknown
+                => (TestOutcome.NotUnderstood, ""),
 
-            _ => "",
+            _ => (TestOutcome.NotACommand, ""),
         };
 
-        Detail = $"texto reconhecido: \"{result.HeardText}\"   ·   "
-               + $"confiança: {result.Confidence:0.00}   ·   "
-               + $"pico de áudio: {result.PeakLevel:0.00}";
+        Add(new TestEntry(Now(), rejection.Text, outcome, title, ""));
     }
+
+    /// <summary>
+    /// Nome legível da ordem. Cair no id é melhor que ficar em branco: mesmo
+    /// cru, ele diz do que se trata.
+    /// </summary>
+    string Name(string? orderId) =>
+        orderId is { Length: > 0 } && _map?.Orders.GetValueOrDefault(orderId) is { } order
+            ? order.Title
+            : orderId ?? "";
+
+    string Describe(Intent intent)
+    {
+        var name = Name(intent.OrderId);
+        if (intent.OrderId is null && intent.Element is { } only)
+            return $"time {only} selecionado";
+
+        var parts = new List<string> { name };
+        if (intent.Element is { } element) parts.Add($"time {element}");
+        if (intent.Queue) parts.Add("enfileirada");
+        return string.Join("  ·  ", parts);
+    }
+
+    /// <summary>A mensagem do resolvedor traz o id no meio da frase.</summary>
+    static string? OrderIdIn(string detail) =>
+        detail.Split(' ').FirstOrDefault(w => w.Contains('.') && !w.EndsWith('.'));
+
+    static string Now() => DateTime.Now.ToString("HH:mm:ss");
 }

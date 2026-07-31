@@ -42,12 +42,22 @@ public sealed class PhraseMatcher
         _queueAliases.Sort((x, y) => y.Length.CompareTo(x.Length));
     }
 
-    public Intent? Match(string utterance)
+    /// <param name="Ambiguous">
+    /// Passou do limiar mas não da margem: ele entendeu, e escolher seria
+    /// adivinhar. Quem só chama <see cref="Match"/> não distingue isso de "não
+    /// é um comando", e são coisas diferentes para quem está falando.
+    /// </param>
+    /// <param name="Closest">A ordem que quase ganhou, para poder ser dita.</param>
+    public sealed record MatchDetail(Intent? Intent, bool Ambiguous, string? Closest);
+
+    public Intent? Match(string utterance) => Explain(utterance).Intent;
+
+    public MatchDetail Explain(string utterance)
     {
         // A dobra vem ANTES de tirar elemento e fila: "espere por mim" precisa
         // virar "espera por mim" para o alias de fila ser reconhecido.
         var tokens = VerbForms.Fold(TextNormalizer.Tokenize(utterance), _index.Language);
-        if (tokens.Count == 0) return null;
+        if (tokens.Count == 0) return new MatchDetail(null, false, null);
 
         var (afterElement, elementAlias) = StripLongest(
             tokens, _elementAliases.Select(e => e.Tokens).ToList());
@@ -67,16 +77,28 @@ public sealed class PhraseMatcher
         var best = queue ? queued : plain;
 
         if (best is null || best.Value.OrderId is null)
-            return element is null ? null : new Intent(element, null, false);
+        {
+            // Passou do limiar e parou na margem: ele entendeu, e escolher
+            // seria adivinhar. É diferente de não ter casado nada.
+            var ambiguous = best is not null;
+            return new MatchDetail(
+                element is null ? null : new Intent(element, null, false),
+                ambiguous,
+                ambiguous ? best!.Value.Closest : null);
+        }
 
-        return new Intent(element, best.Value.OrderId, queue);
+        return new MatchDetail(new Intent(element, best.Value.OrderId, queue), false, null);
     }
 
     /// <param name="OrderId">
     /// null quando a margem não separou o topo do melhor de outra ordem: casou
     /// alguma coisa, mas não o suficiente para mandar tecla.
     /// </param>
-    readonly record struct Candidate(double Score, string? OrderId);
+    /// <param name="Closest">
+    /// A ordem do topo, mesmo quando ela foi recusada. Existe para a tela poder
+    /// dizer COM QUEM ficou parecido, em vez de só "não entendi".
+    /// </param>
+    readonly record struct Candidate(double Score, string? OrderId, string? Closest);
 
     Candidate? Evaluate(IReadOnlyList<string> tokens)
     {
@@ -90,7 +112,7 @@ public sealed class PhraseMatcher
             r => !string.Equals(r.OrderId, top.OrderId, StringComparison.Ordinal));
         var accepted = top.Score - (runnerUp?.Score ?? 0.0) >= _options.Margin;
 
-        return new Candidate(top.Score, accepted ? top.OrderId : null);
+        return new Candidate(top.Score, accepted ? top.OrderId : null, top.OrderId);
     }
 
     /// <summary>

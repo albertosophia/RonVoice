@@ -39,7 +39,6 @@ public sealed class RonVoiceSession : IDisposable
     bool _shuttingDown;
 
     AppSettings _settings;
-    VoiceTestRunner? _testRunner;
     string[]? _processNames;
 
     /// <summary>
@@ -129,11 +128,12 @@ public sealed class RonVoiceSession : IDisposable
             _map, custom.Accepted, custom.Issues,
             CustomPhrasesPath(settingsPath), settings.Language,
             sendingViaMod: settings.SendMode == SendMode.RonSpeech);
-        _main.Test = new TestViewModel();
+        _main.Test = new TestViewModel(_map);
         _main.Checks = new ChecksViewModel();
         _main.Settings = new SettingsViewModel(settings, devices, _binds);
 
         WireCommands();
+        WireVoiceTestFeed();
 
         try
         {
@@ -248,10 +248,15 @@ public sealed class RonVoiceSession : IDisposable
     {
         _watchdog?.Heard();
 
-        // Durante o teste o áudio vai para o runner, não para o pipeline: o
-        // teste de voz nunca envia tecla ao jogo.
-        if (_testRunner is { } runner) runner.Feed(chunk);
-        else _pipeline.Push(chunk);
+        if (_main.Test.Listening)
+        {
+            var level = AudioLevel.Rms(chunk.Span);
+            Application.Current.Dispatcher.Invoke(() => _main.Test.Level = level);
+        }
+
+        // Um caminho só. O teste é o MESMO pipeline com DryRun ligado, o que
+        // faz a aba mostrar a tecla e a recusa reais em vez de uma simulação.
+        _pipeline.Push(chunk);
     }
 
     void ToggleMute()
@@ -269,7 +274,6 @@ public sealed class RonVoiceSession : IDisposable
             p => _ = SendToGameAsync((OrderRowViewModel)p!),
             _ => GameIsRunning());
 
-        _main.Test.ToggleRecordingCommand = new RelayCommand(_ => ToggleVoiceTest());
 
         _main.Settings.BrowseCommand = new RelayCommand(_ => BrowseForGame());
         _main.Settings.SaveCommand = new RelayCommand(_ => SaveSettings());
@@ -461,29 +465,82 @@ public sealed class RonVoiceSession : IDisposable
         }
     }
 
-    void ToggleVoiceTest()
+    /// <summary>
+    /// Liga e desliga o modo de teste conforme a aba entra e sai de vista.
+    ///
+    /// Sem o bypass o portão recusaria todo o áudio: quem está em foco durante o
+    /// teste é a janela do app, não o jogo. E o DryRun é o que torna a aba
+    /// segura de deixar aberta no meio de uma missão — reconhece, casa, resolve
+    /// e mostra a tecla, sem apertar nenhuma.
+    /// </summary>
+    /// <summary>
+    /// Liga o fluxo da aba de teste nos eventos do pipeline, e o modo de teste
+    /// na aba estar visível. É a aba que manda: "não preciso clicar em parar"
+    /// só é verdade se sair da aba já desligar.
+    /// </summary>
+    void WireVoiceTestFeed()
     {
-        if (_testRunner is null)
-        {
-            // Sem o bypass o portão recusaria todo o áudio: quem está em foco
-            // agora é a janela do app, não o jogo.
-            _gate.TestBypass = true;
-            _main.Test.BeginRecording();
+        const int TestTab = 1;
 
-            var runner = new VoiceTestRunner(
-                _engine, new PhraseMatcher(_map, _settings.Language),
-                _settings.ConfidenceThreshold);
-            runner.LevelChanged += level =>
-                Application.Current.Dispatcher.Invoke(() => _main.Test.Level = level);
-            _testRunner = runner;
-        }
-        else
+        _main.PropertyChanged += (_, e) =>
         {
-            var result = _testRunner.Finish();
-            _testRunner = null;
-            _gate.TestBypass = false;
-            _main.Test.Show(result);
-        }
+            if (e.PropertyName == nameof(MainViewModel.SelectedTabIndex))
+                SetVoiceTest(_main.SelectedTabIndex == TestTab);
+        };
+
+        // O texto ouvido não vem no Sent nem no Matched, e é ele que a linha
+        // mostra. Guardar o último final é o que costura os dois eventos.
+        var heard = "";
+        _pipeline.Heard += r => heard = r.Text;
+
+        Intent? matched = null;
+        _pipeline.Matched += i => matched = i;
+
+        _pipeline.Sent += _ =>
+        {
+            if (!_main.Test.Listening || matched is null) return;
+
+            var intent = matched;
+            var text = heard;
+            var keys = KeysFor(intent);
+
+            Application.Current.Dispatcher.Invoke(
+                () => _main.Test.Matched(text, intent, keys));
+        };
+
+        _pipeline.Rejected += rejection =>
+        {
+            if (!_main.Test.Listening) return;
+            Application.Current.Dispatcher.Invoke(() => _main.Test.Rejected(rejection));
+        };
+    }
+
+    /// <summary>
+    /// As teclas por NOME, iguais às do catálogo — não os scan codes que saem
+    /// na fiação. Quem olha a aba de teste e depois o catálogo tem que ver a
+    /// mesma coisa escrita do mesmo jeito.
+    /// </summary>
+    string KeysFor(Intent intent)
+    {
+        var parts = new List<string>();
+
+        if (intent.Element is { } element
+            && _binds.GetValueOrDefault(ActionNames.ForElement(element)) is { Length: > 0 } key)
+            parts.Add(key);
+
+        if (intent.OrderId is { } id
+            && _map.Orders.GetValueOrDefault(id)?.RonSpeechKeys is { Count: > 0 } keys)
+            parts.AddRange(keys);
+
+        return string.Join(" + ", parts);
+    }
+
+    void SetVoiceTest(bool on)
+    {
+        _gate.TestBypass = on;
+        _pipeline.DryRun = on;
+        _main.Test.Listening = on;
+        if (!on) _main.Test.Level = 0;
     }
 
     void BrowseForGame()

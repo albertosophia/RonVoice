@@ -4,7 +4,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using RonVoice.App.ViewModels;
 using RonVoice.App.Views;
-using RonVoice.Core.Speech;
+using RonVoice.Core.Pipeline;
 
 namespace RonVoice.Tests;
 
@@ -58,9 +58,7 @@ public class ControlTemplateTests(WpfFixture wpf)
     {
         var (indicator, track) = wpf.Run(() =>
         {
-            var vm = new TestViewModel();
-            vm.BeginRecording();
-            vm.Level = 0.5;
+            var vm = new TestViewModel { Level = 0.5 };
 
             var bar = Realize<ProgressBar>(new TestView { DataContext = vm });
             return (Part<FrameworkElement>(bar, "PART_Indicator"),
@@ -82,9 +80,7 @@ public class ControlTemplateTests(WpfFixture wpf)
         {
             double Width(double level)
             {
-                var vm = new TestViewModel();
-                vm.BeginRecording();
-                vm.Level = level;
+                var vm = new TestViewModel { Level = level };
 
                 var bar = Realize<ProgressBar>(new TestView { DataContext = vm });
                 bar.UpdateLayout();
@@ -179,29 +175,31 @@ public class ControlTemplateTests(WpfFixture wpf)
     }
 
     /// <summary>
-    /// O resultado do teste de voz tambem so' existe depois de um resultado, e
-    /// e' onde o fundo e a tinta mudam juntos.
+    /// A lista tem cinco estados, cada um com seu DataTrigger. Montar so' um
+    /// deixaria os outros quatro sem prova nenhuma.
     /// </summary>
     [Fact]
-    public void TheVerdictPanelLaysOutForBothOutcomes()
+    public void TheFeedLaysOutEveryOutcome()
     {
         var ok = wpf.Run(() =>
         {
-            foreach (var outcome in new[] { VoiceTestOutcome.Success, VoiceTestOutcome.NoMatch })
-            {
-                var vm = new TestViewModel();
-                vm.BeginRecording();
-                vm.Show(new VoiceTestResult(
-                    outcome, "open the door", 1.0, 0.5,
-                    outcome == VoiceTestOutcome.Success
-                        ? new RonVoice.Core.Matching.Intent(null, "door.toggle", false)
-                        : null));
+            var vm = new TestViewModel(
+                RonVoice.Core.Commands.CommandMap.Load(CommandMapTests.MapPath));
 
-                var view = new TestView { DataContext = vm };
-                view.Measure(new Size(700, 700));
-                view.Arrange(new Rect(0, 0, 700, 700));
-                view.UpdateLayout();
-            }
+            vm.Matched("open with flashbang",
+                       new RonVoice.Core.Matching.Intent(null, "door.open.flashbang", false),
+                       "F15");
+            vm.Rejected(new Rejection(
+                RejectionReason.Unresolvable, "ram and clear",
+                "o mod RoNSpeech nao tem equivalente para door.breach.ram.clear"));
+            vm.Rejected(new Rejection(RejectionReason.Ambiguous, "empilha", "door.stack.auto"));
+            vm.Rejected(new Rejection(RejectionReason.NoMatch, "quero um cafe"));
+            vm.Rejected(new Rejection(RejectionReason.Unknown, "aaaah"));
+
+            var view = new TestView { DataContext = vm };
+            view.Measure(new Size(700, 700));
+            view.Arrange(new Rect(0, 0, 700, 700));
+            view.UpdateLayout();
             return true;
         });
 

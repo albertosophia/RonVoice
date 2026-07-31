@@ -121,4 +121,61 @@ public class CorpusTests
         }
         Assert.Empty(wrong);
     }
+
+    /// <summary>
+    /// A margem existe e recusa de proposito. Quando ela recusa, isso NAO e' o
+    /// mesmo que "nao e' um comando": ali ele entendeu, e dizer a coisa errada
+    /// manda a pessoa cacar problema de pronuncia que nao existe.
+    ///
+    /// A ambiguidade e' forcada pela propria margem, subida ao maximo. A
+    /// primeira versao deste teste varria o corpus atras de um caso real e
+    /// passava por vacuidade: sao ZERO, e nao poderiam ser outra coisa —
+    /// EveryGeneratedPhraseResolves garante que todas resolvem. Ele teria
+    /// passado com a implementacao quebrada.
+    /// </summary>
+    [Fact]
+    public void AnAmbiguousUtteranceIsReportedAsAmbiguousNotAsUnknown()
+    {
+        var paranoid = new PhraseMatcher(Map(), "en", new MatcherOptions(Margin: 0.99));
+        var detail = paranoid.Explain("stack up");
+
+        Assert.True(detail.Ambiguous, "a margem no maximo tinha que recusar isto");
+        Assert.Null(detail.Intent?.OrderId);
+        Assert.Equal("door.stack.auto", detail.Closest);
+    }
+
+    /// <summary>
+    /// E com a margem normal a MESMA frase passa: senao o teste acima estaria
+    /// medindo uma frase ruim em vez da margem.
+    /// </summary>
+    [Fact]
+    public void TheSameUtteranceIsNotAmbiguousAtTheShippedMargin()
+    {
+        var detail = new PhraseMatcher(Map(), "en").Explain("stack up");
+
+        Assert.False(detail.Ambiguous);
+        Assert.Equal("door.stack.auto", detail.Intent?.OrderId);
+    }
+
+    /// <summary>Nada casado nao pode ser confundido com ambiguo.</summary>
+    [Fact]
+    public void SomethingThatIsNotACommandIsNotAmbiguous()
+    {
+        var detail = new PhraseMatcher(Map(), "en").Explain("i would like a coffee");
+
+        Assert.Null(detail.Intent);
+        Assert.False(detail.Ambiguous);
+    }
+
+    /// <summary>Explain e Match nao podem divergir: um chama o outro.</summary>
+    [Theory]
+    [InlineData("en")]
+    [InlineData("pt")]
+    public void ExplainAgreesWithMatchOnEveryPhrase(string lang)
+    {
+        var matcher = new PhraseMatcher(Map(), lang);
+
+        foreach (var (text, _, _, _) in ReadTsv($"{lang}.tsv"))
+            Assert.Equal(matcher.Match(text)?.OrderId, matcher.Explain(text).Intent?.OrderId);
+    }
 }
