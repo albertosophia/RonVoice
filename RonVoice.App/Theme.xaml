@@ -59,6 +59,23 @@
 
     <BooleanToVisibilityConverter x:Key="Bool2Vis" />
 
+    <!--
+        Toda janela do app usa esta Style, por CHAVE e nao implicitamente:
+        Style implicita nao alcanca tipo derivado, e MainWindow e FirstRunView
+        sao derivadas de Window — a chave {x:Type Window} nunca casaria com
+        elas. Tentei implicito primeiro e as duas continuaram brancas.
+
+        Quem esquecer e' pego pelo EveryWindowOpensDark, que mede o fundo
+        resolvido em tempo de execucao. Nao da' para procurar no XAML uma coisa
+        que o problema e' justamente nao estar escrita.
+    -->
+    <Style x:Key="AppWindow" TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource Panel}" />
+        <Setter Property="Foreground" Value="{StaticResource Ink}" />
+        <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
     <!-- tipografia -->
 
     <Style TargetType="TextBlock">

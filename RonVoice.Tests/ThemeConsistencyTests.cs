@@ -70,7 +70,7 @@ public class ThemeConsistencyTests
     static readonly string[] ThemedTypes =
     [
         "Button", "TextBlock", "TextBox", "ComboBox", "ComboBoxItem",
-        "CheckBox", "Slider", "TabItem", "TabControl",
+        "CheckBox", "Slider", "TabItem", "TabControl", "Window",
     ];
 
     [Fact]

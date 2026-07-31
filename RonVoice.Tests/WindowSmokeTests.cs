@@ -97,4 +97,39 @@ public class WindowSmokeTests(WpfFixture wpf)
         Assert.Equal(ChipLevel.Good, vm.StatusBar.Chips[0].Level);
         Assert.Equal("escutando", vm.StatusBar.Chips[0].Label);
     }
+
+    /// <summary>
+    /// Nenhuma janela pode abrir clara. Nao havia Style para Window, entao cada
+    /// uma precisava lembrar de pintar o proprio fundo — e a da primeira
+    /// execucao esqueceu, aparecendo branca antes do app existir.
+    ///
+    /// Isto mede o valor RESOLVIDO em tempo de execucao, que e' a unica forma
+    /// de pegar "esqueceu de definir": no XAML nao ha nada escrito para
+    /// procurar.
+    /// </summary>
+    [Theory]
+    [InlineData(typeof(MainWindow))]
+    [InlineData(typeof(RonVoice.App.Views.FirstRunView))]
+    public void EveryWindowOpensDark(Type window)
+    {
+        var luminance = wpf.Run(() =>
+        {
+            var w = window == typeof(MainWindow)
+                ? new MainWindow(Build(elevated: true, viaMod: true))
+                : (Window)new RonVoice.App.Views.FirstRunView("en", Path.GetTempPath());
+
+            w.ApplyTemplate();
+
+            var brush = w.Background as System.Windows.Media.SolidColorBrush;
+            if (brush is null) return -1.0;
+
+            var c = brush.Color;
+            return (0.2126 * c.R + 0.7152 * c.G + 0.0722 * c.B) / 255.0;
+        });
+
+        Assert.True(luminance >= 0,
+                    $"{window.Name} abriu sem fundo definido — vira branco do Windows");
+        Assert.True(luminance < 0.25,
+                    $"{window.Name} abriu com luminancia {luminance:0.00}: claro demais");
+    }
 }
