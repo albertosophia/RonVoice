@@ -7,7 +7,12 @@ namespace RonVoice.Core.Audio;
 public interface IAudioCapture : IDisposable
 {
     event Action<ReadOnlyMemory<byte>>? OnAudio;
-    event Action? OnStopped;
+    /// <param name="error">
+    /// Por que parou, quando não foi a pedido. O NAudio entrega isso e o código
+    /// jogava fora: sem o motivo, uma captura que morreu sozinha era
+    /// indistinguível de uma que terminou — e o app seguia dizendo "escutando".
+    /// </param>
+    event Action<Exception?>? OnStopped;
     void Start();
     void Stop();
 }

@@ -29,12 +29,14 @@ public sealed class RonVoiceSession : IDisposable
     readonly ListenGate _gate;
     readonly VoskSpeechEngine _engine;
     readonly VoicePipeline _pipeline;
-    readonly WasapiCapture _capture;
-    readonly TrayIcon _tray;
+    WasapiCapture _capture;
     readonly GlobalHotkey? _hotkey;
     readonly ElementHook? _elementHook;
     readonly MainViewModel _main;
     readonly string _settingsPath;
+
+    MicrophoneWatchdog? _watchdog;
+    bool _shuttingDown;
 
     AppSettings _settings;
     VoiceTestRunner? _testRunner;
@@ -100,9 +102,7 @@ public sealed class RonVoiceSession : IDisposable
         var devices = WasapiCapture.ListDevices();
         var microphone = MicrophoneResolver.Resolve(
             devices, settings.MicrophoneName, settings.MicrophoneDevice);
-        _capture = new WasapiCapture(microphone.Index);
-        _capture.OnAudio += OnAudio;
-        _capture.Start();
+        _capture = OpenMicrophone(microphone.Index);
 
         _main = new MainViewModel();
         _main.StatusBar.Elevated = ForegroundGuard.IsElevated();
@@ -114,6 +114,9 @@ public sealed class RonVoiceSession : IDisposable
         // não era o que estava gravando.
         _main.StatusBar.MicrophoneName = microphone.Name;
         _main.StatusBar.MicrophoneProblem = microphone.Problem;
+
+        // Depois da barra existir: e' nela que o vigia fala.
+        _watchdog = new MicrophoneWatchdog(ReopenMicrophone);
         // Agora que a barra existe, um push-to-talk sem tecla legível pode ser
         // dito em voz alta em vez de virar um app que simplesmente não escuta.
         ApplyListenMode(settings);
@@ -132,12 +135,6 @@ public sealed class RonVoiceSession : IDisposable
 
         WireCommands();
 
-        _tray = new TrayIcon();
-        _tray.Show(_gate.State);
-        _gate.StateChanged += s => Application.Current.Dispatcher.Invoke(() => _tray.Show(s));
-        _tray.MuteRequested += ToggleMute;
-        _tray.ExitRequested += () => Application.Current.Shutdown();
-
         try
         {
             _hotkey = new GlobalHotkey(
@@ -153,7 +150,9 @@ public sealed class RonVoiceSession : IDisposable
         _elementHook = BuildElementHook();
 
         Window = new MainWindow(_main);
-        Window.Closing += (_, args) => { args.Cancel = true; Window.Hide(); };
+        // Sem icone na bandeja, fechar encerra de verdade. Esconder deixaria
+        // um processo invisivel, com o microfone aberto e sem como voltar.
+        Window.Closed += (_, _) => Application.Current.Shutdown();
     }
 
     public static RonVoiceSession Start(
@@ -191,8 +190,64 @@ public sealed class RonVoiceSession : IDisposable
         return hook;
     }
 
+    WasapiCapture OpenMicrophone(int index)
+    {
+        var capture = new WasapiCapture(index);
+        capture.OnAudio += OnAudio;
+        capture.OnStopped += error =>
+        {
+            if (_shuttingDown) return;
+            Application.Current.Dispatcher.Invoke(() => _watchdog?.Stopped(error));
+        };
+        capture.Start();
+        return capture;
+    }
+
+    /// <summary>
+    /// Reabre o microfone depois de ele morrer sozinho. Resolve o dispositivo
+    /// PELO NOME de novo, de propósito: o motivo mais comum da morte é a
+    /// enumeração ter mudado, e reabrir pelo índice antigo pegaria outro
+    /// aparelho — trocaria silêncio por silêncio.
+    /// </summary>
+    void ReopenMicrophone(string reason)
+    {
+        if (_shuttingDown) return;
+
+        _watchdog!.Running = false;
+        _main.StatusBar.MicrophoneProblem = $"MICROFONE CAIU — {reason}. Reabrindo…";
+
+        try
+        {
+            try { _capture.Stop(); } catch (Exception) { /* já morto; é o caso normal */ }
+            _capture.Dispose();
+
+            var devices = WasapiCapture.ListDevices();
+            var microphone = MicrophoneResolver.Resolve(
+                devices, _settings.MicrophoneName, _settings.MicrophoneDevice);
+
+            _capture = OpenMicrophone(microphone.Index);
+
+            _main.StatusBar.MicrophoneName = microphone.Name;
+            _main.StatusBar.MicrophoneProblem = microphone.Problem;
+        }
+        catch (Exception ex)
+        {
+            // Fica dito e fica assim: o vigia tenta de novo no próximo ciclo.
+            // Silenciar aqui devolveria o app ao estado que este código existe
+            // para acabar — parecendo vivo, sem ouvir nada.
+            _main.StatusBar.MicrophoneProblem =
+                $"MICROFONE CAIU e não consegui reabrir: {ex.Message}";
+        }
+        finally
+        {
+            _watchdog.Running = true;
+        }
+    }
+
     void OnAudio(ReadOnlyMemory<byte> chunk)
     {
+        _watchdog?.Heard();
+
         // Durante o teste o áudio vai para o runner, não para o pipeline: o
         // teste de voz nunca envia tecla ao jogo.
         if (_testRunner is { } runner) runner.Feed(chunk);
@@ -205,7 +260,6 @@ public sealed class RonVoiceSession : IDisposable
         Application.Current.Dispatcher.Invoke(() =>
         {
             _main.StatusBar.ListenState = _gate.State;
-            _tray.Show(_gate.State);
         });
     }
 
@@ -488,6 +542,8 @@ public sealed class RonVoiceSession : IDisposable
         // reconhecedor, então isso pede reabrir o app.
         var languageChanged = updated.Language != _settings.Language;
         var sendModeChanged = updated.SendMode != _settings.SendMode;
+        var microphoneChanged = !string.Equals(
+            updated.MicrophoneName, _settings.MicrophoneName, StringComparison.Ordinal);
         _settings = updated;
         _processNames = ProcessNamesFrom(updated);
         var talkKeyProblem = ApplyListenMode(updated);
@@ -495,6 +551,11 @@ public sealed class RonVoiceSession : IDisposable
         // A quente: o resolvedor é o mesmo objeto que o pipeline guarda.
         _resolver.Mode = updated.SendMode;
         _main.StatusBar.SendMode = updated.SendMode;
+
+        // Trocar de microfone passou a valer na hora. Antes exigia reabrir o
+        // app, e sem aviso nenhum: quem escolhia outro dispositivo continuava
+        // gravando do anterior até fechar.
+        if (microphoneChanged) ReopenMicrophone("você escolheu outro microfone");
 
         // O catálogo marca as ordens que o modo novo não alcança, então precisa
         // ser reconstruído — senão os selos ficam falando do modo anterior.
@@ -521,12 +582,13 @@ public sealed class RonVoiceSession : IDisposable
 
     public void Dispose()
     {
+        _shuttingDown = true;
+        _watchdog?.Dispose();
         _capture.Stop();
         _capture.Dispose();
         _pipeline.Stop();
         _engine.Dispose();
         _elementHook?.Dispose();
         _hotkey?.Dispose();
-        _tray.Dispose();
     }
 }

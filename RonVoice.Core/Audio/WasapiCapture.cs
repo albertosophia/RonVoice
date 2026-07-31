@@ -12,7 +12,7 @@ public sealed class WasapiCapture : IAudioCapture
     bool _disposed;
 
     public event Action<ReadOnlyMemory<byte>>? OnAudio;
-    public event Action? OnStopped;
+    public event Action<Exception?>? OnStopped;
 
     public WasapiCapture(int deviceNumber = 0)
     {
@@ -34,7 +34,9 @@ public sealed class WasapiCapture : IAudioCapture
         };
         _waveIn.DataAvailable += (_, e) =>
             OnAudio?.Invoke(new ReadOnlyMemory<byte>(e.Buffer, 0, e.BytesRecorded));
-        _waveIn.RecordingStopped += (_, _) => OnStopped?.Invoke();
+        // e.Exception vem preenchido quando o dispositivo sumiu ou o driver
+        // falhou. Descartá-lo transformava a morte da captura em silêncio.
+        _waveIn.RecordingStopped += (_, e) => OnStopped?.Invoke(e.Exception);
     }
 
     public static IReadOnlyList<string> ListDevices() =>

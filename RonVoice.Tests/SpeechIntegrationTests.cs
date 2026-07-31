@@ -46,7 +46,7 @@ public class SpeechIntegrationTests
 
         using var capture = new WavFileCapture(wav);
         capture.OnAudio += chunk => pipeline.Push(chunk);
-        capture.OnStopped += () => pipeline.Flush();
+        capture.OnStopped += _ => pipeline.Flush();
         capture.Start();
 
         return (matched, sender.Sent, rejected);

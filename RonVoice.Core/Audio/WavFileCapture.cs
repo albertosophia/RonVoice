@@ -7,7 +7,7 @@ namespace RonVoice.Core.Audio;
 public sealed class WavFileCapture(string path, int chunkBytes = 4000) : IAudioCapture
 {
     public event Action<ReadOnlyMemory<byte>>? OnAudio;
-    public event Action? OnStopped;
+    public event Action<Exception?>? OnStopped;
 
     bool _stop;
 
@@ -24,7 +24,7 @@ public sealed class WavFileCapture(string path, int chunkBytes = 4000) : IAudioC
         while (!_stop && (read = fs.Read(buffer, 0, buffer.Length)) > 0)
             OnAudio?.Invoke(new ReadOnlyMemory<byte>(buffer, 0, read));
 
-        OnStopped?.Invoke();
+        OnStopped?.Invoke(null);
     }
 
     public void Stop() => _stop = true;

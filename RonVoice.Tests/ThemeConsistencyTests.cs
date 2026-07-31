@@ -186,4 +186,39 @@ public class ThemeConsistencyTests
                     $"{key} = {brushes[key]} tem luminância {luminance:0.00}: escuro demais "
                     + "para ser lido sobre as superfícies do tema");
     }
+
+    /// <summary>
+    /// Cor em C# tambem conta. Estas escaparam de todas as redes anteriores
+    /// porque a varredura so' olhava XAML — e eram os tons claros de antes do
+    /// tema escuro, apagados sobre o fundo novo.
+    /// </summary>
+    [Fact]
+    public void ColoursWrittenInCSharpAreFromThePalette()
+    {
+        var palette = ThemeBrushes().Values
+            .Select(c => c.TrimStart('#')[^6..].ToUpperInvariant())
+            .ToHashSet(StringComparer.Ordinal);
+
+        var pattern = new Regex(
+            @"Color\.FromRgb\(\s*0x(?<r>[0-9A-Fa-f]{2})\s*,\s*0x(?<g>[0-9A-Fa-f]{2})\s*,\s*0x(?<b>[0-9A-Fa-f]{2})");
+
+        var offenders = new List<string>();
+        var appDir = new DirectoryInfo(Path.Combine(RepoRoot().FullName, "RonVoice.App"));
+
+        foreach (var file in appDir.EnumerateFiles("*.cs", SearchOption.AllDirectories))
+        {
+            if (file.FullName.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+                continue;
+
+            foreach (Match m in pattern.Matches(File.ReadAllText(file.FullName)))
+            {
+                var hex = (m.Groups["r"].Value + m.Groups["g"].Value + m.Groups["b"].Value)
+                    .ToUpperInvariant();
+                if (!palette.Contains(hex))
+                    offenders.Add($"{file.Name}: #{hex} nao esta na paleta do tema");
+            }
+        }
+
+        Assert.Empty(offenders);
+    }
 }

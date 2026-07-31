@@ -41,7 +41,7 @@ public class WavFileCaptureTests
         var stopped = false;
         using (var capture = new WavFileCapture(path))
         {
-            capture.OnStopped += () => stopped = true;
+            capture.OnStopped += _ => stopped = true;
             capture.Start();
         }
         Assert.True(stopped);

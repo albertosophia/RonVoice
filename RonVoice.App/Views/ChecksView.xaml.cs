@@ -15,14 +15,11 @@ public partial class ChecksView : UserControl
 /// <summary>Verde, âmbar, vermelho — a leitura mais rápida possível do estado.</summary>
 public sealed class CheckStatusBrushConverter : IValueConverter
 {
-    // Qualificado: System.Drawing.Color tambem esta no escopo por causa do
-    // NotifyIcon, e sem isto o nome fica ambiguo.
-    static readonly SolidColorBrush Ok =
-        new(System.Windows.Media.Color.FromRgb(0x2E, 0x7D, 0x32));
-    static readonly SolidColorBrush Warning =
-        new(System.Windows.Media.Color.FromRgb(0xB8, 0x86, 0x0B));
-    static readonly SolidColorBrush Failed =
-        new(System.Windows.Media.Color.FromRgb(0xC6, 0x28, 0x28));
+    // Os mesmos tons do tema. Cor em C# escapa da varredura do XAML, e estes
+    // eram os valores claros de antes do tema escuro — apagados sobre o fundo.
+    static readonly SolidColorBrush Ok = new(Color.FromRgb(0x5F, 0xB3, 0x7A));
+    static readonly SolidColorBrush Warning = new(Color.FromRgb(0xE8, 0xA3, 0x3D));
+    static readonly SolidColorBrush Failed = new(Color.FromRgb(0xE0, 0x52, 0x52));
 
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
         value is CheckStatus status

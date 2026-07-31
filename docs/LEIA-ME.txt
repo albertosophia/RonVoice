@@ -27,15 +27,16 @@ COMO USAR
        "red team open with flashbang"
        "prep open the door"
 
-5. Um ponto colorido aparece ao lado do relogio e na barra do programa:
+5. A barra no alto da janela diz o estado o tempo todo:
 
-       verde     escutando
-       cinza     jogo fora de foco (nao escuta)
-       laranja   mudo
-       vermelho  falha - passe o mouse para ler o motivo
+       escutando            esta ouvindo agora
+       jogo fora de foco    nao escuta
+       mudo                 silenciado
+
+   O que estiver ERRADO aparece primeiro, em vermelho.
 
    Ctrl+Alt+M muta sem tirar a mao do jogo.
-   Botao direito no icone da bandeja: mutar ou sair.
+   Fechar a janela encerra o programa.
 
 
 ELE SO ESCUTA COM O JOGO EM FOCO
@@ -49,25 +50,22 @@ conversa comum de virar ordem.
 EM VR
 -----
 
-O RonVoice funciona em VR (testado com o Ready Or Not VRO Mod), mas so' com
-uma opcao ligada.
+O RonVoice funciona em VR — testado com o Ready Or Not VRO Mod.
 
-O jeito normal dele mandar as ordens e' abrir o menu SWAT e navegar. Em VR
-isso nao funciona: o menu abre, mas nao aceita a escolha, e quem escolhe passa
-a ser para onde voce esta olhando. Nao e' lentidao — testamos com espera de
-60, 300 e 800 ms e nao muda nada.
+Para isso ele NAO usa o menu SWAT. Em VR o menu abre mas nao aceita a escolha:
+quem escolhe passa a ser para onde voce esta olhando. Nao e' lentidao —
+testamos com espera de 60, 300 e 800 ms e nao muda nada.
 
-A saida e' nao usar o menu. Na aba Configuracao, marque
-"Usar o mod RoNSpeech". Nesse modo cada ordem sai como UMA tecla, que o mod
-traduz numa chamada direta ao jogo. Sem menu, nada de olhar interferindo.
+Entao cada ordem sai como UMA tecla, que o mod UE4SS RoNSpeech traduz numa
+chamada direta ao jogo. Sem menu, nada de olhar interferindo. Isso vale na
+tela tambem, e e' mais rapido.
 
-Voce precisa do UE4SS + do mod RoNSpeech instalados na pasta do jogo. Sem
-eles, o modo nao da erro: simplesmente nada acontece.
+POR ISSO O MOD E' OBRIGATORIO. Voce precisa do UE4SS + do RoNSpeech
+instalados na pasta do jogo. Sem eles nada acontece, e nao ha erro.
 
-O mod nao cobre todas as 70 ordens — hoje sao 32. Nesse modo, a aba Comandos
-marca em vermelho as que ficam de fora, e falar uma delas e' recusado em vez
-de fazer nada em silencio. As ordens que nao usam o menu (gritar, modo de
-tiro, chemlight) funcionam em VR nos dois modos.
+O mod ainda nao cobre todas as 70 ordens — hoje sao 32. A aba Comandos abre
+mostrando as que funcionam, e "Ainda nao" lista as outras. Falar uma delas e'
+recusado com o motivo, em vez de nao fazer nada em silencio.
 
 
 SO QUANDO EU APERTAR UMA TECLA (PUSH-TO-TALK)
@@ -185,8 +183,14 @@ Nada acontece no jogo
     ReadyOrNotSteam-Win64-Shipping). Na aba Configuracao, aponte o executavel
     do jogo — ele passa a usar o nome certo.
 
-Ponto vermelho
-    Falta o microfone ou a pasta data\models. Passe o mouse no ponto.
+Ficha vermelha na barra de cima
+    Ela diz o que esta errado. Sem elevacao e microfone trocado sao os dois
+    casos comuns.
+
+O microfone parou no meio do jogo
+    Ele volta sozinho. Se o dispositivo sumir ou o driver engasgar, o
+    programa percebe em cerca de tres segundos, reabre, e conta na barra o
+    que aconteceu. Nao precisa mais fechar e abrir.
 
 Reconhece errado ou dispara sozinho
     A aba Teste mostra o que ele esta ouvindo, sem mandar tecla ao jogo.

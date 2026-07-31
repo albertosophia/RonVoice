@@ -25,7 +25,7 @@ public class VoskSpeechEngineTests
 
         using var capture = new WavFileCapture(wav);
         capture.OnAudio += chunk => engine.Feed(chunk);
-        capture.OnStopped += () => engine.Flush();
+        capture.OnStopped += _ => engine.Flush();
         capture.Start();
         return finals;
     }

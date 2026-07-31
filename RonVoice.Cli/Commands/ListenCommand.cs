@@ -85,7 +85,7 @@ public static class ListenCommand
         using (capture)
         {
             capture.OnAudio += chunk => pipeline.Push(chunk);
-            capture.OnStopped += () => pipeline.Flush();
+            capture.OnStopped += _ => pipeline.Flush();
 
             if (fromWav is not null)
             {
