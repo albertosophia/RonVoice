@@ -38,3 +38,7 @@ faltam.txt
 # Perfis do VoiceAttack. Sao de terceiros — o "Ready or Not v5.1.vap" foi
 # publicado por engano quando o repositorio virou publico. Nao entram aqui.
 *.vap
+
+# Planos e specs de andaime. Serviram para construir e nao descrevem o que o
+# programa faz hoje — quem chega no repositorio quer o README, nao o rascunho.
+docs/superpowers/
