@@ -29,7 +29,7 @@ roda na sua máquina.
 
 **1. O mod, dentro do jogo.**
 
-Baixe `RonVoiceMod + UE4SS.rar` nos [Releases](../../releases) e extraia tudo em:
+Baixe `RonVoiceMod-UE4SS.rar` nos [Releases](../../releases) e extraia tudo em:
 
 ```
 <Ready or Not>\ReadyOrNot\Binaries\Win64
