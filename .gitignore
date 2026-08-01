@@ -34,3 +34,7 @@ VOICE ATTACK/
 
 # Listas geradas a partir do mapa, uteis de ter e sem valor em historico.
 faltam.txt
+
+# Perfis do VoiceAttack. Sao de terceiros — o "Ready or Not v5.1.vap" foi
+# publicado por engano quando o repositorio virou publico. Nao entram aqui.
+*.vap
