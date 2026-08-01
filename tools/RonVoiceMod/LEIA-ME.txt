@@ -1,0 +1,59 @@
+RonVoiceMod — o lado do jogo do RonVoice
+========================================
+
+Este mod recebe as ordens que voce fala no RonVoice e chama as funcoes do
+Ready or Not direto, sem passar pelo menu SWAT e sem depender de tecla.
+
+Por que ele existe
+------------------
+O Windows so' tem teclas ate' o F24, e o jogo tem 70 ordens. Alem disso, em VR
+o menu SWAT abre mas nao aceita os digitos, entao pelo menu o esquadrao
+simplesmente nao obedece. Por aqui obedece.
+
+
+COMO INSTALAR
+-------------
+1. Voce precisa do UE4SS instalado no jogo. Se voce ja' usa qualquer mod de
+   script, ja' tem.
+
+2. Copie a pasta RonVoiceMod inteira para dentro de:
+
+      <Ready or Not>\ReadyOrNot\Binaries\Win64\Mods\
+
+   Ficando assim:
+
+      ...\Win64\Mods\RonVoiceMod\enabled.txt
+      ...\Win64\Mods\RonVoiceMod\Scripts\main.lua
+      ...\Win64\Mods\RonVoiceMod\Scripts\runner.lua
+      ...\Win64\Mods\RonVoiceMod\Scripts\dispatch.lua
+      ...\Win64\Mods\RonVoiceMod\Scripts\orders.lua
+      ...\Win64\Mods\RonVoiceMod\Scripts\mailbox.lua
+
+3. So' isso. Nao ha' nada para configurar: o mod e o RonVoice se encontram
+   sozinhos em %LOCALAPPDATA%\RonVoice.
+
+   O arquivo enabled.txt vazio e' o que liga o mod. Nao apague.
+
+
+SE NAO FUNCIONAR
+----------------
+- Abra o console do UE4SS. Ao entrar no jogo deve aparecer:
+      [RonVoice] pronto. caixa de correio em C:\...\AppData\Local\RonVoice
+
+- Se voce tambem tem o RoNSpeech instalado, tente desligar ele (renomeie o
+  enabled.txt dele) e testar de novo.
+
+- Se o RonVoice disser "o mod nao respondeu", e' porque nao chegou recibo: ou
+  o jogo esta fechado, ou o mod nao carregou.
+
+
+O QUE TEM DENTRO
+----------------
+  main.lua       a ligacao com o jogo: acha o SWATManager, a porta mirada,
+                 e chama o laco a cada quadro
+  runner.lua     o laco: le' o pedido, manda fazer, responde
+  dispatch.lua   transforma o id da ordem na chamada certa do jogo
+  orders.lua     a tabela das 65 ordens
+  mailbox.lua    o formato do arquivo que o RonVoice escreve
+
+Sao arquivos de texto. Pode abrir e ler.
