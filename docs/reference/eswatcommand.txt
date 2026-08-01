@@ -1,0 +1,226 @@
+# ESwatCommand e a API do SWATManager
+#
+# Colhido do jogo em 31/07/2026 pela sonda RonVoiceProbe (F11), versao do
+# jogo instalada nesta maquina. NAO e' deducao: e' o que o jogo respondeu.
+#
+# ATENCAO a' familia da escopeta: Leader vem ANTES de Launcher, ao
+# contrario de todas as outras. Gerar a tabela por padrao inverte as duas.
+
+=== ENUM Enum /Script/ReadyOrNot.ESwatCommand   [nome suspeito]
+   0    ESwatCommand::SC_None
+   1    ESwatCommand::SC_MoveTo
+   2    ESwatCommand::SC_FallIn
+   3    ESwatCommand::SC_FallIn_Snake
+   4    ESwatCommand::SC_FallIn_HalfSnake
+   5    ESwatCommand::SC_FallIn_Diamond
+   6    ESwatCommand::SC_FallIn_Flock
+   7    ESwatCommand::SC_Cover
+   8    ESwatCommand::SC_Hold
+   9    ESwatCommand::SC_Resume
+   10   ESwatCommand::SC_DeployFlashbang
+   11   ESwatCommand::SC_DeployStinger
+   12   ESwatCommand::SC_DeployCSGas
+   13   ESwatCommand::SC_DeployChemlight
+   14   ESwatCommand::SC_DoArrestTarget
+   15   ESwatCommand::SC_DoCollectEvidence
+   16   ESwatCommand::SC_DoReportTarget
+   17   ESwatCommand::SC_DisarmStandaloneTrap
+   18   ESwatCommand::SC_KillMe
+   19   ESwatCommand::SC_StackUp
+   20   ESwatCommand::SC_StackUpSplit
+   21   ESwatCommand::SC_StackUpLeft
+   22   ESwatCommand::SC_StackUpRight
+   23   ESwatCommand::SC_PickLock
+   24   ESwatCommand::SC_RemoveDoorJam
+   25   ESwatCommand::SC_DeployMirrorgun
+   26   ESwatCommand::SC_DeployDoorJam
+   27   ESwatCommand::SC_CheckForTrap
+   28   ESwatCommand::SC_DisarmTrap
+   29   ESwatCommand::SC_OpenDoor
+   30   ESwatCommand::SC_CloseDoor
+   31   ESwatCommand::SC_Slide
+   32   ESwatCommand::SC_Slice
+   33   ESwatCommand::SC_Snap
+   34   ESwatCommand::SC_SearchAndSecure
+   35   ESwatCommand::SC_SearchAndSecureRoom
+   36   ESwatCommand::SC_SearchAndSecureRoom_Individual
+   37   ESwatCommand::SC_MoveAndClear
+   38   ESwatCommand::SC_MoveAndClearFlashbang
+   39   ESwatCommand::SC_MoveAndClearStinger
+   40   ESwatCommand::SC_MoveAndClearCSGas
+   41   ESwatCommand::SC_MoveAndClearLauncher
+   42   ESwatCommand::SC_MoveAndClearLeader
+   43   ESwatCommand::SC_OpenAndClear
+   44   ESwatCommand::SC_OpenAndClearFlashbang
+   45   ESwatCommand::SC_OpenAndClearStinger
+   46   ESwatCommand::SC_OpenAndClearCSGas
+   47   ESwatCommand::SC_OpenAndClearLauncher
+   48   ESwatCommand::SC_OpenAndClearLeader
+   49   ESwatCommand::SC_KickAndClear
+   50   ESwatCommand::SC_KickAndClearFlashbang
+   51   ESwatCommand::SC_KickAndClearStinger
+   52   ESwatCommand::SC_KickAndClearCSGas
+   53   ESwatCommand::SC_KickAndClearLauncher
+   54   ESwatCommand::SC_KickAndClearLeader
+   55   ESwatCommand::SC_ShotgunClear
+   56   ESwatCommand::SC_ShotgunClearFlashbang
+   57   ESwatCommand::SC_ShotgunClearStinger
+   58   ESwatCommand::SC_ShotgunClearCSGas
+   59   ESwatCommand::SC_ShotgunClearLeader
+   60   ESwatCommand::SC_ShotgunClearLauncher
+   61   ESwatCommand::SC_RamAndClear
+   62   ESwatCommand::SC_RamAndClearFlashbang
+   63   ESwatCommand::SC_RamAndClearStinger
+   64   ESwatCommand::SC_RamAndClearCSGas
+   65   ESwatCommand::SC_RamAndClearLauncher
+   66   ESwatCommand::SC_RamAndClearLeader
+   67   ESwatCommand::SC_C2Clear
+   68   ESwatCommand::SC_C2ClearFlashbang
+   69   ESwatCommand::SC_C2ClearStinger
+   70   ESwatCommand::SC_C2ClearCSGas
+   71   ESwatCommand::SC_C2ClearLauncher
+   72   ESwatCommand::SC_C2ClearLeader
+   73   ESwatCommand::SC_LeaderAndClear
+   74   ESwatCommand::SC_LeaderAndClearFlashbang
+   75   ESwatCommand::SC_LeaderAndClearStinger
+   76   ESwatCommand::SC_LeaderAndClearCSGas
+   77   ESwatCommand::SC_LeaderAndClearLauncher
+   78   ESwatCommand::SC_LeaderAndClearLeader
+   79   ESwatCommand::SC_SwapWithAlpha
+   80   ESwatCommand::SC_SwapWithBeta
+   81   ESwatCommand::SC_SwapWithCharlie
+   82   ESwatCommand::SC_SwapWithDelta
+   83   ESwatCommand::SC_SwapWithAlphaOpposite
+   84   ESwatCommand::SC_SwapWithBetaOpposite
+   85   ESwatCommand::SC_SwapWithCharlieOpposite
+   86   ESwatCommand::SC_SwapWithDeltaOpposite
+   87   ESwatCommand::SC_MoveToAlpha
+   88   ESwatCommand::SC_MoveToBeta
+   89   ESwatCommand::SC_MoveToCharlie
+   90   ESwatCommand::SC_MoveToDelta
+   91   ESwatCommand::SC_MoveTo_Individual
+   92   ESwatCommand::SC_MoveTo_MyPosition_Individual
+   93   ESwatCommand::SC_MoveTo_Stop_Individual
+   94   ESwatCommand::SC_MoveTo_Exit_Individual
+   95   ESwatCommand::SC_MoveToAndBack_Individual
+   96   ESwatCommand::SC_Focus_Individual
+   97   ESwatCommand::SC_Focus_MyPosition_Individual
+   98   ESwatCommand::SC_UnFocus_Individual
+   99   ESwatCommand::SC_FocusDoor_Individual
+   100  ESwatCommand::SC_FocusTarget_Individual
+   101  ESwatCommand::SC_TurnAround_Individual
+   102  ESwatCommand::SC_Execute
+   103  ESwatCommand::SC_Cancel
+   104  ESwatCommand::SC_DeployShield
+   105  ESwatCommand::SC_HolsterShield
+   106  ESwatCommand::SC_DeployTaser
+   107  ESwatCommand::SC_DeployPepperspray
+   108  ESwatCommand::SC_DeployPepperball
+   109  ESwatCommand::SC_DeployBeanbag
+   110  ESwatCommand::SC_MeleeTarget
+   111  ESwatCommand::SC_Roger
+   112  ESwatCommand::SC_Negative
+   113  ESwatCommand::PC_Acknowledge
+   114  ESwatCommand::PC_Order
+   115  ESwatCommand::PC_Deploy
+   116  ESwatCommand::PC_ConfirmOrderRequest
+   117  ESwatCommand::PC_StackUp
+   118  ESwatCommand::PC_Open
+   119  ESwatCommand::PC_Door
+   120  ESwatCommand::PC_OtherDoor
+   121  ESwatCommand::PC_DoorWay
+   122  ESwatCommand::PC_OtherDoorWay
+   123  ESwatCommand::PC_Scan
+   124  ESwatCommand::PC_Move
+   125  ESwatCommand::PC_Kick
+   126  ESwatCommand::PC_Ram
+   127  ESwatCommand::PC_Shotgun
+   128  ESwatCommand::PC_Leader
+   129  ESwatCommand::PC_C2
+   130  ESwatCommand::PC_Breach
+   131  ESwatCommand::PC_FallIn
+   132  ESwatCommand::PC_Focus
+   133  ESwatCommand::PC_SwapWith
+   134  ESwatCommand::PC_OpenedDoor
+   135  ESwatCommand::PC_ClosedDoor
+   136  ESwatCommand::SC_Deploy9Bang
+   137  ESwatCommand::SC_MoveAndClear9Bang
+   138  ESwatCommand::SC_OpenAndClear9Bang
+   139  ESwatCommand::SC_KickAndClear9Bang
+   140  ESwatCommand::SC_ShotgunClear9Bang
+   141  ESwatCommand::SC_RamAndClear9Bang
+   142  ESwatCommand::SC_C2Clear9Bang
+   143  ESwatCommand::SC_LeaderAndClear9Bang
+   144  ESwatCommand::ESwatCommand_MAX
+
+
+=== funcoes do SWATManager ===
+CanGiveActivityToSWAT
+GetAverageSwatLocation
+GetQueuedSwatCommandForSquadPosition
+GetSquadLeader
+GetSwatCharacterAtSquadPosition
+GetSWATCount
+GetSWATSortedByDistanceToLocation
+GetSWATSortedByDistanceToLocationV2
+GetSwatTeam
+GiveBreachAndClearCommand
+GiveCheckForContactsCommand
+GiveCheckForTrapsCommand
+GiveCloseDoorCommand
+GiveCollectEvidenceCommand
+GiveCoverAreaCommand
+GiveDeployGrenadeAtLocation
+GiveDeployNonLethalItemAtTargetCommand
+GiveDeployShield
+GiveDisarmStandaloneTrapCommand
+GiveDisarmTrapOnDoorCommand
+GiveDropChemlightAtLocation
+GiveFallInCommand
+GiveHoldCommand
+GiveMoveCommand
+GiveOpenDoorCommand
+GivePickLockCommand
+GiveRemoveWedgeCommand
+GiveReportTargetCommand
+GiveRestrainCommand
+GiveScanDoorCommand
+GiveSearchAndSecureCommand
+GiveSearchAndSecureCommand_Individual
+GiveStackUpCommand
+GiveWedgeDoorCommand
+IsCharacterKnownEnemy
+IsSWATTeamDead
+IsSWATTeamHoldingPosition
+OnActivityStarted
+OnLeaderToggledNightvision
+OnSwatFinishedClearing
+OnSwatFinishedRoomSearch
+OnTrailerSearchComplete
+PlaySwatCommandVoiceLine
+RemoveHoldCommand
+
+=== EGrenadeType ===
+=== ENUM Enum /Script/ReadyOrNot.EGrenadeType   [nome suspeito]
+   0    EGrenadeType::None
+   1    EGrenadeType::Flashbang
+   2    EGrenadeType::Stinger
+   3    EGrenadeType::Gas
+   4    EGrenadeType::Smoke
+   5    EGrenadeType::Frag
+   6    EGrenadeType::NineBang
+   7    EGrenadeType::Custom
+   8    EGrenadeType::EGrenadeType_MAX
+
+=== EDoorInteraction ===
+=== ENUM Enum /Script/ReadyOrNot.EDoorInteraction   [nome suspeito]
+   0    EDoorInteraction::None
+   1    EDoorInteraction::Open
+   2    EDoorInteraction::Close
+   3    EDoorInteraction::Peek
+   4    EDoorInteraction::Push
+   5    EDoorInteraction::Kick
+   6    EDoorInteraction::Kick_Fail
+   7    EDoorInteraction::Ram
+   8    EDoorInteraction::EDoorInteraction_MAX
+
