@@ -34,26 +34,83 @@ public sealed class SettingsViewModel : ObservableBase
         _confidenceThreshold = initial.ConfidenceThreshold;
         SendMode = initial.SendMode;
 
+        // O estado JÁ NORMALIZADO, não o `initial` cru: o view model resolve o
+        // microfone por nome, então recém-aberto ele pode divergir do arquivo
+        // sem ninguém ter mexido em nada — e a tela abriria dizendo que há coisa
+        // por salvar.
+        _salvo = ToSettings();
+        _idiomaEmUso = initial.Language;
+
         SaveCommand = new RelayCommand(_ => { }, _ => false);
         BrowseCommand = new RelayCommand(_ => { }, _ => false);
+    }
+
+    /// <summary>
+    /// O que está gravado no arquivo. A pendência é a DIFERENÇA entre isto e a
+    /// tela, e não um sinalizador ligado a cada mexida: um sinalizador não sabe
+    /// que você desfez, e ficaria avisando de pendência que não existe mais.
+    /// </summary>
+    AppSettings _salvo;
+
+    /// <summary>
+    /// O idioma com que o reconhecimento está rodando AGORA. Não muda ao salvar
+    /// — o modelo e a gramática são montados uma vez, na abertura — então é ele,
+    /// e não o arquivo, que diz se ainda falta reabrir.
+    /// </summary>
+    readonly string _idiomaEmUso;
+
+    /// <summary>Há coisa na tela que ainda não foi para o arquivo.</summary>
+    public bool HasUnsavedChanges => ToSettings() != _salvo;
+
+    /// <summary>
+    /// O idioma escolhido não é o que está rodando. Aparece assim que a pessoa
+    /// escolhe, e não depois de salvar: quem só estava olhando as opções merece
+    /// saber o preço antes de pagar.
+    ///
+    /// Continua aparecendo DEPOIS de salvar, porque salvar não resolve — o
+    /// arquivo já tem o idioma novo e o reconhecimento continua no velho.
+    /// </summary>
+    public bool LanguageNeedsRestart =>
+        !string.Equals(Language, _idiomaEmUso, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Uma mexida qualquer. Só avisa que a pendência mudou — quem decide se há
+    /// pendência é a comparação, não esta chamada.
+    /// </summary>
+    void Mexeram()
+    {
+        Raise(nameof(HasUnsavedChanges));
+        SaveCommand.RaiseCanExecuteChanged();
+    }
+
+    /// <summary>Chamado depois de gravar: a tela passa a ser o novo "salvo".</summary>
+    public void MarkSaved()
+    {
+        _salvo = ToSettings();
+        Raise(nameof(HasUnsavedChanges));
+        SaveCommand.RaiseCanExecuteChanged();
     }
 
     public IReadOnlyList<string> Microphones { get; }
 
     public IReadOnlyList<string> Languages { get; } = ["en", "pt"];
 
-    public string Language { get => _language; set => Set(ref _language, value); }
+    public string Language
+    {
+        get => _language;
+        set { if (Set(ref _language, value)) { Mexeram(); Raise(nameof(LanguageNeedsRestart)); } }
+    }
 
     public int MicrophoneDevice
     {
         get => _microphoneDevice;
-        set => Set(ref _microphoneDevice, value);
+        set { if (Set(ref _microphoneDevice, value)) Mexeram(); }
     }
 
     public double ConfidenceThreshold
     {
         get => _confidenceThreshold;
-        set => Set(ref _confidenceThreshold, value);
+        set { if (Set(ref _confidenceThreshold, value)) Mexeram(); }
     }
 
     public string? GameExecutablePath
@@ -62,6 +119,7 @@ public sealed class SettingsViewModel : ObservableBase
         set
         {
             if (!Set(ref _gameExecutablePath, value)) return;
+            Mexeram();
             Raise(nameof(GameProcessName));
             Raise(nameof(GameWarning));
         }
@@ -82,13 +140,13 @@ public sealed class SettingsViewModel : ObservableBase
     public bool UsePushToTalk
     {
         get => _usePushToTalk;
-        set { if (Set(ref _usePushToTalk, value)) Raise(nameof(PushToTalkWarning)); }
+        set { if (Set(ref _usePushToTalk, value)) { Mexeram(); Raise(nameof(PushToTalkWarning)); } }
     }
 
     public string? PushToTalkKey
     {
         get => _pushToTalkKey;
-        set { if (Set(ref _pushToTalkKey, value)) Raise(nameof(PushToTalkWarning)); }
+        set { if (Set(ref _pushToTalkKey, value)) { Mexeram(); Raise(nameof(PushToTalkWarning)); } }
     }
 
     /// <summary>

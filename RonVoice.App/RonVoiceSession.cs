@@ -633,6 +633,10 @@ public sealed class RonVoiceSession : IDisposable
 
         _main.Commands.SendCommand.RaiseCanExecuteChanged();
 
+        // O botão passa a dizer "Salvo" e o aviso de pendência some. É o que
+        // responde "será que salvou?" sem uma caixa de mensagem para fechar.
+        _main.Settings.MarkSaved();
+
         if (talkKeyProblem is not null)
         {
             MessageBox.Show(
@@ -643,11 +647,10 @@ public sealed class RonVoiceSession : IDisposable
             return;
         }
 
-        MessageBox.Show(
-            languageChanged
-                ? "Configuração salva. Reabra o RonVoice para trocar o idioma do reconhecimento."
-                : "Configuração salva.",
-            "RonVoice", MessageBoxButton.OK, MessageBoxImage.Information);
+        // Nada de caixa dizendo "salvo": o botão já diz. E o recado do idioma
+        // agora fica FIXO na tela, desde a escolha e até o app ser reaberto —
+        // uma caixa modal aparece tarde e some ao ser fechada no automático.
+        if (!languageChanged) return;
     }
 
     public void Dispose()

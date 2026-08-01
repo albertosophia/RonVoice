@@ -29,8 +29,31 @@
             <TextBlock Text="Idioma" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
             <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding Language}"
                       Padding="6,4" HorizontalAlignment="Left" MinWidth="120" />
-            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" Margin="0,4,0,0"
-                       Text="Trocar o idioma recarrega o modelo e leva alguns segundos." />
+            <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
+                       Text="O reconhecimento monta a lista de palavras uma vez, ao abrir. Trocar o idioma só passa a valer quando você reabrir o RonVoice." />
+            <!--
+                Aparece assim que a pessoa escolhe, e não depois de salvar: quem
+                só estava olhando as opções merece saber o preço antes de pagar.
+                E CONTINUA aparecendo depois de salvar, porque salvar não
+                resolve — o arquivo já tem o idioma novo e o reconhecimento
+                segue no antigo até reabrir.
+            -->
+            <Border Background="{StaticResource Panel}" BorderBrush="{StaticResource Signal}"
+                    BorderThickness="1" CornerRadius="3" Padding="10,7" Margin="0,8,0,0"
+                    HorizontalAlignment="Left">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding LanguageNeedsRestart}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Foreground="{StaticResource Signal}" FontSize="11" TextWrapping="Wrap"
+                           Text="Feche e abra o RonVoice para o reconhecimento passar a este idioma." />
+            </Border>
 
 
             <TextBlock Text="Modo de escuta" FontWeight="SemiBold" FontSize="13" Margin="0,20,0,4" />
@@ -69,8 +92,44 @@
             <TextBlock Foreground="{StaticResource Muted}" FontSize="11" TextWrapping="Wrap" Margin="0,4,0,0"
                        Text="Zero desliga. Suba só se o app disparar ordens sem você querer — cada passo torna o reconhecimento mais exigente." />
 
-            <Button Content="Salvar" Padding="18,6" Margin="0,24,0,0"
-                    HorizontalAlignment="Left" Command="{Binding SaveCommand}" />
+            <!--
+                O botão diz em qual dos dois estados você está. Um "Salvar"
+                sempre clicável não distingue "já salvei" de "esqueci de
+                salvar", e quem mexe numa caixa e sai da aba não tem como saber.
+            -->
+            <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
+                <Button Padding="18,6" HorizontalAlignment="Left"
+                        Command="{Binding SaveCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Content" Value="Salvar alterações" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="False">
+                                    <Setter Property="Content" Value="Salvo" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <TextBlock VerticalAlignment="Center" Margin="12,0,0,0" FontSize="11"
+                           Foreground="{StaticResource Signal}"
+                           Text="há mudanças que ainda não foram salvas">
+                    <TextBlock.Style>
+                        <!-- BasedOn obrigatório: sem ele o estilo local SUBSTITUI
+                             o do tema, e o texto sai com a cor de fábrica. -->
+                        <Style TargetType="TextBlock"
+                               BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasUnsavedChanges}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
 
         </StackPanel>
     </ScrollViewer>
