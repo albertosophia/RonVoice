@@ -135,8 +135,12 @@ public sealed class StatusBarViewModel : ObservableBase
 
             chips.Add(new StatusChip("microfone", MicrophoneName));
             chips.Add(new StatusChip("modelo", Language));
-            chips.Add(new StatusChip(
-                "envio", SendMode == SendMode.RonSpeech ? "mod RoNSpeech" : "menu"));
+            chips.Add(new StatusChip("envio", SendMode switch
+            {
+                SendMode.Mailbox => "mod",
+                SendMode.RonSpeech => "mod RoNSpeech",
+                _ => "menu",
+            }));
 
             if (!Portable)
                 chips.Add(new StatusChip("configuração fora da pasta do programa"));

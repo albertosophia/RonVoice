@@ -1,4 +1,5 @@
 using RonVoice.App.ViewModels;
+using RonVoice.Core.Commands;
 using RonVoice.Core.Config;
 
 namespace RonVoice.Tests;
@@ -114,4 +115,29 @@ public class SettingsViewModelTests
     [Fact]
     public void ExposesTheDeviceListForTheDropdown() =>
         Assert.Equal(3, Vm().Microphones.Count);
+
+    /// <summary>
+    /// O caminho de envio nao tem interruptor na tela, entao ele so' sobrevive
+    /// se a ida e volta preservar. Achatar em "RoNSpeech ou menu" jogaria fora
+    /// justamente o modo novo: quem salvasse qualquer outra coisa — o
+    /// microfone, o idioma — voltaria calado para as 32 ordens antigas.
+    /// </summary>
+    [Theory]
+    [InlineData(SendMode.Mailbox)]
+    [InlineData(SendMode.RonSpeech)]
+    [InlineData(SendMode.Menu)]
+    public void TheSendPathSurvivesARoundTrip(SendMode modo)
+    {
+        var vm = Vm(AppSettings.Default with { SendMode = modo });
+
+        Assert.Equal(modo, vm.ToSettings().SendMode);
+    }
+
+    /// <summary>
+    /// Quem instala e nao mexe em nada tem que cair no caminho que alcanca as
+    /// 70 ordens, nao nas 32 do RoNSpeech.
+    /// </summary>
+    [Fact]
+    public void OutOfTheBoxItSendsThroughTheMod() =>
+        Assert.Equal(SendMode.Mailbox, AppSettings.Default.SendMode);
 }

@@ -32,7 +32,7 @@ public sealed class SettingsViewModel : ObservableBase
         _usePushToTalk = initial.Mode == ListenModeSetting.PushToTalk;
         _pushToTalkKey = initial.PushToTalkKey;
         _confidenceThreshold = initial.ConfidenceThreshold;
-        UseRonSpeech = initial.SendMode == SendMode.RonSpeech;
+        SendMode = initial.SendMode;
 
         SaveCommand = new RelayCommand(_ => { }, _ => false);
         BrowseCommand = new RelayCommand(_ => { }, _ => false);
@@ -112,11 +112,12 @@ public sealed class SettingsViewModel : ObservableBase
     }
 
     /// <summary>
-    /// O caminho de envio, so' para ida e volta ao arquivo. Nao ha interruptor
-    /// na tela: o mod RoNSpeech e' requisito. Quem editar o settings.json a mao
-    /// para voltar ao menu tem a escolha preservada em vez de sobrescrita.
+    /// O caminho de envio, só para ida e volta ao arquivo. Não há interruptor na
+    /// tela: o mod é requisito. Guardado inteiro, e não achatado num "usa mod ou
+    /// não" — são três caminhos, e reduzir a dois jogaria fora justamente o novo.
+    /// Quem editar o settings.json à mão tem a escolha preservada.
     /// </summary>
-    public bool UseRonSpeech { get; }
+    public SendMode SendMode { get; }
 
     /// <summary>Ligados na integração, que é quem sabe persistir e reaplicar.</summary>
     public RelayCommand SaveCommand { get; set; }
@@ -140,5 +141,5 @@ public sealed class SettingsViewModel : ObservableBase
         PushToTalkKey,
         ConfidenceThreshold,
         SelectedMicrophoneName,
-        UseRonSpeech ? SendMode.RonSpeech : SendMode.Menu);
+        SendMode);
 }

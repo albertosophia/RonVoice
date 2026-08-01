@@ -13,8 +13,22 @@ public enum SendMode
     /// <summary>
     /// Uma tecla do mod UE4SS RoNSpeech, que chama as funções do jogo direto.
     /// É o que funciona em VR, onde o menu abre mas não aceita os dígitos.
+    ///
+    /// Chega a 32 das 70 ordens, e não tem como chegar mais longe: o Windows
+    /// para no F24. Fica como caminho de recuo enquanto o <see cref="Mailbox"/>
+    /// não estiver conferido em jogo.
     /// </summary>
     RonSpeech,
+
+    /// <summary>
+    /// Deixa o pedido num arquivo que o RonVoiceMod lê. Sem tecla nenhuma, e
+    /// por isso sem teto: alcança as 65 ordens que não são tecla direta.
+    ///
+    /// É também o único caminho que responde. SendInput entrega ao Windows e
+    /// nunca conta se o jogo agiu; o mod devolve recibo, então "não funcionou"
+    /// vira uma frase na tela em vez de silêncio.
+    /// </summary>
+    Mailbox,
 }
 
 /// <summary>
@@ -123,6 +137,16 @@ public sealed class CommandResolver
     /// reabrir o app, e o pipeline guarda este resolvedor.
     /// </summary>
     public SendMode Mode { get; set; } = SendMode.Menu;
+
+    /// <summary>
+    /// Se a ordem já é uma tecla do jogo, e não um caminho pelo menu. Estas não
+    /// passam por mod nenhum em modo nenhum: não há menu para pular, e elas nem
+    /// aparecem na tabela do RonVoiceMod.
+    /// </summary>
+    public bool IsDirectKey(string? orderId) =>
+        orderId is { } id
+        && _map.Orders.GetValueOrDefault(id) is { Path.Count: > 0 } order
+        && order.Path[0].StartsWith("KEY:", StringComparison.Ordinal);
 
     public KeySequence Resolve(Intent intent)
     {

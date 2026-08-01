@@ -38,9 +38,9 @@ public sealed class CommandsViewModel : ObservableBase
         IReadOnlyList<PhraseIssue>? issues = null,
         string? storePath = null,
         string language = "en",
-        bool sendingViaMod = false)
+        bool limitedByRonSpeech = false)
     {
-        SendingViaMod = sendingViaMod;
+        LimitedByRonSpeech = limitedByRonSpeech;
         _map = map;
         _storePath = storePath;
         _language = language;
@@ -64,7 +64,7 @@ public sealed class CommandsViewModel : ObservableBase
     /// as que o mod não cobre precisam aparecer marcadas, senão falar uma delas
     /// não faz nada e parece bug.
     /// </summary>
-    public bool SendingViaMod { get; }
+    public bool LimitedByRonSpeech { get; }
 
     public int UnavailableCount => _all.Count(o => o.UnavailableInCurrentMode);
 
@@ -124,7 +124,7 @@ public sealed class CommandsViewModel : ObservableBase
         var row = new OrderRowViewModel(
             order,
             custom is not null && custom.TryGetValue(order.Id, out var c) ? c : null,
-            SendingViaMod);
+            LimitedByRonSpeech);
 
         row.AddCommand = new RelayCommand(_ => AddPhrase(row), _ => CanEdit);
         row.RemoveCommand = new RelayCommand(

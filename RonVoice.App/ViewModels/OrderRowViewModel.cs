@@ -10,15 +10,15 @@ public sealed class OrderRowViewModel : ObservableBase
     string _draft = "";
     string? _draftError;
 
-    readonly bool _sendingViaMod;
+    readonly bool _limitedByRonSpeech;
 
     public OrderRowViewModel(
         OrderDefinition order,
         IEnumerable<string>? customPhrases = null,
-        bool sendingViaMod = false)
+        bool limitedByRonSpeech = false)
     {
         _order = order;
-        _sendingViaMod = sendingViaMod;
+        _limitedByRonSpeech = limitedByRonSpeech;
         CustomPhrases = new ObservableCollection<string>(customPhrases ?? []);
         CustomPhrases.CollectionChanged += (_, _) =>
         {
@@ -61,7 +61,7 @@ public sealed class OrderRowViewModel : ObservableBase
     /// esta frase agora não faz nada. Um bool só, porque é o que a tela precisa
     /// perguntar, e sem ele o silêncio pareceria bug.
     /// </summary>
-    public bool UnavailableInCurrentMode => _sendingViaMod && !SupportsRonSpeech;
+    public bool UnavailableInCurrentMode => _limitedByRonSpeech && !SupportsRonSpeech;
 
     public IReadOnlyList<string> PhrasesEn =>
         _order.Phrases.TryGetValue("en", out var p) ? p : [];

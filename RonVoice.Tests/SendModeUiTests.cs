@@ -13,22 +13,37 @@ public class SendModeUiTests
 {
     static CommandMap Map() => CommandMap.Load(CommandMapTests.MapPath);
 
-    static CommandsViewModel Catalogue(bool viaMod) =>
-        new(Map(), null, null, null, "en", sendingViaMod: viaMod);
+    static CommandsViewModel Catalogue(SendMode modo) =>
+        new(Map(), null, null, null, "en",
+            limitedByRonSpeech: modo == SendMode.RonSpeech);
 
     /// <summary>
-    /// O mod passou a ser requisito do RonVoice, entao e' o padrao e nao ha
-    /// interruptor na tela. O caminho do menu sobrevive no codigo porque em VR
-    /// ele nao funciona e oferecer os dois convidava a escolher o que quebra.
+    /// Quem instala e nao mexe em nada tem que cair no caminho que alcanca as 70
+    /// ordens. O RoNSpeech para nas 32 e nao tem como passar disso — o Windows
+    /// acaba no F24 — entao ele deixou de ser o padrao.
     /// </summary>
     [Fact]
     public void TheModIsTheDefaultBecauseItIsNowRequired() =>
-        Assert.Equal(SendMode.RonSpeech, AppSettings.Default.SendMode);
+        Assert.Equal(SendMode.Mailbox, AppSettings.Default.SendMode);
+
+    /// <summary>
+    /// Pelo RonVoiceMod nao falta ordem nenhuma: as 65 que passam pelo menu
+    /// estao na tabela dele, e as 5 restantes ja' eram tecla direta. O "38 nao
+    /// funcionam" some do catalogo, e some porque deixou de ser verdade.
+    /// </summary>
+    [Fact]
+    public void NothingIsMissingOnTheMailboxPath()
+    {
+        var vm = Catalogue(SendMode.Mailbox);
+
+        Assert.False(vm.HasUnavailable);
+        Assert.Equal(0, vm.UnavailableCount);
+    }
 
     [Fact]
     public void NothingIsMarkedUnavailableOnTheMenuPath()
     {
-        var vm = Catalogue(viaMod: false);
+        var vm = Catalogue(SendMode.Menu);
 
         Assert.False(vm.HasUnavailable);
         Assert.Equal(0, vm.UnavailableCount);
@@ -37,7 +52,7 @@ public class SendModeUiTests
     [Fact]
     public void OnTheModPathTheOrdersItDoesNotCoverAreMarked()
     {
-        var vm = Catalogue(viaMod: true);
+        var vm = Catalogue(SendMode.RonSpeech);
 
         Assert.True(vm.HasUnavailable);
         Assert.Equal(38, vm.UnavailableCount);
@@ -47,7 +62,7 @@ public class SendModeUiTests
     [Fact]
     public void AnOrderTheModCoversIsNotMarked()
     {
-        var row = Catalogue(viaMod: true).Groups
+        var row = Catalogue(SendMode.RonSpeech).Groups
             .SelectMany(g => g.Orders).First(o => o.Id == "door.open.flashbang");
 
         Assert.True(row.SupportsRonSpeech);
@@ -61,11 +76,11 @@ public class SendModeUiTests
 
         // O catálogo abre filtrado em Funcionam, então esta ordem só aparece
         // quando se pede a lista das que ainda não têm tecla no mod.
-        var pending = Catalogue(viaMod: true);
+        var pending = Catalogue(SendMode.RonSpeech);
         pending.Shown = Availability.Pending;
 
         var viaMod = pending.Groups.SelectMany(g => g.Orders).First(o => o.Id == id);
-        var viaMenu = Catalogue(viaMod: false).Groups
+        var viaMenu = Catalogue(SendMode.Menu).Groups
             .SelectMany(g => g.Orders).First(o => o.Id == id);
 
         Assert.False(viaMod.SupportsRonSpeech);
@@ -91,7 +106,7 @@ public class SendModeUiTests
 
     [Fact]
     public void TheModeRoundTripsThroughToSettings() =>
-        Assert.Equal(SendMode.RonSpeech, Settings(AppSettings.Default).ToSettings().SendMode);
+        Assert.Equal(SendMode.Mailbox, Settings(AppSettings.Default).ToSettings().SendMode);
 
     // ---- barra de estado ----
 
@@ -103,6 +118,9 @@ public class SendModeUiTests
 
         bar.SendMode = SendMode.RonSpeech;
         Assert.Contains("envio: mod RoNSpeech", bar.Summary);
+
+        bar.SendMode = SendMode.Mailbox;
+        Assert.Contains("envio: mod", bar.Summary);
     }
 
     /// <summary>

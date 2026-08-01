@@ -16,6 +16,7 @@ public sealed class VoicePipeline
     readonly PhraseMatcher _matcher;
     readonly CommandResolver _resolver;
     readonly IInputSender _sender;
+    readonly MailboxDelivery? _delivery;
     readonly double _confidenceThreshold;
     bool _gateWasOpen = true;
 
@@ -44,13 +45,15 @@ public sealed class VoicePipeline
         PhraseMatcher matcher,
         CommandResolver resolver,
         IInputSender sender,
-        double confidenceThreshold = 0.0)
+        double confidenceThreshold = 0.0,
+        MailboxDelivery? delivery = null)
     {
         _engine = engine;
         _gate = gate;
         _matcher = matcher;
         _resolver = resolver;
         _sender = sender;
+        _delivery = delivery;
         _confidenceThreshold = confidenceThreshold;
     }
 
@@ -136,6 +139,12 @@ public sealed class VoicePipeline
 
         Matched?.Invoke(intent);
 
+        if (_resolver.Mode == SendMode.Mailbox && _delivery is not null && !IsAlreadyAKey(intent))
+        {
+            SendViaMod(intent, result.Text);
+            return;
+        }
+
         KeySequence sequence;
         try { sequence = _resolver.Resolve(intent); }
         catch (ResolveException ex)
@@ -150,4 +159,47 @@ public sealed class VoicePipeline
         if (!DryRun) _sender.Send(sequence);
         Sent?.Invoke(sequence);
     }
+
+    /// <summary>
+    /// Ordem que já é uma tecla do jogo, e não um caminho pelo menu. Não há menu
+    /// para o mod pular, então ela não está na tabela dele: mandá-la pela caixa
+    /// seria pedir uma coisa que o mod não conhece, e a ordem morreria no
+    /// recibo. "Execute" é uma dessas, e é das mais faladas que existem.
+    /// </summary>
+    bool IsAlreadyAKey(Intent intent) => _resolver.IsDirectKey(intent.OrderId);
+
+    /// <summary>
+    /// Manda pelo mod. Não passa pelo resolvedor: aqui não há tecla nenhuma
+    /// para resolver, e mandar tecla junto faria a ordem sair duas vezes — uma
+    /// pelo menu, outra pelo mod.
+    /// </summary>
+    void SendViaMod(Intent intent, string heard)
+    {
+        // Em DryRun não se escreve o arquivo: por este caminho, escrever JÁ é
+        // mandar. É o que deixa a aba de teste ser usada no meio da missão.
+        if (DryRun)
+        {
+            Sent?.Invoke(NoKeys);
+            return;
+        }
+
+        var entrega = _delivery!.Deliver(intent);
+
+        // O mod é a única ponta que sabe se o jogo agiu, então o que ele
+        // responde é o que a tela mostra. Engolir isso traria de volta o
+        // silêncio que este caminho existe para acabar.
+        if (!entrega.Ok)
+        {
+            Rejected?.Invoke(new Rejection(RejectionReason.Unresolvable, heard, entrega.Problem));
+            return;
+        }
+
+        Sent?.Invoke(NoKeys);
+    }
+
+    /// <summary>
+    /// Pelo mod não sai tecla, e o evento carrega teclas. Vazio é a verdade —
+    /// quem escuta mostra a ordem, não a fiação.
+    /// </summary>
+    static readonly KeySequence NoKeys = new([]);
 }

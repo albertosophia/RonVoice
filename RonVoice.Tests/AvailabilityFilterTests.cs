@@ -12,7 +12,7 @@ public class AvailabilityFilterTests
 {
     static CommandsViewModel Vm() =>
         new(CommandMap.Load(CommandMapTests.MapPath), null, null, null, "pt",
-            sendingViaMod: true);
+            limitedByRonSpeech: true);
 
     static IReadOnlyList<string> Shown(CommandsViewModel vm) =>
         [.. vm.Groups.SelectMany(g => g.Orders).Select(o => o.Id)];

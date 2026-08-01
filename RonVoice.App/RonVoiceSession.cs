@@ -26,6 +26,7 @@ public sealed class RonVoiceSession : IDisposable
     readonly CommandMap _map;
     readonly IReadOnlyDictionary<string, string> _binds;
     readonly CommandResolver _resolver;
+    readonly CommandMailbox _mailbox;
     readonly ListenGate _gate;
     readonly VoskSpeechEngine _engine;
     readonly VoicePipeline _pipeline;
@@ -88,12 +89,19 @@ public sealed class RonVoiceSession : IDisposable
             ModelLocator.Find(settings.Language, modelsDir),
             GrammarBuilder.Build(_map, settings.Language));
 
+        // A caixa fica limpa ao abrir: um recibo velho de uma sessão anterior
+        // responderia pela primeira ordem desta, e ela pareceria ter funcionado
+        // sem o jogo nem estar aberto.
+        _mailbox = new CommandMailbox();
+        _mailbox.Reset();
+
         _pipeline = new VoicePipeline(
             _engine, _gate,
             new PhraseMatcher(_map, settings.Language),
             _resolver,
             new SendInputSender(),
-            settings.ConfidenceThreshold);
+            settings.ConfidenceThreshold,
+            new MailboxDelivery(_mailbox));
         _pipeline.Start();
 
         // Pelo NOME, não pela posição: a enumeração se desloca quando um
@@ -127,7 +135,7 @@ public sealed class RonVoiceSession : IDisposable
         _main.Commands = new CommandsViewModel(
             _map, custom.Accepted, custom.Issues,
             CustomPhrasesPath(settingsPath), settings.Language,
-            sendingViaMod: settings.SendMode == SendMode.RonSpeech);
+            limitedByRonSpeech: settings.SendMode == SendMode.RonSpeech);
         _main.Test = new TestViewModel(_map);
         _main.Checks = new ChecksViewModel();
         _main.Settings = new SettingsViewModel(settings, devices, _binds);
@@ -381,7 +389,7 @@ public sealed class RonVoiceSession : IDisposable
         _main.Commands = new CommandsViewModel(
             custom.Map, custom.Accepted, custom.Issues,
             CustomPhrasesPath(_settingsPath), _settings.Language,
-            sendingViaMod: _settings.SendMode == SendMode.RonSpeech);
+            limitedByRonSpeech: _settings.SendMode == SendMode.RonSpeech);
         _main.Commands.ReloadCommand = new RelayCommand(_ => ReloadCustomPhrases());
         _main.Commands.SendCommand = new RelayCommand(
             p => _ = SendToGameAsync((OrderRowViewModel)p!), _ => GameIsRunning());
@@ -522,6 +530,11 @@ public sealed class RonVoiceSession : IDisposable
     /// </summary>
     string KeysFor(Intent intent)
     {
+        // Pelo mod não sai tecla nenhuma. Mostrar a do RoNSpeech aqui seria
+        // mostrar uma tecla que ninguém apertou — e quem lesse iria testá-la.
+        if (_settings.SendMode == SendMode.Mailbox && !_resolver.IsDirectKey(intent.OrderId))
+            return "pelo mod";
+
         var parts = new List<string>();
 
         if (intent.Element is { } element

@@ -81,7 +81,7 @@ public class CommandsViewSmokeTests(WpfFixture wpf)
             {
                 DataContext = new CommandsViewModel(
                     CommandMap.Load(CommandMapTests.MapPath),
-                    null, null, null, "en", sendingViaMod: true),
+                    null, null, null, "en", limitedByRonSpeech: true),
             };
             view.Measure(new Size(1000, 8000));
             view.Arrange(new Rect(0, 0, 1000, 8000));
