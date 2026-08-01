@@ -1,5 +1,7 @@
 # RonVoice
 
+**Português** · [English](README.en.md)
+
 Controle por voz para o esquadrão de **Ready or Not**. Você fala, eles obedecem.
 
 Funciona na tela e em VR. É gratuito, roda offline — nada do que você fala sai
