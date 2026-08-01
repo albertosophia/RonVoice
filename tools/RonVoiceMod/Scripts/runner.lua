@@ -42,7 +42,18 @@ function M.tick(state, deps)
     -- Ja' respondido: o arquivo so' some quando chega outro pedido.
     if state.lastDone == req.sequence then return "ja respondido" end
 
-    local mundo = deps.world
+    -- So' AQUI se toca no jogo. Ler o Pawn, o widget e o ator mirado e' o que
+    -- mais arrisca derrubar tudo, e uma queda nativa nao e' erro de Lua:
+    -- nenhum pcall pega, nada vai para o log, o jogo simplesmente fecha. O
+    -- gancho dispara junto com a camera, entao olhar a esmo seria arriscar
+    -- centenas de vezes por minuto sem ter ordem nenhuma para executar.
+    local mundo = deps.world()
+    if not mundo then
+        deps.mailbox.acknowledge(req.sequence, "o jogo ainda nao esta pronto")
+        state.lastDone = req.sequence
+        return "sem mundo"
+    end
+
     local ctx = {
         target = mundo.target,
         team = M.teamFor(req.element, mundo.activeTeam),

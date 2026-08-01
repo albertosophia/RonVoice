@@ -43,6 +43,11 @@ end
 --- A porta (ou pessoa) que o jogador esta mirando. O jogo guarda isso no widget
 --- do menu de comandos; uma porta dupla responde pela folha principal, entao a
 --- sub-porta precisa ser resolvida ou a ordem vai para a metade errada.
+---
+--- O nome e' conferido ANTES de ler bMainSubDoor, e nao depois: essas
+--- propriedades so' existem em porta. Le-las num civil ou num movel derruba o
+--- jogo por dentro, sem erro de Lua e sem uma linha no log. E' o que o RoNSpeech
+--- faz, e foi por nao fazer que este mod caiu na primeira vez.
 local function alvoMirado(pawn)
     local widget = pawn.SwatCommandWidget
     if not widget then return nil end
@@ -50,12 +55,27 @@ local function alvoMirado(pawn)
     local ator = widget.LastContextActor
     if not ator or not ator:IsValid() then return nil end
 
+    if not string.find(ator:GetFullName(), "Door") then return ator end
+
     if ator.bMainSubDoor == true then return ator end
     if ator.DriveSubDoor and ator.DriveSubDoor:IsValid() then return ator.DriveSubDoor end
     return ator
 end
 
---- Tudo que o dispatch precisa saber do mundo, junto num lugar so'.
+--- O time ativo como NUMERO simples. ActiveTeamType vem do jogo como
+--- propriedade de enum, e entregar isso a uma chamada nativa que espera um byte
+--- e' pedir para cair. O RoNSpeech guarda um numero Lua e comeca em 5 — ouro,
+--- o esquadrao inteiro — que e' o padrao menos surpreendente quando nao se sabe.
+local OURO = 5
+local function timeAtivo(pawn)
+    local widget = pawn.SwatCommandWidget
+    if not widget then return OURO end
+    return tonumber(widget.ActiveTeamType) or OURO
+end
+
+--- Tudo que o dispatch precisa saber do mundo, junto num lugar so'. Chamado
+--- SO' quando ha' ordem para executar: cada leitura aqui mexe com objeto do
+--- jogo, e fazer isso a esmo e' arriscar sem ter o que ganhar.
 local function mundo()
     local controller = UEHelpers:GetPlayerController()
     if not controller or not controller.Pawn or not controller.Pawn:IsValid() then return nil end
@@ -65,7 +85,7 @@ local function mundo()
         target = alvoMirado(pawn),
         location = pawn:K2_GetActorLocation(),
         up = pawn:GetActorUpVector(),
-        activeTeam = pawn.SwatCommandWidget and pawn.SwatCommandWidget.ActiveTeamType or 1,
+        activeTeam = timeAtivo(pawn),
         findClass = StaticFindObject,
         pawn = pawn,
     }
@@ -84,13 +104,19 @@ local function quadro()
     if agora - ultimaLeitura < INTERVALO then return end
     ultimaLeitura = agora
 
-    local m = mundo()
-    if not m then return end
+    -- O mundo entra como FUNCAO: o runner so' a chama depois de achar um pedido
+    -- novo. Fora isso, este gancho — que dispara junto com a camera — nao lê
+    -- nada do jogo. Nao e' economia de tempo, e' de risco: uma leitura errada
+    -- num objeto do jogo fecha tudo sem erro de Lua e sem uma linha no log.
+    local atual = nil
 
     runner.tick(estado, {
         mailbox = mailbox,
-        world = m,
-        call = function(plano) executa(plano, m) end,
+        world = function()
+            atual = mundo()
+            return atual
+        end,
+        call = function(plano) executa(plano, atual) end,
     })
 end
 

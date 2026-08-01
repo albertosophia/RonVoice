@@ -34,6 +34,7 @@ class Cenario:
         self.alvo = alvo
         self.chamadas = []
         self.recibos = []
+        self.olhadas = 0   # quantas vezes o mundo do jogo foi tocado
 
     def deps(self):
         caixa = self.lua.table_from({
@@ -46,14 +47,20 @@ class Cenario:
                 raise RuntimeError("o jogo recusou")
             self.chamadas.append(plano.fn)
 
-        return self.lua.table_from({
-            "mailbox": caixa,
-            "call": chama,
-            "world": self.lua.table_from({
+        def mundo():
+            # Ler o Pawn, o widget e o ator mirado e' o que mais arrisca derrubar
+            # o jogo. So' pode acontecer quando ha' de fato uma ordem para rodar.
+            self.olhadas += 1
+            return self.lua.table_from({
                 "target": self.alvo, "location": "LOCAL", "up": "CIMA",
                 "activeTeam": 1,
                 "findClass": self.lua.eval("function(c) return 'classe:' .. c end"),
-            }),
+            })
+
+        return self.lua.table_from({
+            "mailbox": caixa,
+            "call": chama,
+            "world": mundo,
         })
 
 
@@ -137,6 +144,25 @@ def main():
     # e o pedido fica marcado como respondido, senao tenta de novo para sempre
     runner.tick(estado, c.deps())
     checa("nao insiste no que falhou", len(c.recibos) == 1, str(c.recibos))
+
+    # --- SEM ORDEM, NAO SE TOCA NO JOGO.
+    #
+    # Ler o Pawn, o widget e o ator mirado e' o que mais arrisca derrubar o jogo,
+    # e uma queda nativa nao e' erro de Lua: nenhum pcall pega, nada vai para o
+    # log, o jogo simplesmente fecha. O gancho dispara junto com a camera, entao
+    # fazer isso a esmo seria arriscar centenas de vezes por minuto para nada.
+    c = Cenario(lua, pedido=None)
+    estado = runner.newState()
+    for _ in range(20):
+        runner.tick(estado, c.deps())
+    checa("sem pedido nao olha o jogo", c.olhadas == 0, f"{c.olhadas} olhadas")
+
+    # --- e nao se olha de novo enquanto o pedido ja' foi respondido.
+    c = Cenario(lua, pedido=pedido(3, "hold"))
+    estado = runner.newState()
+    for _ in range(20):
+        runner.tick(estado, c.deps())
+    checa("olha uma vez por pedido", c.olhadas == 1, f"{c.olhadas} olhadas")
 
     # --- o elemento escolhe o time. Red=1, Blue=2, Gold=5, como o RoNSpeech faz.
     for elemento, time in [("red", 1), ("blue", 2), ("gold", 5), (None, 1)]:
