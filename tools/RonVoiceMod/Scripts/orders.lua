@@ -92,14 +92,19 @@ M.orders = {
     ["door.stack.right"] = { call = "stack", position = 3, verify = true },
 
     -- ---- porta: espiar ----
-    -- EDoorScanMethod diz Slide=1 Slice=2 Snap=3. O RoNSpeech manda 2 tanto no
-    -- issuePeek quanto no issueCheckTrap, entao a leitura dele nao ajuda aqui.
+    -- EDoorScanMethod diz Slide=1 Slice=2 Snap=3, mas o que manda aqui e' o que
+    -- essas frases JA' faziam: o RoNSpeech chama GiveScanDoorCommand com 2 no
+    -- issuePeek e no issueCheckTrap modificado. Trocar por 3 "porque o enum diz
+    -- Snap" quebrou o peek de quem ja' usava.
     ["door.scan.slide"] = { call = "scan", method = 1, verify = true },
     ["door.scan.pie"]   = { call = "scan", method = 2 },
-    ["door.scan.peek"]  = { call = "scan", method = 3, verify = true },
+    ["door.scan.peek"]  = { call = "scan", method = 2 },
 
     -- ---- porta: o resto ----
-    ["door.mirror"]   = { call = "checkcontacts", verify = true },
+    -- "mirror" nunca foi soltar o espelho: e' com ele que se checa armadilha
+    -- embaixo da porta, e nao existe funcao de soltar espelho. E' o que a tecla
+    -- F23 do RoNSpeech sempre fez.
+    ["door.mirror"]   = { call = "checktraps" },
     ["door.wedge"]    = { call = "wedge" },
     ["door.cover"]    = { call = "cover" },
     ["door.toggle"]   = { call = "opendoor" },

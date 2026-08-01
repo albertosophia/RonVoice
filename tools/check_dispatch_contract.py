@@ -82,6 +82,14 @@ CASOS = [
      ["ALVO", 1, "LOCAL", "CIMA", True, 3]),
 
     ("door.scan.pie", {}, "GiveScanDoorCommand", ["ALVO", 1, "LOCAL", 2]),
+
+    # Estas duas nao sao leitura de enum: sao o que o RoNSpeech faz na tecla, e
+    # portanto o que essas frases JA' faziam no jogo. "mirror" nunca foi soltar
+    # o espelho — e' com o espelho que se checa armadilha embaixo da porta, e a
+    # funcao e' essa. Trocar isso por outra parecida quebrou o comando de quem
+    # ja' usava, e quebrou calado.
+    ("door.mirror", {}, "GiveCheckForTrapsCommand", ["ALVO", 1, "LOCAL", "CIMA"]),
+    ("door.scan.peek", {}, "GiveScanDoorCommand", ["ALVO", 1, "LOCAL", 2]),
     ("door.toggle", {}, "GiveOpenDoorCommand", ["ALVO", 1, "LOCAL"]),
     ("door.picklock", {}, "GivePickLockCommand", ["ALVO", 1, "LOCAL"]),
     ("door.wedge", {}, "GiveWedgeDoorCommand", ["ALVO", 1, "LOCAL"]),

@@ -15,16 +15,23 @@ public class GrammarBuilderTests
     public void ProducesValidJsonArray() =>
         Assert.NotEmpty(Parse(GrammarBuilder.Build(Map(), "en")));
 
+    /// <summary>
+    /// COM acento, e não na forma dobrada que o casamento usa. O vocabulário do
+    /// modelo português tem "lança" e não conhece "lanca": entregar a grafia sem
+    /// acento faz o Vosk descartar a palavra com um aviso que ninguém lê, e a
+    /// frase deixa de ser ouvível — sem erro, sem falha de teste, sem nada.
+    /// Aconteceu com 107 frases.
+    /// </summary>
     [Theory]
-    [InlineData("en", 399)]
-    [InlineData("pt", 371)]
+    [InlineData("en", 438)]
+    [InlineData("pt", 427)]
     public void ContainsEveryOrderPhraseOfTheLanguage(string lang, int expected)
     {
         var grammar = Parse(GrammarBuilder.Build(Map(), lang));
         var orderPhrases = Map().Orders.Values.SelectMany(o => o.Phrases[lang]).ToList();
         Assert.Equal(expected, orderPhrases.Count);
         foreach (var p in orderPhrases)
-            Assert.Contains(string.Join(' ', TextNormalizer.Tokenize(p)), grammar);
+            Assert.Contains(string.Join(' ', TextNormalizer.TokenizeKeepingAccents(p)), grammar);
     }
 
     [Fact]

@@ -27,16 +27,19 @@ public static class VerbForms
     /// </summary>
     /// <remarks>
     /// O lado informal precisa bater LETRA POR LETRA com o que está no
-    /// ron_commands.json, inclusive na ausência de acento: o mapa escreve
-    /// "avanca", "calca", "lanca" e "poe" sem cedilha nem til. Escrever
-    /// "avança" aqui não dá erro — a chave simplesmente nunca casa e a
-    /// variante desaparece calada. TheInformalSideMatchesTheMap prende isso.
+    /// ron_commands.json, acento inclusive. Escrever aqui uma grafia que o
+    /// mapa não usa não dá erro: a chave simplesmente nunca casa e a variante
+    /// desaparece calada. TheInformalSideMatchesTheMap prende isso.
+    ///
+    /// O mapa já escreveu "avanca" e "lanca" sem cedilha, e o modelo de voz
+    /// português não conhece essas grafias — ele nunca ouviria a frase. Os
+    /// acentos voltaram ao mapa por isso, e esta tabela seguiu junto.
     /// </remarks>
     static readonly (string Informal, string Formal)[] PtPairs =
     [
         ("abre", "abra"), ("aguarda", "aguarde"), ("algema", "algeme"),
         ("amarra", "amarre"), ("arromba", "arrombe"), ("assegura", "assegure"),
-        ("atira", "atire"), ("avanca", "avance"), ("calca", "calce"),
+        ("atira", "atire"), ("avança", "avance"), ("calca", "calce"),
         ("chuta", "chute"), ("cobre", "cubra"), ("completa", "complete"),
         ("confirma", "confirme"), ("deita", "deite"), ("desarma", "desarme"),
         ("desliza", "deslize"), ("destranca", "destranque"), ("detona", "detone"),
@@ -44,7 +47,7 @@ public static class VerbForms
         ("escaneia", "escaneie"), ("espera", "espere"), ("espia", "espie"),
         ("executa", "execute"), ("explode", "exploda"), ("fatia", "fatie"),
         ("fecha", "feche"), ("fica", "fique"), ("forma", "forme"),
-        ("gaseia", "gaseie"), ("joga", "jogue"), ("lanca", "lance"),
+        ("gaseia", "gaseie"), ("joga", "jogue"), ("lança", "lance"),
         ("leva", "leve"), ("limpa", "limpe"), ("manda", "mande"),
         ("marca", "marque"), ("move", "mova"), ("muda", "mude"),
         ("neutraliza", "neutralize"), ("olha", "olhe"), ("para", "pare"),

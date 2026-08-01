@@ -70,8 +70,8 @@ public class CorpusTests
     }
 
     [Theory]
-    [InlineData("en", 399)]
-    [InlineData("pt", 371)]
+    [InlineData("en", 438)]
+    [InlineData("pt", 427)]
     public void GeneratedCorpusHasExpectedSize(string lang, int expected) =>
         Assert.Equal(expected, ReadTsv($"{lang}.tsv").Count());
 

@@ -5,67 +5,93 @@ positivo	confirm.default	-	false
 confirma	confirm.default	-	false
 me cobre	cover	-	false
 cobre minhas costas	cover	-	false
-fica de olho atras	cover	-	false
-joga chemlight	deploy.chemlight	-	false
+fica de olho atrás	cover	-	false
+joga luz química	deploy.chemlight	-	false
 marca com luz	deploy.chemlight	-	false
+joga chemlight	deploy.chemlight	-	false
 joga flash	deploy.flashbang	-	false
-solta flashbang	deploy.flashbang	-	false
+solta flash bang	deploy.flashbang	-	false
 joga granada de luz	deploy.flashbang	-	false
+solta flashbang	deploy.flashbang	-	false
 joga gas	deploy.gas	-	false
-solta gas lacrimogeneo	deploy.gas	-	false
+solta gas lacrimogêneo	deploy.gas	-	false
 gaseia	deploy.gas	-	false
 poe o escudo	deploy.shield	-	false
 traz o escudo	deploy.shield	-	false
+joga granada de choque	deploy.stinger	-	false
+solta granada de choque	deploy.stinger	-	false
 joga stinger	deploy.stinger	-	false
 solta stinger	deploy.stinger	-	false
-c2 e limpa	door.breach.c2.clear	-	false
-c2 limpa	door.breach.c2.clear	-	false
-c2 entra e limpa	door.breach.c2.clear	-	false
+c dois e limpa	door.breach.c2.clear	-	false
+c dois limpa	door.breach.c2.clear	-	false
+c dois entra e limpa	door.breach.c2.clear	-	false
 explode e limpa	door.breach.c2.clear	-	false
 explode limpa	door.breach.c2.clear	-	false
 explode entra e limpa	door.breach.c2.clear	-	false
 explode a porta e limpa	door.breach.c2.clear	-	false
 explode a porta limpa	door.breach.c2.clear	-	false
+c2 e limpa	door.breach.c2.clear	-	false
+c2 limpa	door.breach.c2.clear	-	false
+c2 entra e limpa	door.breach.c2.clear	-	false
+c dois com flash	door.breach.c2.flashbang	-	false
+c dois com flash bang	door.breach.c2.flashbang	-	false
+c dois flash e limpa	door.breach.c2.flashbang	-	false
+c dois com granada de luz	door.breach.c2.flashbang	-	false
+explode com flash	door.breach.c2.flashbang	-	false
+explode com flash bang	door.breach.c2.flashbang	-	false
+explode flash e limpa	door.breach.c2.flashbang	-	false
+explode com granada de luz	door.breach.c2.flashbang	-	false
 c2 com flash	door.breach.c2.flashbang	-	false
 c2 com flashbang	door.breach.c2.flashbang	-	false
 c2 flash e limpa	door.breach.c2.flashbang	-	false
 c2 com granada de luz	door.breach.c2.flashbang	-	false
-explode com flash	door.breach.c2.flashbang	-	false
 explode com flashbang	door.breach.c2.flashbang	-	false
-explode flash e limpa	door.breach.c2.flashbang	-	false
-explode com granada de luz	door.breach.c2.flashbang	-	false
-c2 com gas	door.breach.c2.gas	-	false
-c2 com gas lacrimogeneo	door.breach.c2.gas	-	false
-c2 gas e limpa	door.breach.c2.gas	-	false
+c dois com gas	door.breach.c2.gas	-	false
+c dois com gas lacrimogêneo	door.breach.c2.gas	-	false
+c dois gas e limpa	door.breach.c2.gas	-	false
 explode com gas	door.breach.c2.gas	-	false
-explode com gas lacrimogeneo	door.breach.c2.gas	-	false
+explode com gas lacrimogêneo	door.breach.c2.gas	-	false
 explode gas e limpa	door.breach.c2.gas	-	false
 explode a porta com gas	door.breach.c2.gas	-	false
-explode a porta com gas lacrimogeneo	door.breach.c2.gas	-	false
-c2 com lancador	door.breach.c2.launcher	-	false
-c2 com lanca granadas	door.breach.c2.launcher	-	false
-explode com lancador	door.breach.c2.launcher	-	false
-explode com lanca granadas	door.breach.c2.launcher	-	false
-explode a porta com lancador	door.breach.c2.launcher	-	false
-explode a porta com lanca granadas	door.breach.c2.launcher	-	false
-detona a porta com lancador	door.breach.c2.launcher	-	false
-detona a porta com lanca granadas	door.breach.c2.launcher	-	false
-c2 com lider	door.breach.c2.leader	-	false
-c2 espera por mim	door.breach.c2.leader	-	false
-c2 e me espera	door.breach.c2.leader	-	false
+explode a porta com gas lacrimogêneo	door.breach.c2.gas	-	false
+c2 com gas	door.breach.c2.gas	-	false
+c2 com gas lacrimogêneo	door.breach.c2.gas	-	false
+c2 gas e limpa	door.breach.c2.gas	-	false
+c dois com lançador	door.breach.c2.launcher	-	false
+c dois com lança granadas	door.breach.c2.launcher	-	false
+explode com lançador	door.breach.c2.launcher	-	false
+explode com lança granadas	door.breach.c2.launcher	-	false
+explode a porta com lançador	door.breach.c2.launcher	-	false
+explode a porta com lança granadas	door.breach.c2.launcher	-	false
+detona a porta com lançador	door.breach.c2.launcher	-	false
+detona a porta com lança granadas	door.breach.c2.launcher	-	false
+c2 com lançador	door.breach.c2.launcher	-	false
+c2 com lança granadas	door.breach.c2.launcher	-	false
+c dois com lider	door.breach.c2.leader	-	false
+c dois espera por mim	door.breach.c2.leader	-	false
+c dois e me espera	door.breach.c2.leader	-	false
 explode com lider	door.breach.c2.leader	-	false
 explode espera por mim	door.breach.c2.leader	-	false
 explode e me espera	door.breach.c2.leader	-	false
 explode a porta com lider	door.breach.c2.leader	-	false
 explode a porta espera por mim	door.breach.c2.leader	-	false
+c2 com lider	door.breach.c2.leader	-	false
+c2 espera por mim	door.breach.c2.leader	-	false
+c2 e me espera	door.breach.c2.leader	-	false
+c dois com granada de choque	door.breach.c2.stinger	-	false
+c dois com sting	door.breach.c2.stinger	-	false
+c dois granada de choque e limpa	door.breach.c2.stinger	-	false
+c dois com bola de borracha	door.breach.c2.stinger	-	false
+explode com granada de choque	door.breach.c2.stinger	-	false
+explode com sting	door.breach.c2.stinger	-	false
+explode granada de choque e limpa	door.breach.c2.stinger	-	false
+explode com bola de borracha	door.breach.c2.stinger	-	false
 c2 com stinger	door.breach.c2.stinger	-	false
 c2 com sting	door.breach.c2.stinger	-	false
 c2 stinger e limpa	door.breach.c2.stinger	-	false
 c2 com bola de borracha	door.breach.c2.stinger	-	false
 explode com stinger	door.breach.c2.stinger	-	false
-explode com sting	door.breach.c2.stinger	-	false
 explode stinger e limpa	door.breach.c2.stinger	-	false
-explode com bola de borracha	door.breach.c2.stinger	-	false
 chuta e limpa	door.breach.kick.clear	-	false
 chuta limpa	door.breach.kick.clear	-	false
 chuta entra e limpa	door.breach.kick.clear	-	false
@@ -75,27 +101,29 @@ chuta a porta entra e limpa	door.breach.kick.clear	-	false
 arromba chutando e limpa	door.breach.kick.clear	-	false
 arromba chutando limpa	door.breach.kick.clear	-	false
 chuta com flash	door.breach.kick.flashbang	-	false
-chuta com flashbang	door.breach.kick.flashbang	-	false
+chuta com flash bang	door.breach.kick.flashbang	-	false
 chuta flash e limpa	door.breach.kick.flashbang	-	false
 chuta com granada de luz	door.breach.kick.flashbang	-	false
 chuta a porta com flash	door.breach.kick.flashbang	-	false
-chuta a porta com flashbang	door.breach.kick.flashbang	-	false
+chuta a porta com flash bang	door.breach.kick.flashbang	-	false
 chuta a porta flash e limpa	door.breach.kick.flashbang	-	false
 chuta a porta com granada de luz	door.breach.kick.flashbang	-	false
+chuta com flashbang	door.breach.kick.flashbang	-	false
+chuta a porta com flashbang	door.breach.kick.flashbang	-	false
 chuta com gas	door.breach.kick.gas	-	false
-chuta com gas lacrimogeneo	door.breach.kick.gas	-	false
+chuta com gas lacrimogêneo	door.breach.kick.gas	-	false
 chuta gas e limpa	door.breach.kick.gas	-	false
 chuta a porta com gas	door.breach.kick.gas	-	false
-chuta a porta com gas lacrimogeneo	door.breach.kick.gas	-	false
+chuta a porta com gas lacrimogêneo	door.breach.kick.gas	-	false
 chuta a porta gas e limpa	door.breach.kick.gas	-	false
 arromba chutando com gas	door.breach.kick.gas	-	false
-arromba chutando com gas lacrimogeneo	door.breach.kick.gas	-	false
-chuta com lancador	door.breach.kick.launcher	-	false
-chuta com lanca granadas	door.breach.kick.launcher	-	false
-chuta a porta com lancador	door.breach.kick.launcher	-	false
-chuta a porta com lanca granadas	door.breach.kick.launcher	-	false
-arromba chutando com lancador	door.breach.kick.launcher	-	false
-arromba chutando com lanca granadas	door.breach.kick.launcher	-	false
+arromba chutando com gas lacrimogêneo	door.breach.kick.gas	-	false
+chuta com lançador	door.breach.kick.launcher	-	false
+chuta com lança granadas	door.breach.kick.launcher	-	false
+chuta a porta com lançador	door.breach.kick.launcher	-	false
+chuta a porta com lança granadas	door.breach.kick.launcher	-	false
+arromba chutando com lançador	door.breach.kick.launcher	-	false
+arromba chutando com lança granadas	door.breach.kick.launcher	-	false
 chuta com lider	door.breach.kick.leader	-	false
 chuta espera por mim	door.breach.kick.leader	-	false
 chuta e me espera	door.breach.kick.leader	-	false
@@ -104,14 +132,18 @@ chuta a porta espera por mim	door.breach.kick.leader	-	false
 chuta a porta e me espera	door.breach.kick.leader	-	false
 arromba chutando com lider	door.breach.kick.leader	-	false
 arromba chutando espera por mim	door.breach.kick.leader	-	false
-chuta com stinger	door.breach.kick.stinger	-	false
+chuta com granada de choque	door.breach.kick.stinger	-	false
 chuta com sting	door.breach.kick.stinger	-	false
-chuta stinger e limpa	door.breach.kick.stinger	-	false
+chuta granada de choque e limpa	door.breach.kick.stinger	-	false
 chuta com bola de borracha	door.breach.kick.stinger	-	false
-chuta a porta com stinger	door.breach.kick.stinger	-	false
+chuta a porta com granada de choque	door.breach.kick.stinger	-	false
 chuta a porta com sting	door.breach.kick.stinger	-	false
-chuta a porta stinger e limpa	door.breach.kick.stinger	-	false
+chuta a porta granada de choque e limpa	door.breach.kick.stinger	-	false
 chuta a porta com bola de borracha	door.breach.kick.stinger	-	false
+chuta com stinger	door.breach.kick.stinger	-	false
+chuta stinger e limpa	door.breach.kick.stinger	-	false
+chuta a porta com stinger	door.breach.kick.stinger	-	false
+chuta a porta stinger e limpa	door.breach.kick.stinger	-	false
 lider e limpa	door.breach.leader.clear	-	false
 lider limpa	door.breach.leader.clear	-	false
 lider entra e limpa	door.breach.leader.clear	-	false
@@ -121,27 +153,29 @@ arromba e espera entra e limpa	door.breach.leader.clear	-	false
 arromba pra mim e limpa	door.breach.leader.clear	-	false
 arromba pra mim limpa	door.breach.leader.clear	-	false
 lider com flash	door.breach.leader.flashbang	-	false
-lider com flashbang	door.breach.leader.flashbang	-	false
+lider com flash bang	door.breach.leader.flashbang	-	false
 lider flash e limpa	door.breach.leader.flashbang	-	false
 lider com granada de luz	door.breach.leader.flashbang	-	false
 arromba e espera com flash	door.breach.leader.flashbang	-	false
-arromba e espera com flashbang	door.breach.leader.flashbang	-	false
+arromba e espera com flash bang	door.breach.leader.flashbang	-	false
 arromba e espera flash e limpa	door.breach.leader.flashbang	-	false
 arromba e espera com granada de luz	door.breach.leader.flashbang	-	false
+lider com flashbang	door.breach.leader.flashbang	-	false
+arromba e espera com flashbang	door.breach.leader.flashbang	-	false
 lider com gas	door.breach.leader.gas	-	false
-lider com gas lacrimogeneo	door.breach.leader.gas	-	false
+lider com gas lacrimogêneo	door.breach.leader.gas	-	false
 lider gas e limpa	door.breach.leader.gas	-	false
 arromba e espera com gas	door.breach.leader.gas	-	false
-arromba e espera com gas lacrimogeneo	door.breach.leader.gas	-	false
+arromba e espera com gas lacrimogêneo	door.breach.leader.gas	-	false
 arromba e espera gas e limpa	door.breach.leader.gas	-	false
 arromba pra mim com gas	door.breach.leader.gas	-	false
-arromba pra mim com gas lacrimogeneo	door.breach.leader.gas	-	false
-lider com lancador	door.breach.leader.launcher	-	false
-lider com lanca granadas	door.breach.leader.launcher	-	false
-arromba e espera com lancador	door.breach.leader.launcher	-	false
-arromba e espera com lanca granadas	door.breach.leader.launcher	-	false
-arromba pra mim com lancador	door.breach.leader.launcher	-	false
-arromba pra mim com lanca granadas	door.breach.leader.launcher	-	false
+arromba pra mim com gas lacrimogêneo	door.breach.leader.gas	-	false
+lider com lançador	door.breach.leader.launcher	-	false
+lider com lança granadas	door.breach.leader.launcher	-	false
+arromba e espera com lançador	door.breach.leader.launcher	-	false
+arromba e espera com lança granadas	door.breach.leader.launcher	-	false
+arromba pra mim com lançador	door.breach.leader.launcher	-	false
+arromba pra mim com lança granadas	door.breach.leader.launcher	-	false
 lider com lider	door.breach.leader.leader	-	false
 lider espera por mim	door.breach.leader.leader	-	false
 lider e me espera	door.breach.leader.leader	-	false
@@ -150,106 +184,122 @@ arromba e espera espera por mim	door.breach.leader.leader	-	false
 arromba e espera e me espera	door.breach.leader.leader	-	false
 arromba pra mim com lider	door.breach.leader.leader	-	false
 arromba pra mim espera por mim	door.breach.leader.leader	-	false
-lider com stinger	door.breach.leader.stinger	-	false
+lider com granada de choque	door.breach.leader.stinger	-	false
 lider com sting	door.breach.leader.stinger	-	false
-lider stinger e limpa	door.breach.leader.stinger	-	false
+lider granada de choque e limpa	door.breach.leader.stinger	-	false
 lider com bola de borracha	door.breach.leader.stinger	-	false
-arromba e espera com stinger	door.breach.leader.stinger	-	false
+arromba e espera com granada de choque	door.breach.leader.stinger	-	false
 arromba e espera com sting	door.breach.leader.stinger	-	false
-arromba e espera stinger e limpa	door.breach.leader.stinger	-	false
+arromba e espera granada de choque e limpa	door.breach.leader.stinger	-	false
 arromba e espera com bola de borracha	door.breach.leader.stinger	-	false
-ariete e limpa	door.breach.ram.clear	-	false
-ariete limpa	door.breach.ram.clear	-	false
-ariete entra e limpa	door.breach.ram.clear	-	false
-arromba com ariete e limpa	door.breach.ram.clear	-	false
-arromba com ariete limpa	door.breach.ram.clear	-	false
-arromba com ariete entra e limpa	door.breach.ram.clear	-	false
+lider com stinger	door.breach.leader.stinger	-	false
+lider stinger e limpa	door.breach.leader.stinger	-	false
+arromba e espera com stinger	door.breach.leader.stinger	-	false
+arromba e espera stinger e limpa	door.breach.leader.stinger	-	false
+aríete e limpa	door.breach.ram.clear	-	false
+aríete limpa	door.breach.ram.clear	-	false
+aríete entra e limpa	door.breach.ram.clear	-	false
+arromba com aríete e limpa	door.breach.ram.clear	-	false
+arromba com aríete limpa	door.breach.ram.clear	-	false
+arromba com aríete entra e limpa	door.breach.ram.clear	-	false
 arromba na marra e limpa	door.breach.ram.clear	-	false
 arromba na marra limpa	door.breach.ram.clear	-	false
-ariete com flash	door.breach.ram.flashbang	-	false
-ariete com flashbang	door.breach.ram.flashbang	-	false
-ariete flash e limpa	door.breach.ram.flashbang	-	false
-ariete com granada de luz	door.breach.ram.flashbang	-	false
-arromba com ariete com flash	door.breach.ram.flashbang	-	false
-arromba com ariete com flashbang	door.breach.ram.flashbang	-	false
-arromba com ariete flash e limpa	door.breach.ram.flashbang	-	false
-arromba com ariete com granada de luz	door.breach.ram.flashbang	-	false
-ariete com gas	door.breach.ram.gas	-	false
-ariete com gas lacrimogeneo	door.breach.ram.gas	-	false
-ariete gas e limpa	door.breach.ram.gas	-	false
-arromba com ariete com gas	door.breach.ram.gas	-	false
-arromba com ariete com gas lacrimogeneo	door.breach.ram.gas	-	false
-arromba com ariete gas e limpa	door.breach.ram.gas	-	false
+aríete com flash	door.breach.ram.flashbang	-	false
+aríete com flash bang	door.breach.ram.flashbang	-	false
+aríete flash e limpa	door.breach.ram.flashbang	-	false
+aríete com granada de luz	door.breach.ram.flashbang	-	false
+arromba com aríete com flash	door.breach.ram.flashbang	-	false
+arromba com aríete com flash bang	door.breach.ram.flashbang	-	false
+arromba com aríete flash e limpa	door.breach.ram.flashbang	-	false
+arromba com aríete com granada de luz	door.breach.ram.flashbang	-	false
+aríete com flashbang	door.breach.ram.flashbang	-	false
+arromba com aríete com flashbang	door.breach.ram.flashbang	-	false
+aríete com gas	door.breach.ram.gas	-	false
+aríete com gas lacrimogêneo	door.breach.ram.gas	-	false
+aríete gas e limpa	door.breach.ram.gas	-	false
+arromba com aríete com gas	door.breach.ram.gas	-	false
+arromba com aríete com gas lacrimogêneo	door.breach.ram.gas	-	false
+arromba com aríete gas e limpa	door.breach.ram.gas	-	false
 arromba na marra com gas	door.breach.ram.gas	-	false
-arromba na marra com gas lacrimogeneo	door.breach.ram.gas	-	false
-ariete com lancador	door.breach.ram.launcher	-	false
-ariete com lanca granadas	door.breach.ram.launcher	-	false
-arromba com ariete com lancador	door.breach.ram.launcher	-	false
-arromba com ariete com lanca granadas	door.breach.ram.launcher	-	false
-arromba na marra com lancador	door.breach.ram.launcher	-	false
-arromba na marra com lanca granadas	door.breach.ram.launcher	-	false
-ariete com lider	door.breach.ram.leader	-	false
-ariete espera por mim	door.breach.ram.leader	-	false
-ariete e me espera	door.breach.ram.leader	-	false
-arromba com ariete com lider	door.breach.ram.leader	-	false
-arromba com ariete espera por mim	door.breach.ram.leader	-	false
-arromba com ariete e me espera	door.breach.ram.leader	-	false
+arromba na marra com gas lacrimogêneo	door.breach.ram.gas	-	false
+aríete com lançador	door.breach.ram.launcher	-	false
+aríete com lança granadas	door.breach.ram.launcher	-	false
+arromba com aríete com lançador	door.breach.ram.launcher	-	false
+arromba com aríete com lança granadas	door.breach.ram.launcher	-	false
+arromba na marra com lançador	door.breach.ram.launcher	-	false
+arromba na marra com lança granadas	door.breach.ram.launcher	-	false
+aríete com lider	door.breach.ram.leader	-	false
+aríete espera por mim	door.breach.ram.leader	-	false
+aríete e me espera	door.breach.ram.leader	-	false
+arromba com aríete com lider	door.breach.ram.leader	-	false
+arromba com aríete espera por mim	door.breach.ram.leader	-	false
+arromba com aríete e me espera	door.breach.ram.leader	-	false
 arromba na marra com lider	door.breach.ram.leader	-	false
 arromba na marra espera por mim	door.breach.ram.leader	-	false
-ariete com stinger	door.breach.ram.stinger	-	false
-ariete com sting	door.breach.ram.stinger	-	false
-ariete stinger e limpa	door.breach.ram.stinger	-	false
-ariete com bola de borracha	door.breach.ram.stinger	-	false
-arromba com ariete com stinger	door.breach.ram.stinger	-	false
-arromba com ariete com sting	door.breach.ram.stinger	-	false
-arromba com ariete stinger e limpa	door.breach.ram.stinger	-	false
-arromba com ariete com bola de borracha	door.breach.ram.stinger	-	false
+aríete com granada de choque	door.breach.ram.stinger	-	false
+aríete com sting	door.breach.ram.stinger	-	false
+aríete granada de choque e limpa	door.breach.ram.stinger	-	false
+aríete com bola de borracha	door.breach.ram.stinger	-	false
+arromba com aríete com granada de choque	door.breach.ram.stinger	-	false
+arromba com aríete com sting	door.breach.ram.stinger	-	false
+arromba com aríete granada de choque e limpa	door.breach.ram.stinger	-	false
+arromba com aríete com bola de borracha	door.breach.ram.stinger	-	false
+aríete com stinger	door.breach.ram.stinger	-	false
+aríete stinger e limpa	door.breach.ram.stinger	-	false
+arromba com aríete com stinger	door.breach.ram.stinger	-	false
+arromba com aríete stinger e limpa	door.breach.ram.stinger	-	false
 escopeta e limpa	door.breach.shotgun.clear	-	false
 escopeta limpa	door.breach.shotgun.clear	-	false
 escopeta entra e limpa	door.breach.shotgun.clear	-	false
 arromba com escopeta e limpa	door.breach.shotgun.clear	-	false
 arromba com escopeta limpa	door.breach.shotgun.clear	-	false
 arromba com escopeta entra e limpa	door.breach.shotgun.clear	-	false
-atira na dobradica e limpa	door.breach.shotgun.clear	-	false
-atira na dobradica limpa	door.breach.shotgun.clear	-	false
+atira na dobradiça e limpa	door.breach.shotgun.clear	-	false
+atira na dobradiça limpa	door.breach.shotgun.clear	-	false
 escopeta com flash	door.breach.shotgun.flashbang	-	false
-escopeta com flashbang	door.breach.shotgun.flashbang	-	false
+escopeta com flash bang	door.breach.shotgun.flashbang	-	false
 escopeta flash e limpa	door.breach.shotgun.flashbang	-	false
 escopeta com granada de luz	door.breach.shotgun.flashbang	-	false
 arromba com escopeta com flash	door.breach.shotgun.flashbang	-	false
-arromba com escopeta com flashbang	door.breach.shotgun.flashbang	-	false
+arromba com escopeta com flash bang	door.breach.shotgun.flashbang	-	false
 arromba com escopeta flash e limpa	door.breach.shotgun.flashbang	-	false
 arromba com escopeta com granada de luz	door.breach.shotgun.flashbang	-	false
+escopeta com flashbang	door.breach.shotgun.flashbang	-	false
+arromba com escopeta com flashbang	door.breach.shotgun.flashbang	-	false
 escopeta com gas	door.breach.shotgun.gas	-	false
-escopeta com gas lacrimogeneo	door.breach.shotgun.gas	-	false
+escopeta com gas lacrimogêneo	door.breach.shotgun.gas	-	false
 escopeta gas e limpa	door.breach.shotgun.gas	-	false
 arromba com escopeta com gas	door.breach.shotgun.gas	-	false
-arromba com escopeta com gas lacrimogeneo	door.breach.shotgun.gas	-	false
+arromba com escopeta com gas lacrimogêneo	door.breach.shotgun.gas	-	false
 arromba com escopeta gas e limpa	door.breach.shotgun.gas	-	false
-atira na dobradica com gas	door.breach.shotgun.gas	-	false
-atira na dobradica com gas lacrimogeneo	door.breach.shotgun.gas	-	false
-escopeta com lancador	door.breach.shotgun.launcher	-	false
-escopeta com lanca granadas	door.breach.shotgun.launcher	-	false
-arromba com escopeta com lancador	door.breach.shotgun.launcher	-	false
-arromba com escopeta com lanca granadas	door.breach.shotgun.launcher	-	false
-atira na dobradica com lancador	door.breach.shotgun.launcher	-	false
-atira na dobradica com lanca granadas	door.breach.shotgun.launcher	-	false
+atira na dobradiça com gas	door.breach.shotgun.gas	-	false
+atira na dobradiça com gas lacrimogêneo	door.breach.shotgun.gas	-	false
+escopeta com lançador	door.breach.shotgun.launcher	-	false
+escopeta com lança granadas	door.breach.shotgun.launcher	-	false
+arromba com escopeta com lançador	door.breach.shotgun.launcher	-	false
+arromba com escopeta com lança granadas	door.breach.shotgun.launcher	-	false
+atira na dobradiça com lançador	door.breach.shotgun.launcher	-	false
+atira na dobradiça com lança granadas	door.breach.shotgun.launcher	-	false
 escopeta com lider	door.breach.shotgun.leader	-	false
 escopeta espera por mim	door.breach.shotgun.leader	-	false
 escopeta e me espera	door.breach.shotgun.leader	-	false
 arromba com escopeta com lider	door.breach.shotgun.leader	-	false
 arromba com escopeta espera por mim	door.breach.shotgun.leader	-	false
 arromba com escopeta e me espera	door.breach.shotgun.leader	-	false
-atira na dobradica com lider	door.breach.shotgun.leader	-	false
-atira na dobradica espera por mim	door.breach.shotgun.leader	-	false
-escopeta com stinger	door.breach.shotgun.stinger	-	false
+atira na dobradiça com lider	door.breach.shotgun.leader	-	false
+atira na dobradiça espera por mim	door.breach.shotgun.leader	-	false
+escopeta com granada de choque	door.breach.shotgun.stinger	-	false
 escopeta com sting	door.breach.shotgun.stinger	-	false
-escopeta stinger e limpa	door.breach.shotgun.stinger	-	false
+escopeta granada de choque e limpa	door.breach.shotgun.stinger	-	false
 escopeta com bola de borracha	door.breach.shotgun.stinger	-	false
-arromba com escopeta com stinger	door.breach.shotgun.stinger	-	false
+arromba com escopeta com granada de choque	door.breach.shotgun.stinger	-	false
 arromba com escopeta com sting	door.breach.shotgun.stinger	-	false
-arromba com escopeta stinger e limpa	door.breach.shotgun.stinger	-	false
+arromba com escopeta granada de choque e limpa	door.breach.shotgun.stinger	-	false
 arromba com escopeta com bola de borracha	door.breach.shotgun.stinger	-	false
+escopeta com stinger	door.breach.shotgun.stinger	-	false
+escopeta stinger e limpa	door.breach.shotgun.stinger	-	false
+arromba com escopeta com stinger	door.breach.shotgun.stinger	-	false
+arromba com escopeta stinger e limpa	door.breach.shotgun.stinger	-	false
 cobre a porta	door.cover	-	false
 vigia a porta	door.cover	-	false
 fica na porta	door.cover	-	false
@@ -265,31 +315,36 @@ abre entra e limpa	door.open.clear	-	false
 entra e limpa	door.open.clear	-	false
 entra limpa	door.open.clear	-	false
 abre com flash	door.open.flashbang	-	false
-abre com flashbang	door.open.flashbang	-	false
+abre com flash bang	door.open.flashbang	-	false
 abre flash e limpa	door.open.flashbang	-	false
 abre com granada de luz	door.open.flashbang	-	false
 entra com flash	door.open.flashbang	-	false
+entra com flash bang	door.open.flashbang	-	false
+abre com flashbang	door.open.flashbang	-	false
 entra com flashbang	door.open.flashbang	-	false
 abre com gas	door.open.gas	-	false
-abre com gas lacrimogeneo	door.open.gas	-	false
+abre com gas lacrimogêneo	door.open.gas	-	false
 abre gas e limpa	door.open.gas	-	false
 entra com gas	door.open.gas	-	false
-entra com gas lacrimogeneo	door.open.gas	-	false
-abre com lancador	door.open.launcher	-	false
-abre com lanca granadas	door.open.launcher	-	false
-entra com lancador	door.open.launcher	-	false
-entra com lanca granadas	door.open.launcher	-	false
+entra com gas lacrimogêneo	door.open.gas	-	false
+abre com lançador	door.open.launcher	-	false
+abre com lança granadas	door.open.launcher	-	false
+entra com lançador	door.open.launcher	-	false
+entra com lança granadas	door.open.launcher	-	false
 abre com lider	door.open.leader	-	false
 abre espera por mim	door.open.leader	-	false
 abre e me espera	door.open.leader	-	false
 entra com lider	door.open.leader	-	false
 entra espera por mim	door.open.leader	-	false
-abre com stinger	door.open.stinger	-	false
+abre com granada de choque	door.open.stinger	-	false
 abre com sting	door.open.stinger	-	false
-abre stinger e limpa	door.open.stinger	-	false
+abre granada de choque e limpa	door.open.stinger	-	false
 abre com bola de borracha	door.open.stinger	-	false
-entra com stinger	door.open.stinger	-	false
+entra com granada de choque	door.open.stinger	-	false
 entra com sting	door.open.stinger	-	false
+abre com stinger	door.open.stinger	-	false
+abre stinger e limpa	door.open.stinger	-	false
+entra com stinger	door.open.stinger	-	false
 abre a fechadura	door.picklock	-	false
 arromba a fechadura	door.picklock	-	false
 destranca	door.picklock	-	false
@@ -314,12 +369,12 @@ divide o time	door.stack.split	-	false
 separa	door.stack.split	-	false
 abre a porta	door.toggle	-	false
 fecha a porta	door.toggle	-	false
-so abre a porta	door.toggle	-	false
+só abre a porta	door.toggle	-	false
 trava a porta	door.wedge	-	false
 calca a porta	door.wedge	-	false
 poe a cunha	door.wedge	-	false
 aguarda	hold	-	false
-segura posicao	hold	-	false
+segura posição	hold	-	false
 para	hold	-	false
 parado	hold	-	false
 espera ai	hold	-	false
@@ -329,16 +384,16 @@ forma comigo	move.fallin	-	false
 reagrupa	move.fallin	-	false
 me segue	move.fallin	-	false
 diamante	move.formation.diamond	-	false
-formacao diamante	move.formation.diamond	-	false
+formação diamante	move.formation.diamond	-	false
 fila dupla	move.formation.double	-	false
-formacao dupla	move.formation.double	-	false
+formação dupla	move.formation.double	-	false
 fila indiana	move.formation.single	-	false
 em fila	move.formation.single	-	false
-formacao em fila	move.formation.single	-	false
+formação em fila	move.formation.single	-	false
 cunha	move.formation.wedge	-	false
-formacao cunha	move.formation.wedge	-	false
+formação cunha	move.formation.wedge	-	false
 vai la	move.to	-	false
-avanca	move.to	-	false
+avança	move.to	-	false
 move pra la	move.to	-	false
 vai ali	move.to	-	false
 leva ele	person.moveto	-	false
@@ -348,24 +403,25 @@ algema ele	person.restrain	-	false
 prende ele	person.restrain	-	false
 amarra ele	person.restrain	-	false
 algema	person.restrain	-	false
-chemlight	player.chemlight	-	false
+luz química	player.chemlight	-	false
 solta luz	player.chemlight	-	false
 marca aqui	player.chemlight	-	false
+chemlight	player.chemlight	-	false
 acabou aqui	player.exfil	-	false
 vamos embora	player.exfil	-	false
 liberado pra sair	player.exfil	-	false
-missao completa	player.exfil	-	false
+missão completa	player.exfil	-	false
 modo de tiro	player.fireselect	-	false
 muda o tiro	player.fireselect	-	false
-automatico	player.fireselect	-	false
-semi automatico	player.fireselect	-	false
-maos ao alto	player.yell	-	false
-deita no chao	player.yell	-	false
+automático	player.fireselect	-	false
+semi automático	player.fireselect	-	false
+mãos ao alto	player.yell	-	false
+deita no chão	player.yell	-	false
 policia	player.yell	-	false
-no chao	player.yell	-	false
+no chão	player.yell	-	false
 manda deitar	player.yell	-	false
 vasculha	search	-	false
-revista o comodo	search	-	false
+revista o cômodo	search	-	false
 limpa a area	search	-	false
-varre o comodo	search	-	false
+varre o cômodo	search	-	false
 assegura a area	search	-	false

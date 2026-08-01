@@ -1,2518 +1,2613 @@
 {
- "_readme": [
-  "Mapa de comandos do Ready or Not para controle por voz.",
-  "",
-  "COMO EXECUTAR UMA ORDEM:",
-  "  1. (opcional) tecla do elemento: F5 gold / F6 blue / F7 red",
-  "  2. abrir o menu SWAT: clique do meio (MENU)",
-  "  3. pressionar cada tecla de 'path', em ordem, ~35ms cada",
-  "  4. se o modificador 'queue' foi dito, segurar LShift em volta da",
-  "     ULTIMA tecla do caminho (assim a ordem fica engatilhada)",
-  "",
-  "path usa tokens: MENU = clique do meio; digitos = teclas 1-9;",
-  "KEY:X = tecla direta (fora do menu).",
-  "",
-  "ATENCAO — o menu e' CONTEXTUAL. O mesmo caminho significa coisas",
-  "diferentes conforme o que esta na mira (porta / pessoa / espaco",
-  "aberto). O campo 'context' diz para onde o jogador precisa estar",
-  "olhando. O software nao tem como saber isso: e' responsabilidade",
-  "do jogador, igual ao VoiceAttack.",
-  "",
-  "As teclas NAO devem ser fixas no codigo: leia o Input.ini do jogo",
-  "em %LOCALAPPDATA%\\ReadyOrNot\\Saved\\Config\\WindowsNoEditor\\"
- ],
- "keybind_defaults": {
-  "swat_command_menu": "MiddleMouse",
-  "default_command": "Z",
-  "hold_command": "LeftShift",
-  "back": "Tab",
-  "select_gold": "F5",
-  "select_blue": "F6",
-  "select_red": "F7",
-  "command_keys": [
-   "One",
-   "Two",
-   "Three",
-   "Four",
-   "Five",
-   "Six",
-   "Seven",
-   "Eight",
-   "Nine"
+  "_readme": [
+    "Mapa de comandos do Ready or Not para controle por voz.",
+    "",
+    "COMO EXECUTAR UMA ORDEM:",
+    "  1. (opcional) tecla do elemento: F5 gold / F6 blue / F7 red",
+    "  2. abrir o menu SWAT: clique do meio (MENU)",
+    "  3. pressionar cada tecla de 'path', em ordem, ~35ms cada",
+    "  4. se o modificador 'queue' foi dito, segurar LShift em volta da",
+    "     ULTIMA tecla do caminho (assim a ordem fica engatilhada)",
+    "",
+    "path usa tokens: MENU = clique do meio; digitos = teclas 1-9;",
+    "KEY:X = tecla direta (fora do menu).",
+    "",
+    "ATENCAO — o menu e' CONTEXTUAL. O mesmo caminho significa coisas",
+    "diferentes conforme o que esta na mira (porta / pessoa / espaco",
+    "aberto). O campo 'context' diz para onde o jogador precisa estar",
+    "olhando. O software nao tem como saber isso: e' responsabilidade",
+    "do jogador, igual ao VoiceAttack.",
+    "",
+    "As teclas NAO devem ser fixas no codigo: leia o Input.ini do jogo",
+    "em %LOCALAPPDATA%\\ReadyOrNot\\Saved\\Config\\WindowsNoEditor\\"
   ],
-  "interact_yell": "F",
-  "_nota": "o perfil v5.1 usava Space como default_command; confirme no Input.ini"
- },
- "timing": {
-  "key_hold_ms": 35,
-  "gap_between_keys_ms": 35,
-  "menu_open_settle_ms": 60,
-  "_nota": "35ms ~ 2 frames a 60fps; o perfil VoiceAttack usa 0.033s"
- },
- "elements": {
-  "gold": {
-   "key": "F5",
-   "en": [
-    "gold",
-    "gold team",
-    "team",
-    "all",
-    "everyone"
-   ],
-   "pt": [
-    "ouro",
-    "time ouro",
-    "equipe ouro",
-    "todos",
-    "geral"
-   ]
-  },
-  "blue": {
-   "key": "F6",
-   "en": [
-    "blue",
-    "blue team"
-   ],
-   "pt": [
-    "azul",
-    "time azul",
-    "equipe azul"
-   ]
-  },
-  "red": {
-   "key": "F7",
-   "en": [
-    "red",
-    "red team"
-   ],
-   "pt": [
-    "vermelho",
-    "time vermelho",
-    "equipe vermelha"
-   ]
-  }
- },
- "modifiers": {
-  "queue": {
-   "how": "segurar HOLD_COMMAND (LShift) em volta da ULTIMA tecla do caminho",
-   "en": [
-    "queue",
-    "hold",
-    "prep",
-    "prepare",
-    "on my mark",
-    "standby"
-   ],
-   "pt": [
-    "prepara",
-    "aguarda ordem",
-    "no meu comando",
-    "segura",
-    "espera"
-   ]
-  }
- },
- "orders": [
-  {
-   "id": "door.stack.auto",
-   "context": "door",
-   "path": [
-    "MENU",
-    "1",
-    "4"
-   ],
-   "menu_path": [
-    "Stack Up",
-    "auto"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "stack up",
-     "stack",
-     "stack on the door",
-     "post up"
-    ],
-    "pt": [
-     "empilha",
-     "empilha na porta",
-     "forma na porta",
-     "posiciona na porta"
-    ]
-   },
-   "ronspeech": [
-    "Eight"
-   ],
-   "name": "Empilhar na porta"
-  },
-  {
-   "id": "door.stack.split",
-   "context": "door",
-   "path": [
-    "MENU",
-    "1",
-    "1"
-   ],
-   "menu_path": [
-    "Stack Up",
-    "split"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "split",
-     "split up",
-     "split the stack"
-    ],
-    "pt": [
-     "divide",
-     "divide o time",
-     "separa"
-    ]
-   },
-   "name": "Dividir nos dois lados da porta"
-  },
-  {
-   "id": "door.stack.left",
-   "context": "door",
-   "path": [
-    "MENU",
-    "1",
-    "2"
-   ],
-   "menu_path": [
-    "Stack Up",
-    "left"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "stack left",
-     "left side",
-     "on the left"
-    ],
-    "pt": [
-     "empilha a esquerda",
-     "lado esquerdo",
-     "pela esquerda"
-    ]
-   },
-   "name": "Empilhar à esquerda"
-  },
-  {
-   "id": "door.stack.right",
-   "context": "door",
-   "path": [
-    "MENU",
-    "1",
-    "3"
-   ],
-   "menu_path": [
-    "Stack Up",
-    "right"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "stack right",
-     "right side",
-     "on the right"
-    ],
-    "pt": [
-     "empilha a direita",
-     "lado direito",
-     "pela direita"
-    ]
-   },
-   "name": "Empilhar à direita"
-  },
-  {
-   "id": "door.scan.slide",
-   "context": "door",
-   "path": [
-    "MENU",
-    "4",
-    "1"
-   ],
-   "menu_path": [
-    "Scan",
-    "slide"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "slide",
-     "slide it",
-     "scan slide"
-    ],
-    "pt": [
-     "desliza",
-     "escaneia deslizando"
-    ]
-   },
-   "name": "Passar a câmera por baixo da porta"
-  },
-  {
-   "id": "door.scan.pie",
-   "context": "door",
-   "path": [
-    "MENU",
-    "4",
-    "2"
-   ],
-   "menu_path": [
-    "Scan",
-    "pie"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "pie",
-     "pie it",
-     "slice the pie"
-    ],
-    "pt": [
-     "fatia",
-     "fatia a porta"
-    ]
-   },
-   "name": "Varrer o cômodo em leque"
-  },
-  {
-   "id": "door.scan.peek",
-   "context": "door",
-   "path": [
-    "MENU",
-    "4",
-    "3"
-   ],
-   "menu_path": [
-    "Scan",
-    "peek"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "peek",
-     "peek it",
-     "take a peek"
-    ],
-    "pt": [
-     "espia",
-     "da uma espiada"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F23"
-   ],
-   "name": "Espiar pela porta"
-  },
-  {
-   "id": "door.mirror",
-   "context": "door",
-   "path": [
-    "MENU",
-    "5"
-   ],
-   "menu_path": [
-    "Mirror Under Door"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "mirror",
-     "mirror under door",
-     "mirror it",
-     "check under the door"
-    ],
-    "pt": [
-     "espelho",
-     "espelho embaixo da porta",
-     "olha embaixo da porta"
-    ]
-   },
-   "ronspeech": [
-    "F23"
-   ],
-   "name": "Usar o espelho na porta"
-  },
-  {
-   "id": "door.wedge",
-   "context": "door",
-   "path": [
-    "MENU",
-    "6"
-   ],
-   "menu_path": [
-    "Wedge Door"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "wedge",
-     "wedge it",
-     "wedge the door",
-     "jam the door"
-    ],
-    "pt": [
-     "trava a porta",
-     "calca a porta",
-     "poe a cunha"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F22",
-    "F14"
-   ],
-   "name": "Calçar a porta"
-  },
-  {
-   "id": "door.cover",
-   "context": "door",
-   "path": [
-    "MENU",
-    "7"
-   ],
-   "menu_path": [
-    "Cover Door"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "cover the door",
-     "cover this door",
-     "watch the door"
-    ],
-    "pt": [
-     "cobre a porta",
-     "vigia a porta",
-     "fica na porta"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F14"
-   ],
-   "name": "Cobrir a porta"
-  },
-  {
-   "id": "door.toggle",
-   "context": "door",
-   "path": [
-    "MENU",
-    "8"
-   ],
-   "menu_path": [
-    "Open/Close Door"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "open the door",
-     "close the door",
-     "shut the door",
-     "just open it"
-    ],
-    "pt": [
-     "abre a porta",
-     "fecha a porta",
-     "so abre a porta"
-    ]
-   },
-   "ronspeech": [
-    "PageDown"
-   ],
-   "name": "Abrir ou fechar a porta"
-  },
-  {
-   "id": "door.picklock",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2"
-   ],
-   "menu_path": [
-    "Pick Lock"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "pick the lock",
-     "pick it",
-     "unlock it",
-     "lockpick"
-    ],
-    "pt": [
-     "abre a fechadura",
-     "arromba a fechadura",
-     "destranca"
-    ]
-   },
-   "ronspeech": [
-    "Multiply"
-   ],
-   "name": "Abrir a fechadura"
-  },
-  {
-   "id": "door.disarm",
-   "context": "door",
-   "path": [
-    "MENU",
-    "1",
-    "3"
-   ],
-   "menu_path": [
-    "Disarm Trap"
-   ],
-   "confidence": "verify",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "disarm the trap",
-     "disarm it",
-     "defuse the trap"
-    ],
-    "pt": [
-     "desarma a armadilha",
-     "desarma isso",
-     "neutraliza a armadilha"
-    ]
-   },
-   "ronspeech": [
-    "F14"
-   ],
-   "name": "Desarmar a armadilha"
-  },
-  {
-   "id": "move.to",
-   "context": "default",
-   "path": [
-    "MENU",
-    "1"
-   ],
-   "menu_path": [
-    "Move To"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "move there",
-     "go there",
-     "move up",
-     "push there"
-    ],
-    "pt": [
-     "vai la",
-     "avanca",
-     "move pra la",
-     "vai ali"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "PageUp"
-   ],
-   "name": "Ir até onde eu estou olhando"
-  },
-  {
-   "id": "move.fallin",
-   "context": "default",
-   "path": [
-    "MENU",
-    "2",
-    "2"
-   ],
-   "menu_path": [
-    "Position",
-    "Fall In"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "fall in",
-     "on me",
-     "form up",
-     "regroup",
-     "follow me",
-     "group up"
-    ],
-    "pt": [
-     "comigo",
-     "na minha",
-     "forma comigo",
-     "reagrupa",
-     "me segue"
-    ]
-   },
-   "ronspeech": [
-    "PageUp"
-   ],
-   "name": "Reagrupar comigo"
-  },
-  {
-   "id": "move.formation.single",
-   "context": "default",
-   "path": [
-    "MENU",
-    "2",
-    "2",
-    "1"
-   ],
-   "menu_path": [
-    "Position",
-    "Fall In",
-    "Single File"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "single file",
-     "single file formation",
-     "line up"
-    ],
-    "pt": [
-     "fila indiana",
-     "em fila",
-     "formacao em fila"
-    ]
-   },
-   "name": "Formação: fila indiana"
-  },
-  {
-   "id": "move.formation.double",
-   "context": "default",
-   "path": [
-    "MENU",
-    "2",
-    "2",
-    "2"
-   ],
-   "menu_path": [
-    "Position",
-    "Fall In",
-    "Double File"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "double file",
-     "double file formation"
-    ],
-    "pt": [
-     "fila dupla",
-     "formacao dupla"
-    ]
-   },
-   "ronspeech": [
-    "F22",
-    "PageUp"
-   ],
-   "name": "Formação: fila dupla"
-  },
-  {
-   "id": "move.formation.diamond",
-   "context": "default",
-   "path": [
-    "MENU",
-    "2",
-    "2",
-    "3"
-   ],
-   "menu_path": [
-    "Position",
-    "Fall In",
-    "Diamond"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "diamond",
-     "diamond formation"
-    ],
-    "pt": [
-     "diamante",
-     "formacao diamante"
-    ]
-   },
-   "ronspeech": [
-    "Nine",
-    "PageUp"
-   ],
-   "name": "Formação: diamante"
-  },
-  {
-   "id": "move.formation.wedge",
-   "context": "default",
-   "path": [
-    "MENU",
-    "2",
-    "2",
-    "4"
-   ],
-   "menu_path": [
-    "Position",
-    "Fall In",
-    "Wedge"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "wedge formation",
-     "wedge up"
-    ],
-    "pt": [
-     "cunha",
-     "formacao cunha"
-    ]
-   },
-   "ronspeech": [
-    "F22",
-    "F13",
-    "PageUp"
-   ],
-   "name": "Formação: cunha"
-  },
-  {
-   "id": "hold",
-   "context": "default",
-   "path": [
-    "MENU",
-    "4"
-   ],
-   "menu_path": [
-    "Hold"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "hold",
-     "hold position",
-     "hold up",
-     "halt",
-     "stop",
-     "freeze there"
-    ],
-    "pt": [
-     "aguarda",
-     "segura posicao",
-     "para",
-     "parado",
-     "espera ai"
-    ]
-   },
-   "ronspeech": [
-    "Seven"
-   ],
-   "name": "Aguardar no lugar"
-  },
-  {
-   "id": "cover",
-   "context": "default",
-   "path": [
-    "MENU",
-    "3"
-   ],
-   "menu_path": [
-    "Cover"
-   ],
-   "confidence": "verify",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "cover me",
-     "cover my back",
-     "watch my six",
-     "watch my back"
-    ],
-    "pt": [
-     "me cobre",
-     "cobre minhas costas",
-     "fica de olho atras"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F14"
-   ],
-   "name": "Cobrir a minha posição"
-  },
-  {
-   "id": "search",
-   "context": "default",
-   "path": [
-    "MENU",
-    "6"
-   ],
-   "menu_path": [
-    "Search & Secure"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "search",
-     "search the room",
-     "search and secure",
-     "sweep it",
-     "secure the area",
-     "clear the area"
-    ],
-    "pt": [
-     "vasculha",
-     "revista o comodo",
-     "limpa a area",
-     "varre o comodo",
-     "assegura a area"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F20"
-   ],
-   "name": "Vasculhar e garantir o cômodo"
-  },
-  {
-   "id": "deploy.flashbang",
-   "context": "default",
-   "path": [
-    "MENU",
-    "5",
-    "1"
-   ],
-   "menu_path": [
-    "Deploy",
-    "Flashbang"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "deploy flashbang",
-     "throw a flashbang",
-     "toss a flash",
-     "bang it"
-    ],
-    "pt": [
-     "joga flash",
-     "solta flashbang",
-     "joga granada de luz"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F19"
-   ],
-   "name": "Jogar flash"
-  },
-  {
-   "id": "deploy.stinger",
-   "context": "default",
-   "path": [
-    "MENU",
-    "5",
-    "2"
-   ],
-   "menu_path": [
-    "Deploy",
-    "Stinger"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "deploy stinger",
-     "throw a stinger",
-     "toss a sting"
-    ],
-    "pt": [
-     "joga stinger",
-     "solta stinger"
-    ]
-   },
-   "ronspeech": [
-    "F22",
-    "F19"
-   ],
-   "name": "Jogar stinger"
-  },
-  {
-   "id": "deploy.gas",
-   "context": "default",
-   "path": [
-    "MENU",
-    "5",
-    "3"
-   ],
-   "menu_path": [
-    "Deploy",
-    "CS Gas"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "deploy gas",
-     "throw cs gas",
-     "gas them"
-    ],
-    "pt": [
-     "joga gas",
-     "solta gas lacrimogeneo",
-     "gaseia"
-    ]
-   },
-   "ronspeech": [
-    "F13",
-    "F22",
-    "F19"
-   ],
-   "name": "Jogar gás"
-  },
-  {
-   "id": "deploy.chemlight",
-   "context": "default",
-   "path": [
-    "MENU",
-    "5",
-    "4"
-   ],
-   "menu_path": [
-    "Deploy",
-    "Chemlight"
-   ],
-   "confidence": "verify",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "deploy chemlight",
-     "mark it"
-    ],
-    "pt": [
-     "joga chemlight",
-     "marca com luz"
-    ]
-   },
-   "name": "Jogar chemlight"
-  },
-  {
-   "id": "deploy.shield",
-   "context": "default",
-   "path": [
-    "MENU",
-    "5",
-    "5"
-   ],
-   "menu_path": [
-    "Deploy",
-    "Shield"
-   ],
-   "confidence": "verify",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "deploy shield",
-     "shield up",
-     "bring the shield"
-    ],
-    "pt": [
-     "poe o escudo",
-     "traz o escudo"
-    ]
-   },
-   "name": "Pôr o escudo"
-  },
-  {
-   "id": "person.restrain",
-   "context": "person",
-   "path": [
-    "MENU",
-    "1"
-   ],
-   "menu_path": [
-    "Restrain"
-   ],
-   "confidence": "verify",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "restrain him",
-     "cuff him",
-     "arrest him",
-     "zip tie him",
-     "restrain them"
-    ],
-    "pt": [
-     "algema ele",
-     "prende ele",
-     "amarra ele",
-     "algema"
-    ]
-   },
-   "ronspeech": [
-    "F20"
-   ],
-   "name": "Algemar a pessoa"
-  },
-  {
-   "id": "person.moveto",
-   "context": "person",
-   "path": [
-    "MENU",
-    "2"
-   ],
-   "menu_path": [
-    "Move To"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "move him there",
-     "suspect move there",
-     "move him"
-    ],
-    "pt": [
-     "leva ele",
-     "move o suspeito",
-     "tira ele dai"
-    ]
-   },
-   "ronspeech": [
-    "F22",
-    "F8"
-   ],
-   "name": "Mandar a pessoa até mim"
-  },
-  {
-   "id": "player.yell",
-   "context": "any",
-   "path": [
-    "KEY:INTERACT"
-   ],
-   "menu_path": [
-    "Yell for compliance"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "hands up",
-     "get down",
-     "freeze",
-     "police",
-     "on the ground",
-     "yell",
-     "comply"
-    ],
-    "pt": [
-     "maos ao alto",
-     "deita no chao",
-     "policia",
-     "no chao",
-     "manda deitar"
-    ]
-   },
-   "ronspeech": [
-    "F8"
-   ],
-   "name": "Gritar por rendição"
-  },
-  {
-   "id": "player.chemlight",
-   "context": "any",
-   "path": [
-    "KEY:C"
-   ],
-   "menu_path": [
-    "Deploy chemlight (player)"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "chemlight",
-     "drop chemlight",
-     "light out"
-    ],
-    "pt": [
-     "chemlight",
-     "solta luz",
-     "marca aqui"
-    ]
-   },
-   "name": "Eu jogo um chemlight"
-  },
-  {
-   "id": "player.fireselect",
-   "context": "any",
-   "path": [
-    "KEY:X"
-   ],
-   "menu_path": [
-    "Fire select"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "fire select",
-     "switch fire mode",
-     "full auto",
-     "semi auto"
-    ],
-    "pt": [
-     "modo de tiro",
-     "muda o tiro",
-     "automatico",
-     "semi automatico"
-    ]
-   },
-   "name": "Trocar o meu modo de tiro"
-  },
-  {
-   "id": "player.exfil",
-   "context": "any",
-   "path": [
-    "KEY:PAGEUP"
-   ],
-   "menu_path": [
-    "Vote / exfil"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "we're done here",
-     "let's go",
-     "clear for exfil",
-     "let's go home",
-     "mission complete"
-    ],
-    "pt": [
-     "acabou aqui",
-     "vamos embora",
-     "liberado pra sair",
-     "missao completa"
-    ]
-   },
-   "name": "Encerrar a missão"
-  },
-  {
-   "id": "confirm.default",
-   "context": "any",
-   "path": [
-    "KEY:DEFAULT_COMMAND"
-   ],
-   "menu_path": [
-    "Default command"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "execute",
-     "do it",
-     "go go go",
-     "affirmative",
-     "confirm"
-    ],
-    "pt": [
-     "executa",
-     "manda ver",
-     "vai vai vai",
-     "positivo",
-     "confirma"
-    ]
-   },
-   "name": "Executar a ordem padrão"
-  },
-  {
-   "id": "door.open.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "1"
-   ],
-   "menu_path": [
-    "Open",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "open and clear",
-     "open clear",
-     "open go dynamic",
-     "move in and clear",
-     "move in clear"
-    ],
-    "pt": [
-     "abre e limpa",
-     "abre limpa",
-     "abre entra e limpa",
-     "entra e limpa",
-     "entra limpa"
-    ]
-   },
-   "ronspeech": [
-    "Zero"
-   ],
-   "name": "Abrir a porta e limpar"
-  },
-  {
-   "id": "door.open.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "2"
-   ],
-   "menu_path": [
-    "Open",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "open with flashbang",
-     "open flash and clear",
-     "open bang and clear",
-     "open with flash",
-     "open with bang",
-     "move in with flashbang",
-     "move in flash and clear"
-    ],
-    "pt": [
-     "abre com flash",
-     "abre com flashbang",
-     "abre flash e limpa",
-     "abre com granada de luz",
-     "entra com flash",
-     "entra com flashbang"
-    ]
-   },
-   "ronspeech": [
-    "F15"
-   ],
-   "name": "Abrir a porta com flash"
-  },
-  {
-   "id": "door.open.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "3"
-   ],
-   "menu_path": [
-    "Open",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "open with stinger",
-     "open sting and clear",
-     "open with sting",
-     "open with rubber ball",
-     "move in with stinger",
-     "move in sting and clear"
-    ],
-    "pt": [
-     "abre com stinger",
-     "abre com sting",
-     "abre stinger e limpa",
-     "abre com bola de borracha",
-     "entra com stinger",
-     "entra com sting"
-    ]
-   },
-   "ronspeech": [
-    "F17"
-   ],
-   "name": "Abrir a porta com stinger"
-  },
-  {
-   "id": "door.open.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "4"
-   ],
-   "menu_path": [
-    "Open",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "close_menu": true,
-   "phrases": {
-    "en": [
-     "open with gas",
-     "open with cs gas",
-     "open gas and clear",
-     "open with tear gas",
-     "move in with gas",
-     "move in with cs gas"
-    ],
-    "pt": [
-     "abre com gas",
-     "abre com gas lacrimogeneo",
-     "abre gas e limpa",
-     "entra com gas",
-     "entra com gas lacrimogeneo"
-    ]
-   },
-   "ronspeech": [
-    "F16"
-   ],
-   "name": "Abrir a porta com gás"
-  },
-  {
-   "id": "door.open.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "5"
-   ],
-   "menu_path": [
-    "Open",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "open with launcher",
-     "open with grenade launcher",
-     "open launcher and clear",
-     "move in with launcher",
-     "move in with grenade launcher"
-    ],
-    "pt": [
-     "abre com lancador",
-     "abre com lanca granadas",
-     "entra com lancador",
-     "entra com lanca granadas"
-    ]
-   },
-   "name": "Abrir a porta com lançador"
-  },
-  {
-   "id": "door.open.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "2",
-    "6"
-   ],
-   "menu_path": [
-    "Open",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "open with leader",
-     "open leader and clear",
-     "open wait for me",
-     "move in with leader",
-     "move in leader and clear"
-    ],
-    "pt": [
-     "abre com lider",
-     "abre espera por mim",
-     "abre e me espera",
-     "entra com lider",
-     "entra espera por mim"
-    ]
-   },
-   "name": "Abrir a porta com granada do líder"
-  },
-  {
-   "id": "door.breach.kick.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "1"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "kick and clear",
-     "kick clear",
-     "kick go dynamic",
-     "kick it and clear",
-     "kick it clear",
-     "kick it go dynamic",
-     "kick the door and clear",
-     "kick the door clear"
-    ],
-    "pt": [
-     "chuta e limpa",
-     "chuta limpa",
-     "chuta entra e limpa",
-     "chuta a porta e limpa",
-     "chuta a porta limpa",
-     "chuta a porta entra e limpa",
-     "arromba chutando e limpa",
-     "arromba chutando limpa"
-    ]
-   },
-   "name": "Chutar a porta e limpar"
-  },
-  {
-   "id": "door.breach.kick.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "2"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "kick with flashbang",
-     "kick flash and clear",
-     "kick bang and clear",
-     "kick with flash",
-     "kick with bang",
-     "kick it with flashbang",
-     "kick it flash and clear",
-     "kick it bang and clear"
-    ],
-    "pt": [
-     "chuta com flash",
-     "chuta com flashbang",
-     "chuta flash e limpa",
-     "chuta com granada de luz",
-     "chuta a porta com flash",
-     "chuta a porta com flashbang",
-     "chuta a porta flash e limpa",
-     "chuta a porta com granada de luz"
-    ]
-   },
-   "name": "Chutar a porta com flash"
-  },
-  {
-   "id": "door.breach.kick.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "3"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "kick with stinger",
-     "kick sting and clear",
-     "kick with sting",
-     "kick with rubber ball",
-     "kick it with stinger",
-     "kick it sting and clear",
-     "kick it with sting",
-     "kick it with rubber ball"
-    ],
-    "pt": [
-     "chuta com stinger",
-     "chuta com sting",
-     "chuta stinger e limpa",
-     "chuta com bola de borracha",
-     "chuta a porta com stinger",
-     "chuta a porta com sting",
-     "chuta a porta stinger e limpa",
-     "chuta a porta com bola de borracha"
-    ]
-   },
-   "name": "Chutar a porta com stinger"
-  },
-  {
-   "id": "door.breach.kick.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "4"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "kick with gas",
-     "kick with cs gas",
-     "kick gas and clear",
-     "kick with tear gas",
-     "kick it with gas",
-     "kick it with cs gas",
-     "kick it gas and clear",
-     "kick it with tear gas"
-    ],
-    "pt": [
-     "chuta com gas",
-     "chuta com gas lacrimogeneo",
-     "chuta gas e limpa",
-     "chuta a porta com gas",
-     "chuta a porta com gas lacrimogeneo",
-     "chuta a porta gas e limpa",
-     "arromba chutando com gas",
-     "arromba chutando com gas lacrimogeneo"
-    ]
-   },
-   "name": "Chutar a porta com gás"
-  },
-  {
-   "id": "door.breach.kick.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "5"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "kick with launcher",
-     "kick with grenade launcher",
-     "kick launcher and clear",
-     "kick it with launcher",
-     "kick it with grenade launcher",
-     "kick it launcher and clear",
-     "kick the door with launcher",
-     "kick the door with grenade launcher"
-    ],
-    "pt": [
-     "chuta com lancador",
-     "chuta com lanca granadas",
-     "chuta a porta com lancador",
-     "chuta a porta com lanca granadas",
-     "arromba chutando com lancador",
-     "arromba chutando com lanca granadas"
-    ]
-   },
-   "name": "Chutar a porta com lançador"
-  },
-  {
-   "id": "door.breach.kick.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "1",
-    "6"
-   ],
-   "menu_path": [
-    "Breach",
-    "kick",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "kick with leader",
-     "kick leader and clear",
-     "kick wait for me",
-     "kick it with leader",
-     "kick it leader and clear",
-     "kick it wait for me",
-     "kick the door with leader",
-     "kick the door leader and clear"
-    ],
-    "pt": [
-     "chuta com lider",
-     "chuta espera por mim",
-     "chuta e me espera",
-     "chuta a porta com lider",
-     "chuta a porta espera por mim",
-     "chuta a porta e me espera",
-     "arromba chutando com lider",
-     "arromba chutando espera por mim"
-    ]
-   },
-   "name": "Chutar a porta com granada do líder"
-  },
-  {
-   "id": "door.breach.shotgun.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "1"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "shotgun and clear",
-     "shotgun clear",
-     "shotgun go dynamic",
-     "shoot the hinges and clear",
-     "shoot the hinges clear",
-     "shoot the hinges go dynamic",
-     "breaching shotgun and clear",
-     "breaching shotgun clear"
-    ],
-    "pt": [
-     "escopeta e limpa",
-     "escopeta limpa",
-     "escopeta entra e limpa",
-     "arromba com escopeta e limpa",
-     "arromba com escopeta limpa",
-     "arromba com escopeta entra e limpa",
-     "atira na dobradica e limpa",
-     "atira na dobradica limpa"
-    ]
-   },
-   "ronspeech": [
-    "F18"
-   ],
-   "name": "Escopeta na dobradiça e limpar"
-  },
-  {
-   "id": "door.breach.shotgun.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "2"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "shotgun with flashbang",
-     "shotgun flash and clear",
-     "shotgun bang and clear",
-     "shotgun with flash",
-     "shotgun with bang",
-     "shoot the hinges with flashbang",
-     "shoot the hinges flash and clear",
-     "shoot the hinges bang and clear"
-    ],
-    "pt": [
-     "escopeta com flash",
-     "escopeta com flashbang",
-     "escopeta flash e limpa",
-     "escopeta com granada de luz",
-     "arromba com escopeta com flash",
-     "arromba com escopeta com flashbang",
-     "arromba com escopeta flash e limpa",
-     "arromba com escopeta com granada de luz"
-    ]
-   },
-   "ronspeech": [
-    "F19"
-   ],
-   "name": "Escopeta na dobradiça com flash"
-  },
-  {
-   "id": "door.breach.shotgun.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "3"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "shotgun with stinger",
-     "shotgun sting and clear",
-     "shotgun with sting",
-     "shotgun with rubber ball",
-     "shoot the hinges with stinger",
-     "shoot the hinges sting and clear",
-     "shoot the hinges with sting",
-     "shoot the hinges with rubber ball"
-    ],
-    "pt": [
-     "escopeta com stinger",
-     "escopeta com sting",
-     "escopeta stinger e limpa",
-     "escopeta com bola de borracha",
-     "arromba com escopeta com stinger",
-     "arromba com escopeta com sting",
-     "arromba com escopeta stinger e limpa",
-     "arromba com escopeta com bola de borracha"
-    ]
-   },
-   "ronspeech": [
-    "F24"
-   ],
-   "name": "Escopeta na dobradiça com stinger"
-  },
-  {
-   "id": "door.breach.shotgun.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "4"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "shotgun with gas",
-     "shotgun with cs gas",
-     "shotgun gas and clear",
-     "shotgun with tear gas",
-     "shoot the hinges with gas",
-     "shoot the hinges with cs gas",
-     "shoot the hinges gas and clear",
-     "shoot the hinges with tear gas"
-    ],
-    "pt": [
-     "escopeta com gas",
-     "escopeta com gas lacrimogeneo",
-     "escopeta gas e limpa",
-     "arromba com escopeta com gas",
-     "arromba com escopeta com gas lacrimogeneo",
-     "arromba com escopeta gas e limpa",
-     "atira na dobradica com gas",
-     "atira na dobradica com gas lacrimogeneo"
-    ]
-   },
-   "ronspeech": [
-    "F21"
-   ],
-   "name": "Escopeta na dobradiça com gás"
-  },
-  {
-   "id": "door.breach.shotgun.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "5"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "shotgun with launcher",
-     "shotgun with grenade launcher",
-     "shotgun launcher and clear",
-     "shoot the hinges with launcher",
-     "shoot the hinges with grenade launcher",
-     "shoot the hinges launcher and clear",
-     "breaching shotgun with launcher",
-     "breaching shotgun with grenade launcher"
-    ],
-    "pt": [
-     "escopeta com lancador",
-     "escopeta com lanca granadas",
-     "arromba com escopeta com lancador",
-     "arromba com escopeta com lanca granadas",
-     "atira na dobradica com lancador",
-     "atira na dobradica com lanca granadas"
-    ]
-   },
-   "name": "Escopeta na dobradiça com lançador"
-  },
-  {
-   "id": "door.breach.shotgun.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "2",
-    "6"
-   ],
-   "menu_path": [
-    "Breach",
-    "shotgun",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "shotgun with leader",
-     "shotgun leader and clear",
-     "shotgun wait for me",
-     "shoot the hinges with leader",
-     "shoot the hinges leader and clear",
-     "shoot the hinges wait for me",
-     "breaching shotgun with leader",
-     "breaching shotgun leader and clear"
-    ],
-    "pt": [
-     "escopeta com lider",
-     "escopeta espera por mim",
-     "escopeta e me espera",
-     "arromba com escopeta com lider",
-     "arromba com escopeta espera por mim",
-     "arromba com escopeta e me espera",
-     "atira na dobradica com lider",
-     "atira na dobradica espera por mim"
-    ]
-   },
-   "name": "Escopeta na dobradiça com granada do líder"
-  },
-  {
-   "id": "door.breach.c2.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "1"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "c2 and clear",
-     "c2 clear",
-     "c2 go dynamic",
-     "blow it and clear",
-     "blow it clear",
-     "blow it go dynamic",
-     "blow the door and clear",
-     "blow the door clear"
-    ],
-    "pt": [
-     "c2 e limpa",
-     "c2 limpa",
-     "c2 entra e limpa",
-     "explode e limpa",
-     "explode limpa",
-     "explode entra e limpa",
-     "explode a porta e limpa",
-     "explode a porta limpa"
-    ]
-   },
-   "ronspeech": [
-    "Subtract"
-   ],
-   "name": "C2 na porta e limpar"
-  },
-  {
-   "id": "door.breach.c2.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "2"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "c2 with flashbang",
-     "c2 flash and clear",
-     "c2 bang and clear",
-     "c2 with flash",
-     "c2 with bang",
-     "blow it with flashbang",
-     "blow it flash and clear",
-     "blow it bang and clear"
-    ],
-    "pt": [
-     "c2 com flash",
-     "c2 com flashbang",
-     "c2 flash e limpa",
-     "c2 com granada de luz",
-     "explode com flash",
-     "explode com flashbang",
-     "explode flash e limpa",
-     "explode com granada de luz"
-    ]
-   },
-   "ronspeech": [
-    "Add"
-   ],
-   "name": "C2 na porta com flash"
-  },
-  {
-   "id": "door.breach.c2.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "3"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "c2 with stinger",
-     "c2 sting and clear",
-     "c2 with sting",
-     "c2 with rubber ball",
-     "blow it with stinger",
-     "blow it sting and clear",
-     "blow it with sting",
-     "blow it with rubber ball"
-    ],
-    "pt": [
-     "c2 com stinger",
-     "c2 com sting",
-     "c2 stinger e limpa",
-     "c2 com bola de borracha",
-     "explode com stinger",
-     "explode com sting",
-     "explode stinger e limpa",
-     "explode com bola de borracha"
-    ]
-   },
-   "name": "C2 na porta com stinger"
-  },
-  {
-   "id": "door.breach.c2.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "4"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "c2 with gas",
-     "c2 with cs gas",
-     "c2 gas and clear",
-     "c2 with tear gas",
-     "blow it with gas",
-     "blow it with cs gas",
-     "blow it gas and clear",
-     "blow it with tear gas"
-    ],
-    "pt": [
-     "c2 com gas",
-     "c2 com gas lacrimogeneo",
-     "c2 gas e limpa",
-     "explode com gas",
-     "explode com gas lacrimogeneo",
-     "explode gas e limpa",
-     "explode a porta com gas",
-     "explode a porta com gas lacrimogeneo"
-    ]
-   },
-   "name": "C2 na porta com gás"
-  },
-  {
-   "id": "door.breach.c2.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "5"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "c2 with launcher",
-     "c2 with grenade launcher",
-     "c2 launcher and clear",
-     "blow it with launcher",
-     "blow it with grenade launcher",
-     "blow it launcher and clear",
-     "blow the door with launcher",
-     "blow the door with grenade launcher"
-    ],
-    "pt": [
-     "c2 com lancador",
-     "c2 com lanca granadas",
-     "explode com lancador",
-     "explode com lanca granadas",
-     "explode a porta com lancador",
-     "explode a porta com lanca granadas",
-     "detona a porta com lancador",
-     "detona a porta com lanca granadas"
-    ]
-   },
-   "name": "C2 na porta com lançador"
-  },
-  {
-   "id": "door.breach.c2.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "3",
-    "6"
-   ],
-   "menu_path": [
-    "Breach",
-    "c2",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "c2 with leader",
-     "c2 leader and clear",
-     "c2 wait for me",
-     "blow it with leader",
-     "blow it leader and clear",
-     "blow it wait for me",
-     "blow the door with leader",
-     "blow the door leader and clear"
-    ],
-    "pt": [
-     "c2 com lider",
-     "c2 espera por mim",
-     "c2 e me espera",
-     "explode com lider",
-     "explode espera por mim",
-     "explode e me espera",
-     "explode a porta com lider",
-     "explode a porta espera por mim"
-    ]
-   },
-   "name": "C2 na porta com granada do líder"
-  },
-  {
-   "id": "door.breach.ram.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "1"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "ram and clear",
-     "ram clear",
-     "ram go dynamic",
-     "ram it and clear",
-     "ram it clear",
-     "ram it go dynamic",
-     "battering ram and clear",
-     "battering ram clear"
-    ],
-    "pt": [
-     "ariete e limpa",
-     "ariete limpa",
-     "ariete entra e limpa",
-     "arromba com ariete e limpa",
-     "arromba com ariete limpa",
-     "arromba com ariete entra e limpa",
-     "arromba na marra e limpa",
-     "arromba na marra limpa"
-    ]
-   },
-   "name": "Aríete na porta e limpar"
-  },
-  {
-   "id": "door.breach.ram.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "2"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "ram with flashbang",
-     "ram flash and clear",
-     "ram bang and clear",
-     "ram with flash",
-     "ram with bang",
-     "ram it with flashbang",
-     "ram it flash and clear",
-     "ram it bang and clear"
-    ],
-    "pt": [
-     "ariete com flash",
-     "ariete com flashbang",
-     "ariete flash e limpa",
-     "ariete com granada de luz",
-     "arromba com ariete com flash",
-     "arromba com ariete com flashbang",
-     "arromba com ariete flash e limpa",
-     "arromba com ariete com granada de luz"
-    ]
-   },
-   "name": "Aríete na porta com flash"
-  },
-  {
-   "id": "door.breach.ram.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "3"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "ram with stinger",
-     "ram sting and clear",
-     "ram with sting",
-     "ram with rubber ball",
-     "ram it with stinger",
-     "ram it sting and clear",
-     "ram it with sting",
-     "ram it with rubber ball"
-    ],
-    "pt": [
-     "ariete com stinger",
-     "ariete com sting",
-     "ariete stinger e limpa",
-     "ariete com bola de borracha",
-     "arromba com ariete com stinger",
-     "arromba com ariete com sting",
-     "arromba com ariete stinger e limpa",
-     "arromba com ariete com bola de borracha"
-    ]
-   },
-   "name": "Aríete na porta com stinger"
-  },
-  {
-   "id": "door.breach.ram.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "4"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "ram with gas",
-     "ram with cs gas",
-     "ram gas and clear",
-     "ram with tear gas",
-     "ram it with gas",
-     "ram it with cs gas",
-     "ram it gas and clear",
-     "ram it with tear gas"
-    ],
-    "pt": [
-     "ariete com gas",
-     "ariete com gas lacrimogeneo",
-     "ariete gas e limpa",
-     "arromba com ariete com gas",
-     "arromba com ariete com gas lacrimogeneo",
-     "arromba com ariete gas e limpa",
-     "arromba na marra com gas",
-     "arromba na marra com gas lacrimogeneo"
-    ]
-   },
-   "name": "Aríete na porta com gás"
-  },
-  {
-   "id": "door.breach.ram.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "5"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "ram with launcher",
-     "ram with grenade launcher",
-     "ram launcher and clear",
-     "ram it with launcher",
-     "ram it with grenade launcher",
-     "ram it launcher and clear",
-     "battering ram with launcher",
-     "battering ram with grenade launcher"
-    ],
-    "pt": [
-     "ariete com lancador",
-     "ariete com lanca granadas",
-     "arromba com ariete com lancador",
-     "arromba com ariete com lanca granadas",
-     "arromba na marra com lancador",
-     "arromba na marra com lanca granadas"
-    ]
-   },
-   "name": "Aríete na porta com lançador"
-  },
-  {
-   "id": "door.breach.ram.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "4",
-    "6"
-   ],
-   "menu_path": [
-    "Breach",
-    "ram",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "ram with leader",
-     "ram leader and clear",
-     "ram wait for me",
-     "ram it with leader",
-     "ram it leader and clear",
-     "ram it wait for me",
-     "battering ram with leader",
-     "battering ram leader and clear"
-    ],
-    "pt": [
-     "ariete com lider",
-     "ariete espera por mim",
-     "ariete e me espera",
-     "arromba com ariete com lider",
-     "arromba com ariete espera por mim",
-     "arromba com ariete e me espera",
-     "arromba na marra com lider",
-     "arromba na marra espera por mim"
-    ]
-   },
-   "name": "Aríete na porta com granada do líder"
-  },
-  {
-   "id": "door.breach.leader.clear",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "1"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "clear"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "leader and clear",
-     "leader clear",
-     "leader go dynamic",
-     "breach and wait and clear",
-     "breach and wait clear",
-     "breach and wait go dynamic",
-     "breach for me and clear",
-     "breach for me clear"
-    ],
-    "pt": [
-     "lider e limpa",
-     "lider limpa",
-     "lider entra e limpa",
-     "arromba e espera e limpa",
-     "arromba e espera limpa",
-     "arromba e espera entra e limpa",
-     "arromba pra mim e limpa",
-     "arromba pra mim limpa"
-    ]
-   },
-   "name": "Líder arromba e limpar"
-  },
-  {
-   "id": "door.breach.leader.flashbang",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "2"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "flashbang"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "leader with flashbang",
-     "leader flash and clear",
-     "leader bang and clear",
-     "leader with flash",
-     "leader with bang",
-     "breach and wait with flashbang",
-     "breach and wait flash and clear",
-     "breach and wait bang and clear"
-    ],
-    "pt": [
-     "lider com flash",
-     "lider com flashbang",
-     "lider flash e limpa",
-     "lider com granada de luz",
-     "arromba e espera com flash",
-     "arromba e espera com flashbang",
-     "arromba e espera flash e limpa",
-     "arromba e espera com granada de luz"
-    ]
-   },
-   "name": "Líder arromba com flash"
-  },
-  {
-   "id": "door.breach.leader.stinger",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "3"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "stinger"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "leader with stinger",
-     "leader sting and clear",
-     "leader with sting",
-     "leader with rubber ball",
-     "breach and wait with stinger",
-     "breach and wait sting and clear",
-     "breach and wait with sting",
-     "breach and wait with rubber ball"
-    ],
-    "pt": [
-     "lider com stinger",
-     "lider com sting",
-     "lider stinger e limpa",
-     "lider com bola de borracha",
-     "arromba e espera com stinger",
-     "arromba e espera com sting",
-     "arromba e espera stinger e limpa",
-     "arromba e espera com bola de borracha"
-    ]
-   },
-   "name": "Líder arromba com stinger"
-  },
-  {
-   "id": "door.breach.leader.gas",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "4"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "gas"
-   ],
-   "confidence": "confirmed",
-   "phrases": {
-    "en": [
-     "leader with gas",
-     "leader with cs gas",
-     "leader gas and clear",
-     "leader with tear gas",
-     "breach and wait with gas",
-     "breach and wait with cs gas",
-     "breach and wait gas and clear",
-     "breach and wait with tear gas"
-    ],
-    "pt": [
-     "lider com gas",
-     "lider com gas lacrimogeneo",
-     "lider gas e limpa",
-     "arromba e espera com gas",
-     "arromba e espera com gas lacrimogeneo",
-     "arromba e espera gas e limpa",
-     "arromba pra mim com gas",
-     "arromba pra mim com gas lacrimogeneo"
-    ]
-   },
-   "name": "Líder arromba com gás"
-  },
-  {
-   "id": "door.breach.leader.launcher",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "5"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "launcher"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "leader with launcher",
-     "leader with grenade launcher",
-     "leader launcher and clear",
-     "breach and wait with launcher",
-     "breach and wait with grenade launcher",
-     "breach and wait launcher and clear",
-     "breach for me with launcher",
-     "breach for me with grenade launcher"
-    ],
-    "pt": [
-     "lider com lancador",
-     "lider com lanca granadas",
-     "arromba e espera com lancador",
-     "arromba e espera com lanca granadas",
-     "arromba pra mim com lancador",
-     "arromba pra mim com lanca granadas"
-    ]
-   },
-   "name": "Líder arromba com lançador"
-  },
-  {
-   "id": "door.breach.leader.leader",
-   "context": "door",
-   "path": [
-    "MENU",
-    "3",
-    "5",
-    "6"
-   ],
-   "menu_path": [
-    "Breach",
-    "leader",
-    "leader"
-   ],
-   "confidence": "verify",
-   "phrases": {
-    "en": [
-     "leader with leader",
-     "leader wait for me",
-     "breach and wait with leader",
-     "breach and wait leader and clear",
-     "breach and wait wait for me",
-     "breach for me with leader",
-     "breach for me leader and clear"
-    ],
-    "pt": [
-     "lider com lider",
-     "lider espera por mim",
-     "lider e me espera",
-     "arromba e espera com lider",
-     "arromba e espera espera por mim",
-     "arromba e espera e me espera",
-     "arromba pra mim com lider",
-     "arromba pra mim espera por mim"
-    ]
-   },
-   "name": "Líder arromba com granada do líder"
-  }
- ]
+  "keybind_defaults": {
+    "swat_command_menu": "MiddleMouse",
+    "default_command": "Z",
+    "hold_command": "LeftShift",
+    "back": "Tab",
+    "select_gold": "F5",
+    "select_blue": "F6",
+    "select_red": "F7",
+    "command_keys": [
+      "One",
+      "Two",
+      "Three",
+      "Four",
+      "Five",
+      "Six",
+      "Seven",
+      "Eight",
+      "Nine"
+    ],
+    "interact_yell": "F",
+    "_nota": "o perfil v5.1 usava Space como default_command; confirme no Input.ini"
+  },
+  "timing": {
+    "key_hold_ms": 35,
+    "gap_between_keys_ms": 35,
+    "menu_open_settle_ms": 60,
+    "_nota": "35ms ~ 2 frames a 60fps; o perfil VoiceAttack usa 0.033s"
+  },
+  "elements": {
+    "gold": {
+      "key": "F5",
+      "en": [
+        "gold",
+        "gold team",
+        "team",
+        "all",
+        "everyone"
+      ],
+      "pt": [
+        "ouro",
+        "time ouro",
+        "equipe ouro",
+        "todos",
+        "geral"
+      ]
+    },
+    "blue": {
+      "key": "F6",
+      "en": [
+        "blue",
+        "blue team"
+      ],
+      "pt": [
+        "azul",
+        "time azul",
+        "equipe azul"
+      ]
+    },
+    "red": {
+      "key": "F7",
+      "en": [
+        "red",
+        "red team"
+      ],
+      "pt": [
+        "vermelho",
+        "time vermelho",
+        "equipe vermelha"
+      ]
+    }
+  },
+  "modifiers": {
+    "queue": {
+      "how": "segurar HOLD_COMMAND (LShift) em volta da ULTIMA tecla do caminho",
+      "en": [
+        "queue",
+        "hold",
+        "prep",
+        "prepare",
+        "on my mark",
+        "standby"
+      ],
+      "pt": [
+        "prepara",
+        "aguarda ordem",
+        "no meu comando",
+        "segura",
+        "espera"
+      ]
+    }
+  },
+  "orders": [
+    {
+      "id": "door.stack.auto",
+      "context": "door",
+      "path": [
+        "MENU",
+        "1",
+        "4"
+      ],
+      "menu_path": [
+        "Stack Up",
+        "auto"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "stack up",
+          "stack",
+          "stack on the door",
+          "post up"
+        ],
+        "pt": [
+          "empilha",
+          "empilha na porta",
+          "forma na porta",
+          "posiciona na porta"
+        ]
+      },
+      "ronspeech": [
+        "Eight"
+      ],
+      "name": "Empilhar na porta"
+    },
+    {
+      "id": "door.stack.split",
+      "context": "door",
+      "path": [
+        "MENU",
+        "1",
+        "1"
+      ],
+      "menu_path": [
+        "Stack Up",
+        "split"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "split",
+          "split up",
+          "split the stack"
+        ],
+        "pt": [
+          "divide",
+          "divide o time",
+          "separa"
+        ]
+      },
+      "name": "Dividir nos dois lados da porta"
+    },
+    {
+      "id": "door.stack.left",
+      "context": "door",
+      "path": [
+        "MENU",
+        "1",
+        "2"
+      ],
+      "menu_path": [
+        "Stack Up",
+        "left"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "stack left",
+          "left side",
+          "on the left"
+        ],
+        "pt": [
+          "empilha a esquerda",
+          "lado esquerdo",
+          "pela esquerda"
+        ]
+      },
+      "name": "Empilhar à esquerda"
+    },
+    {
+      "id": "door.stack.right",
+      "context": "door",
+      "path": [
+        "MENU",
+        "1",
+        "3"
+      ],
+      "menu_path": [
+        "Stack Up",
+        "right"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "stack right",
+          "right side",
+          "on the right"
+        ],
+        "pt": [
+          "empilha a direita",
+          "lado direito",
+          "pela direita"
+        ]
+      },
+      "name": "Empilhar à direita"
+    },
+    {
+      "id": "door.scan.slide",
+      "context": "door",
+      "path": [
+        "MENU",
+        "4",
+        "1"
+      ],
+      "menu_path": [
+        "Scan",
+        "slide"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "slide",
+          "slide it",
+          "scan slide"
+        ],
+        "pt": [
+          "desliza",
+          "escaneia deslizando"
+        ]
+      },
+      "name": "Passar a câmera por baixo da porta"
+    },
+    {
+      "id": "door.scan.pie",
+      "context": "door",
+      "path": [
+        "MENU",
+        "4",
+        "2"
+      ],
+      "menu_path": [
+        "Scan",
+        "pie"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "pie",
+          "pie it",
+          "slice the pie"
+        ],
+        "pt": [
+          "fatia",
+          "fatia a porta"
+        ]
+      },
+      "name": "Varrer o cômodo em leque"
+    },
+    {
+      "id": "door.scan.peek",
+      "context": "door",
+      "path": [
+        "MENU",
+        "4",
+        "3"
+      ],
+      "menu_path": [
+        "Scan",
+        "peek"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "peek",
+          "peek it",
+          "take a peek"
+        ],
+        "pt": [
+          "espia",
+          "da uma espiada"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F23"
+      ],
+      "name": "Espiar pela porta"
+    },
+    {
+      "id": "door.mirror",
+      "context": "door",
+      "path": [
+        "MENU",
+        "5"
+      ],
+      "menu_path": [
+        "Mirror Under Door"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "mirror",
+          "mirror under door",
+          "mirror it",
+          "check under the door"
+        ],
+        "pt": [
+          "espelho",
+          "espelho embaixo da porta",
+          "olha embaixo da porta"
+        ]
+      },
+      "ronspeech": [
+        "F23"
+      ],
+      "name": "Usar o espelho na porta"
+    },
+    {
+      "id": "door.wedge",
+      "context": "door",
+      "path": [
+        "MENU",
+        "6"
+      ],
+      "menu_path": [
+        "Wedge Door"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "wedge",
+          "wedge it",
+          "wedge the door",
+          "jam the door"
+        ],
+        "pt": [
+          "trava a porta",
+          "calca a porta",
+          "poe a cunha"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F22",
+        "F14"
+      ],
+      "name": "Calçar a porta"
+    },
+    {
+      "id": "door.cover",
+      "context": "door",
+      "path": [
+        "MENU",
+        "7"
+      ],
+      "menu_path": [
+        "Cover Door"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "cover the door",
+          "cover this door",
+          "watch the door"
+        ],
+        "pt": [
+          "cobre a porta",
+          "vigia a porta",
+          "fica na porta"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F14"
+      ],
+      "name": "Cobrir a porta"
+    },
+    {
+      "id": "door.toggle",
+      "context": "door",
+      "path": [
+        "MENU",
+        "8"
+      ],
+      "menu_path": [
+        "Open/Close Door"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "open the door",
+          "close the door",
+          "shut the door",
+          "just open it"
+        ],
+        "pt": [
+          "abre a porta",
+          "fecha a porta",
+          "só abre a porta"
+        ]
+      },
+      "ronspeech": [
+        "PageDown"
+      ],
+      "name": "Abrir ou fechar a porta"
+    },
+    {
+      "id": "door.picklock",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2"
+      ],
+      "menu_path": [
+        "Pick Lock"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "pick the lock",
+          "pick it",
+          "unlock it",
+          "lock pick",
+          "lockpick"
+        ],
+        "pt": [
+          "abre a fechadura",
+          "arromba a fechadura",
+          "destranca"
+        ]
+      },
+      "ronspeech": [
+        "Multiply"
+      ],
+      "name": "Abrir a fechadura"
+    },
+    {
+      "id": "door.disarm",
+      "context": "door",
+      "path": [
+        "MENU",
+        "1",
+        "3"
+      ],
+      "menu_path": [
+        "Disarm Trap"
+      ],
+      "confidence": "verify",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "disarm the trap",
+          "disarm it",
+          "defuse the trap"
+        ],
+        "pt": [
+          "desarma a armadilha",
+          "desarma isso",
+          "neutraliza a armadilha"
+        ]
+      },
+      "ronspeech": [
+        "F14"
+      ],
+      "name": "Desarmar a armadilha"
+    },
+    {
+      "id": "move.to",
+      "context": "default",
+      "path": [
+        "MENU",
+        "1"
+      ],
+      "menu_path": [
+        "Move To"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "move there",
+          "go there",
+          "move up",
+          "push there"
+        ],
+        "pt": [
+          "vai la",
+          "avança",
+          "move pra la",
+          "vai ali"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "PageUp"
+      ],
+      "name": "Ir até onde eu estou olhando"
+    },
+    {
+      "id": "move.fallin",
+      "context": "default",
+      "path": [
+        "MENU",
+        "2",
+        "2"
+      ],
+      "menu_path": [
+        "Position",
+        "Fall In"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "fall in",
+          "on me",
+          "form up",
+          "regroup",
+          "follow me",
+          "group up"
+        ],
+        "pt": [
+          "comigo",
+          "na minha",
+          "forma comigo",
+          "reagrupa",
+          "me segue"
+        ]
+      },
+      "ronspeech": [
+        "PageUp"
+      ],
+      "name": "Reagrupar comigo"
+    },
+    {
+      "id": "move.formation.single",
+      "context": "default",
+      "path": [
+        "MENU",
+        "2",
+        "2",
+        "1"
+      ],
+      "menu_path": [
+        "Position",
+        "Fall In",
+        "Single File"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "single file",
+          "single file formation",
+          "line up"
+        ],
+        "pt": [
+          "fila indiana",
+          "em fila",
+          "formação em fila"
+        ]
+      },
+      "name": "Formação: fila indiana"
+    },
+    {
+      "id": "move.formation.double",
+      "context": "default",
+      "path": [
+        "MENU",
+        "2",
+        "2",
+        "2"
+      ],
+      "menu_path": [
+        "Position",
+        "Fall In",
+        "Double File"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "double file",
+          "double file formation"
+        ],
+        "pt": [
+          "fila dupla",
+          "formação dupla"
+        ]
+      },
+      "ronspeech": [
+        "F22",
+        "PageUp"
+      ],
+      "name": "Formação: fila dupla"
+    },
+    {
+      "id": "move.formation.diamond",
+      "context": "default",
+      "path": [
+        "MENU",
+        "2",
+        "2",
+        "3"
+      ],
+      "menu_path": [
+        "Position",
+        "Fall In",
+        "Diamond"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "diamond",
+          "diamond formation"
+        ],
+        "pt": [
+          "diamante",
+          "formação diamante"
+        ]
+      },
+      "ronspeech": [
+        "Nine",
+        "PageUp"
+      ],
+      "name": "Formação: diamante"
+    },
+    {
+      "id": "move.formation.wedge",
+      "context": "default",
+      "path": [
+        "MENU",
+        "2",
+        "2",
+        "4"
+      ],
+      "menu_path": [
+        "Position",
+        "Fall In",
+        "Wedge"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "wedge formation",
+          "wedge up"
+        ],
+        "pt": [
+          "cunha",
+          "formação cunha"
+        ]
+      },
+      "ronspeech": [
+        "F22",
+        "F13",
+        "PageUp"
+      ],
+      "name": "Formação: cunha"
+    },
+    {
+      "id": "hold",
+      "context": "default",
+      "path": [
+        "MENU",
+        "4"
+      ],
+      "menu_path": [
+        "Hold"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "hold",
+          "hold position",
+          "hold up",
+          "halt",
+          "stop",
+          "freeze there"
+        ],
+        "pt": [
+          "aguarda",
+          "segura posição",
+          "para",
+          "parado",
+          "espera ai"
+        ]
+      },
+      "ronspeech": [
+        "Seven"
+      ],
+      "name": "Aguardar no lugar"
+    },
+    {
+      "id": "cover",
+      "context": "default",
+      "path": [
+        "MENU",
+        "3"
+      ],
+      "menu_path": [
+        "Cover"
+      ],
+      "confidence": "verify",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "cover me",
+          "cover my back",
+          "watch my six",
+          "watch my back"
+        ],
+        "pt": [
+          "me cobre",
+          "cobre minhas costas",
+          "fica de olho atrás"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F14"
+      ],
+      "name": "Cobrir a minha posição"
+    },
+    {
+      "id": "search",
+      "context": "default",
+      "path": [
+        "MENU",
+        "6"
+      ],
+      "menu_path": [
+        "Search & Secure"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "search",
+          "search the room",
+          "search and secure",
+          "sweep it",
+          "secure the area",
+          "clear the area"
+        ],
+        "pt": [
+          "vasculha",
+          "revista o cômodo",
+          "limpa a area",
+          "varre o cômodo",
+          "assegura a area"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F20"
+      ],
+      "name": "Vasculhar e garantir o cômodo"
+    },
+    {
+      "id": "deploy.flashbang",
+      "context": "default",
+      "path": [
+        "MENU",
+        "5",
+        "1"
+      ],
+      "menu_path": [
+        "Deploy",
+        "Flashbang"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "deploy flash bang",
+          "throw a flash bang",
+          "toss a flash",
+          "bang it",
+          "deploy flashbang",
+          "throw a flashbang"
+        ],
+        "pt": [
+          "joga flash",
+          "solta flash bang",
+          "joga granada de luz",
+          "solta flashbang"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F19"
+      ],
+      "name": "Jogar flash"
+    },
+    {
+      "id": "deploy.stinger",
+      "context": "default",
+      "path": [
+        "MENU",
+        "5",
+        "2"
+      ],
+      "menu_path": [
+        "Deploy",
+        "Stinger"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "deploy stinger",
+          "throw a stinger",
+          "toss a sting"
+        ],
+        "pt": [
+          "joga granada de choque",
+          "solta granada de choque",
+          "joga stinger",
+          "solta stinger"
+        ]
+      },
+      "ronspeech": [
+        "F22",
+        "F19"
+      ],
+      "name": "Jogar stinger"
+    },
+    {
+      "id": "deploy.gas",
+      "context": "default",
+      "path": [
+        "MENU",
+        "5",
+        "3"
+      ],
+      "menu_path": [
+        "Deploy",
+        "CS Gas"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "deploy gas",
+          "throw cs gas",
+          "gas them"
+        ],
+        "pt": [
+          "joga gas",
+          "solta gas lacrimogêneo",
+          "gaseia"
+        ]
+      },
+      "ronspeech": [
+        "F13",
+        "F22",
+        "F19"
+      ],
+      "name": "Jogar gás"
+    },
+    {
+      "id": "deploy.chemlight",
+      "context": "default",
+      "path": [
+        "MENU",
+        "5",
+        "4"
+      ],
+      "menu_path": [
+        "Deploy",
+        "Chemlight"
+      ],
+      "confidence": "verify",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "deploy chem light",
+          "mark it",
+          "deploy chemlight"
+        ],
+        "pt": [
+          "joga luz química",
+          "marca com luz",
+          "joga chemlight"
+        ]
+      },
+      "name": "Jogar chemlight"
+    },
+    {
+      "id": "deploy.shield",
+      "context": "default",
+      "path": [
+        "MENU",
+        "5",
+        "5"
+      ],
+      "menu_path": [
+        "Deploy",
+        "Shield"
+      ],
+      "confidence": "verify",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "deploy shield",
+          "shield up",
+          "bring the shield"
+        ],
+        "pt": [
+          "poe o escudo",
+          "traz o escudo"
+        ]
+      },
+      "name": "Pôr o escudo"
+    },
+    {
+      "id": "person.restrain",
+      "context": "person",
+      "path": [
+        "MENU",
+        "1"
+      ],
+      "menu_path": [
+        "Restrain"
+      ],
+      "confidence": "verify",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "restrain him",
+          "cuff him",
+          "arrest him",
+          "zip tie him",
+          "restrain them"
+        ],
+        "pt": [
+          "algema ele",
+          "prende ele",
+          "amarra ele",
+          "algema"
+        ]
+      },
+      "ronspeech": [
+        "F20"
+      ],
+      "name": "Algemar a pessoa"
+    },
+    {
+      "id": "person.moveto",
+      "context": "person",
+      "path": [
+        "MENU",
+        "2"
+      ],
+      "menu_path": [
+        "Move To"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "move him there",
+          "suspect move there",
+          "move him"
+        ],
+        "pt": [
+          "leva ele",
+          "move o suspeito",
+          "tira ele dai"
+        ]
+      },
+      "ronspeech": [
+        "F22",
+        "F8"
+      ],
+      "name": "Mandar a pessoa até mim"
+    },
+    {
+      "id": "player.yell",
+      "context": "any",
+      "path": [
+        "KEY:INTERACT"
+      ],
+      "menu_path": [
+        "Yell for compliance"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "hands up",
+          "get down",
+          "freeze",
+          "police",
+          "on the ground",
+          "yell",
+          "comply"
+        ],
+        "pt": [
+          "mãos ao alto",
+          "deita no chão",
+          "policia",
+          "no chão",
+          "manda deitar"
+        ]
+      },
+      "ronspeech": [
+        "F8"
+      ],
+      "name": "Gritar por rendição"
+    },
+    {
+      "id": "player.chemlight",
+      "context": "any",
+      "path": [
+        "KEY:C"
+      ],
+      "menu_path": [
+        "Deploy chemlight (player)"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "chem light",
+          "drop chem light",
+          "light out",
+          "chemlight",
+          "drop chemlight"
+        ],
+        "pt": [
+          "luz química",
+          "solta luz",
+          "marca aqui",
+          "chemlight"
+        ]
+      },
+      "name": "Eu jogo um chemlight"
+    },
+    {
+      "id": "player.fireselect",
+      "context": "any",
+      "path": [
+        "KEY:X"
+      ],
+      "menu_path": [
+        "Fire select"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "fire select",
+          "switch fire mode",
+          "full auto",
+          "semi auto"
+        ],
+        "pt": [
+          "modo de tiro",
+          "muda o tiro",
+          "automático",
+          "semi automático"
+        ]
+      },
+      "name": "Trocar o meu modo de tiro"
+    },
+    {
+      "id": "player.exfil",
+      "context": "any",
+      "path": [
+        "KEY:PAGEUP"
+      ],
+      "menu_path": [
+        "Vote / exfil"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "we're done here",
+          "let's go",
+          "clear for exfil",
+          "let's go home",
+          "mission complete"
+        ],
+        "pt": [
+          "acabou aqui",
+          "vamos embora",
+          "liberado pra sair",
+          "missão completa"
+        ]
+      },
+      "name": "Encerrar a missão"
+    },
+    {
+      "id": "confirm.default",
+      "context": "any",
+      "path": [
+        "KEY:DEFAULT_COMMAND"
+      ],
+      "menu_path": [
+        "Default command"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "execute",
+          "do it",
+          "go go go",
+          "affirmative",
+          "confirm"
+        ],
+        "pt": [
+          "executa",
+          "manda ver",
+          "vai vai vai",
+          "positivo",
+          "confirma"
+        ]
+      },
+      "name": "Executar a ordem padrão"
+    },
+    {
+      "id": "door.open.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "1"
+      ],
+      "menu_path": [
+        "Open",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "open and clear",
+          "open clear",
+          "open go dynamic",
+          "move in and clear",
+          "move in clear"
+        ],
+        "pt": [
+          "abre e limpa",
+          "abre limpa",
+          "abre entra e limpa",
+          "entra e limpa",
+          "entra limpa"
+        ]
+      },
+      "ronspeech": [
+        "Zero"
+      ],
+      "name": "Abrir a porta e limpar"
+    },
+    {
+      "id": "door.open.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "2"
+      ],
+      "menu_path": [
+        "Open",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "open with flash bang",
+          "open flash and clear",
+          "open bang and clear",
+          "open with flash",
+          "open with bang",
+          "move in with flash bang",
+          "move in flash and clear",
+          "open with flashbang",
+          "move in with flashbang"
+        ],
+        "pt": [
+          "abre com flash",
+          "abre com flash bang",
+          "abre flash e limpa",
+          "abre com granada de luz",
+          "entra com flash",
+          "entra com flash bang",
+          "abre com flashbang",
+          "entra com flashbang"
+        ]
+      },
+      "ronspeech": [
+        "F15"
+      ],
+      "name": "Abrir a porta com flash"
+    },
+    {
+      "id": "door.open.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "3"
+      ],
+      "menu_path": [
+        "Open",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "open with stinger",
+          "open sting and clear",
+          "open with sting",
+          "open with rubber ball",
+          "move in with stinger",
+          "move in sting and clear"
+        ],
+        "pt": [
+          "abre com granada de choque",
+          "abre com sting",
+          "abre granada de choque e limpa",
+          "abre com bola de borracha",
+          "entra com granada de choque",
+          "entra com sting",
+          "abre com stinger",
+          "abre stinger e limpa",
+          "entra com stinger"
+        ]
+      },
+      "ronspeech": [
+        "F17"
+      ],
+      "name": "Abrir a porta com stinger"
+    },
+    {
+      "id": "door.open.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "4"
+      ],
+      "menu_path": [
+        "Open",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "close_menu": true,
+      "phrases": {
+        "en": [
+          "open with gas",
+          "open with cs gas",
+          "open gas and clear",
+          "open with tear gas",
+          "move in with gas",
+          "move in with cs gas"
+        ],
+        "pt": [
+          "abre com gas",
+          "abre com gas lacrimogêneo",
+          "abre gas e limpa",
+          "entra com gas",
+          "entra com gas lacrimogêneo"
+        ]
+      },
+      "ronspeech": [
+        "F16"
+      ],
+      "name": "Abrir a porta com gás"
+    },
+    {
+      "id": "door.open.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "5"
+      ],
+      "menu_path": [
+        "Open",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "open with launcher",
+          "open with grenade launcher",
+          "open launcher and clear",
+          "move in with launcher",
+          "move in with grenade launcher"
+        ],
+        "pt": [
+          "abre com lançador",
+          "abre com lança granadas",
+          "entra com lançador",
+          "entra com lança granadas"
+        ]
+      },
+      "name": "Abrir a porta com lançador"
+    },
+    {
+      "id": "door.open.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "2",
+        "6"
+      ],
+      "menu_path": [
+        "Open",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "open with leader",
+          "open leader and clear",
+          "open wait for me",
+          "move in with leader",
+          "move in leader and clear"
+        ],
+        "pt": [
+          "abre com lider",
+          "abre espera por mim",
+          "abre e me espera",
+          "entra com lider",
+          "entra espera por mim"
+        ]
+      },
+      "name": "Abrir a porta com granada do líder"
+    },
+    {
+      "id": "door.breach.kick.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "1"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "kick and clear",
+          "kick clear",
+          "kick go dynamic",
+          "kick it and clear",
+          "kick it clear",
+          "kick it go dynamic",
+          "kick the door and clear",
+          "kick the door clear"
+        ],
+        "pt": [
+          "chuta e limpa",
+          "chuta limpa",
+          "chuta entra e limpa",
+          "chuta a porta e limpa",
+          "chuta a porta limpa",
+          "chuta a porta entra e limpa",
+          "arromba chutando e limpa",
+          "arromba chutando limpa"
+        ]
+      },
+      "name": "Chutar a porta e limpar"
+    },
+    {
+      "id": "door.breach.kick.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "2"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "kick with flash bang",
+          "kick flash and clear",
+          "kick bang and clear",
+          "kick with flash",
+          "kick with bang",
+          "kick it with flash bang",
+          "kick it flash and clear",
+          "kick it bang and clear",
+          "kick with flashbang",
+          "kick it with flashbang"
+        ],
+        "pt": [
+          "chuta com flash",
+          "chuta com flash bang",
+          "chuta flash e limpa",
+          "chuta com granada de luz",
+          "chuta a porta com flash",
+          "chuta a porta com flash bang",
+          "chuta a porta flash e limpa",
+          "chuta a porta com granada de luz",
+          "chuta com flashbang",
+          "chuta a porta com flashbang"
+        ]
+      },
+      "name": "Chutar a porta com flash"
+    },
+    {
+      "id": "door.breach.kick.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "3"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "kick with stinger",
+          "kick sting and clear",
+          "kick with sting",
+          "kick with rubber ball",
+          "kick it with stinger",
+          "kick it sting and clear",
+          "kick it with sting",
+          "kick it with rubber ball"
+        ],
+        "pt": [
+          "chuta com granada de choque",
+          "chuta com sting",
+          "chuta granada de choque e limpa",
+          "chuta com bola de borracha",
+          "chuta a porta com granada de choque",
+          "chuta a porta com sting",
+          "chuta a porta granada de choque e limpa",
+          "chuta a porta com bola de borracha",
+          "chuta com stinger",
+          "chuta stinger e limpa",
+          "chuta a porta com stinger",
+          "chuta a porta stinger e limpa"
+        ]
+      },
+      "name": "Chutar a porta com stinger"
+    },
+    {
+      "id": "door.breach.kick.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "4"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "kick with gas",
+          "kick with cs gas",
+          "kick gas and clear",
+          "kick with tear gas",
+          "kick it with gas",
+          "kick it with cs gas",
+          "kick it gas and clear",
+          "kick it with tear gas"
+        ],
+        "pt": [
+          "chuta com gas",
+          "chuta com gas lacrimogêneo",
+          "chuta gas e limpa",
+          "chuta a porta com gas",
+          "chuta a porta com gas lacrimogêneo",
+          "chuta a porta gas e limpa",
+          "arromba chutando com gas",
+          "arromba chutando com gas lacrimogêneo"
+        ]
+      },
+      "name": "Chutar a porta com gás"
+    },
+    {
+      "id": "door.breach.kick.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "5"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "kick with launcher",
+          "kick with grenade launcher",
+          "kick launcher and clear",
+          "kick it with launcher",
+          "kick it with grenade launcher",
+          "kick it launcher and clear",
+          "kick the door with launcher",
+          "kick the door with grenade launcher"
+        ],
+        "pt": [
+          "chuta com lançador",
+          "chuta com lança granadas",
+          "chuta a porta com lançador",
+          "chuta a porta com lança granadas",
+          "arromba chutando com lançador",
+          "arromba chutando com lança granadas"
+        ]
+      },
+      "name": "Chutar a porta com lançador"
+    },
+    {
+      "id": "door.breach.kick.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "1",
+        "6"
+      ],
+      "menu_path": [
+        "Breach",
+        "kick",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "kick with leader",
+          "kick leader and clear",
+          "kick wait for me",
+          "kick it with leader",
+          "kick it leader and clear",
+          "kick it wait for me",
+          "kick the door with leader",
+          "kick the door leader and clear"
+        ],
+        "pt": [
+          "chuta com lider",
+          "chuta espera por mim",
+          "chuta e me espera",
+          "chuta a porta com lider",
+          "chuta a porta espera por mim",
+          "chuta a porta e me espera",
+          "arromba chutando com lider",
+          "arromba chutando espera por mim"
+        ]
+      },
+      "name": "Chutar a porta com granada do líder"
+    },
+    {
+      "id": "door.breach.shotgun.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "1"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "shotgun and clear",
+          "shotgun clear",
+          "shotgun go dynamic",
+          "shoot the hinges and clear",
+          "shoot the hinges clear",
+          "shoot the hinges go dynamic",
+          "breaching shotgun and clear",
+          "breaching shotgun clear"
+        ],
+        "pt": [
+          "escopeta e limpa",
+          "escopeta limpa",
+          "escopeta entra e limpa",
+          "arromba com escopeta e limpa",
+          "arromba com escopeta limpa",
+          "arromba com escopeta entra e limpa",
+          "atira na dobradiça e limpa",
+          "atira na dobradiça limpa"
+        ]
+      },
+      "ronspeech": [
+        "F18"
+      ],
+      "name": "Escopeta na dobradiça e limpar"
+    },
+    {
+      "id": "door.breach.shotgun.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "2"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "shotgun with flash bang",
+          "shotgun flash and clear",
+          "shotgun bang and clear",
+          "shotgun with flash",
+          "shotgun with bang",
+          "shoot the hinges with flash bang",
+          "shoot the hinges flash and clear",
+          "shoot the hinges bang and clear",
+          "shotgun with flashbang",
+          "shoot the hinges with flashbang"
+        ],
+        "pt": [
+          "escopeta com flash",
+          "escopeta com flash bang",
+          "escopeta flash e limpa",
+          "escopeta com granada de luz",
+          "arromba com escopeta com flash",
+          "arromba com escopeta com flash bang",
+          "arromba com escopeta flash e limpa",
+          "arromba com escopeta com granada de luz",
+          "escopeta com flashbang",
+          "arromba com escopeta com flashbang"
+        ]
+      },
+      "ronspeech": [
+        "F19"
+      ],
+      "name": "Escopeta na dobradiça com flash"
+    },
+    {
+      "id": "door.breach.shotgun.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "3"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "shotgun with stinger",
+          "shotgun sting and clear",
+          "shotgun with sting",
+          "shotgun with rubber ball",
+          "shoot the hinges with stinger",
+          "shoot the hinges sting and clear",
+          "shoot the hinges with sting",
+          "shoot the hinges with rubber ball"
+        ],
+        "pt": [
+          "escopeta com granada de choque",
+          "escopeta com sting",
+          "escopeta granada de choque e limpa",
+          "escopeta com bola de borracha",
+          "arromba com escopeta com granada de choque",
+          "arromba com escopeta com sting",
+          "arromba com escopeta granada de choque e limpa",
+          "arromba com escopeta com bola de borracha",
+          "escopeta com stinger",
+          "escopeta stinger e limpa",
+          "arromba com escopeta com stinger",
+          "arromba com escopeta stinger e limpa"
+        ]
+      },
+      "ronspeech": [
+        "F24"
+      ],
+      "name": "Escopeta na dobradiça com stinger"
+    },
+    {
+      "id": "door.breach.shotgun.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "4"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "shotgun with gas",
+          "shotgun with cs gas",
+          "shotgun gas and clear",
+          "shotgun with tear gas",
+          "shoot the hinges with gas",
+          "shoot the hinges with cs gas",
+          "shoot the hinges gas and clear",
+          "shoot the hinges with tear gas"
+        ],
+        "pt": [
+          "escopeta com gas",
+          "escopeta com gas lacrimogêneo",
+          "escopeta gas e limpa",
+          "arromba com escopeta com gas",
+          "arromba com escopeta com gas lacrimogêneo",
+          "arromba com escopeta gas e limpa",
+          "atira na dobradiça com gas",
+          "atira na dobradiça com gas lacrimogêneo"
+        ]
+      },
+      "ronspeech": [
+        "F21"
+      ],
+      "name": "Escopeta na dobradiça com gás"
+    },
+    {
+      "id": "door.breach.shotgun.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "5"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "shotgun with launcher",
+          "shotgun with grenade launcher",
+          "shotgun launcher and clear",
+          "shoot the hinges with launcher",
+          "shoot the hinges with grenade launcher",
+          "shoot the hinges launcher and clear",
+          "breaching shotgun with launcher",
+          "breaching shotgun with grenade launcher"
+        ],
+        "pt": [
+          "escopeta com lançador",
+          "escopeta com lança granadas",
+          "arromba com escopeta com lançador",
+          "arromba com escopeta com lança granadas",
+          "atira na dobradiça com lançador",
+          "atira na dobradiça com lança granadas"
+        ]
+      },
+      "name": "Escopeta na dobradiça com lançador"
+    },
+    {
+      "id": "door.breach.shotgun.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "2",
+        "6"
+      ],
+      "menu_path": [
+        "Breach",
+        "shotgun",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "shotgun with leader",
+          "shotgun leader and clear",
+          "shotgun wait for me",
+          "shoot the hinges with leader",
+          "shoot the hinges leader and clear",
+          "shoot the hinges wait for me",
+          "breaching shotgun with leader",
+          "breaching shotgun leader and clear"
+        ],
+        "pt": [
+          "escopeta com lider",
+          "escopeta espera por mim",
+          "escopeta e me espera",
+          "arromba com escopeta com lider",
+          "arromba com escopeta espera por mim",
+          "arromba com escopeta e me espera",
+          "atira na dobradiça com lider",
+          "atira na dobradiça espera por mim"
+        ]
+      },
+      "name": "Escopeta na dobradiça com granada do líder"
+    },
+    {
+      "id": "door.breach.c2.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "1"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "c two and clear",
+          "c two clear",
+          "c two go dynamic",
+          "blow it and clear",
+          "blow it clear",
+          "blow it go dynamic",
+          "blow the door and clear",
+          "blow the door clear",
+          "c2 and clear",
+          "c2 clear",
+          "c2 go dynamic"
+        ],
+        "pt": [
+          "c dois e limpa",
+          "c dois limpa",
+          "c dois entra e limpa",
+          "explode e limpa",
+          "explode limpa",
+          "explode entra e limpa",
+          "explode a porta e limpa",
+          "explode a porta limpa",
+          "c2 e limpa",
+          "c2 limpa",
+          "c2 entra e limpa"
+        ]
+      },
+      "ronspeech": [
+        "Subtract"
+      ],
+      "name": "C2 na porta e limpar"
+    },
+    {
+      "id": "door.breach.c2.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "2"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "c two with flash bang",
+          "c two flash and clear",
+          "c two bang and clear",
+          "c two with flash",
+          "c two with bang",
+          "blow it with flash bang",
+          "blow it flash and clear",
+          "blow it bang and clear",
+          "c2 with flashbang",
+          "c2 flash and clear",
+          "c2 bang and clear",
+          "c2 with flash",
+          "c2 with bang",
+          "blow it with flashbang"
+        ],
+        "pt": [
+          "c dois com flash",
+          "c dois com flash bang",
+          "c dois flash e limpa",
+          "c dois com granada de luz",
+          "explode com flash",
+          "explode com flash bang",
+          "explode flash e limpa",
+          "explode com granada de luz",
+          "c2 com flash",
+          "c2 com flashbang",
+          "c2 flash e limpa",
+          "c2 com granada de luz",
+          "explode com flashbang"
+        ]
+      },
+      "ronspeech": [
+        "Add"
+      ],
+      "name": "C2 na porta com flash"
+    },
+    {
+      "id": "door.breach.c2.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "3"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "c two with stinger",
+          "c two sting and clear",
+          "c two with sting",
+          "c two with rubber ball",
+          "blow it with stinger",
+          "blow it sting and clear",
+          "blow it with sting",
+          "blow it with rubber ball",
+          "c2 with stinger",
+          "c2 sting and clear",
+          "c2 with sting",
+          "c2 with rubber ball"
+        ],
+        "pt": [
+          "c dois com granada de choque",
+          "c dois com sting",
+          "c dois granada de choque e limpa",
+          "c dois com bola de borracha",
+          "explode com granada de choque",
+          "explode com sting",
+          "explode granada de choque e limpa",
+          "explode com bola de borracha",
+          "c2 com stinger",
+          "c2 com sting",
+          "c2 stinger e limpa",
+          "c2 com bola de borracha",
+          "explode com stinger",
+          "explode stinger e limpa"
+        ]
+      },
+      "name": "C2 na porta com stinger"
+    },
+    {
+      "id": "door.breach.c2.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "4"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "c two with gas",
+          "c two with cs gas",
+          "c two gas and clear",
+          "c two with tear gas",
+          "blow it with gas",
+          "blow it with cs gas",
+          "blow it gas and clear",
+          "blow it with tear gas",
+          "c2 with gas",
+          "c2 with cs gas",
+          "c2 gas and clear",
+          "c2 with tear gas"
+        ],
+        "pt": [
+          "c dois com gas",
+          "c dois com gas lacrimogêneo",
+          "c dois gas e limpa",
+          "explode com gas",
+          "explode com gas lacrimogêneo",
+          "explode gas e limpa",
+          "explode a porta com gas",
+          "explode a porta com gas lacrimogêneo",
+          "c2 com gas",
+          "c2 com gas lacrimogêneo",
+          "c2 gas e limpa"
+        ]
+      },
+      "name": "C2 na porta com gás"
+    },
+    {
+      "id": "door.breach.c2.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "5"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "c two with launcher",
+          "c two with grenade launcher",
+          "c two launcher and clear",
+          "blow it with launcher",
+          "blow it with grenade launcher",
+          "blow it launcher and clear",
+          "blow the door with launcher",
+          "blow the door with grenade launcher",
+          "c2 with launcher",
+          "c2 with grenade launcher",
+          "c2 launcher and clear"
+        ],
+        "pt": [
+          "c dois com lançador",
+          "c dois com lança granadas",
+          "explode com lançador",
+          "explode com lança granadas",
+          "explode a porta com lançador",
+          "explode a porta com lança granadas",
+          "detona a porta com lançador",
+          "detona a porta com lança granadas",
+          "c2 com lançador",
+          "c2 com lança granadas"
+        ]
+      },
+      "name": "C2 na porta com lançador"
+    },
+    {
+      "id": "door.breach.c2.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "3",
+        "6"
+      ],
+      "menu_path": [
+        "Breach",
+        "c2",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "c two with leader",
+          "c two leader and clear",
+          "c two wait for me",
+          "blow it with leader",
+          "blow it leader and clear",
+          "blow it wait for me",
+          "blow the door with leader",
+          "blow the door leader and clear",
+          "c2 with leader",
+          "c2 leader and clear",
+          "c2 wait for me"
+        ],
+        "pt": [
+          "c dois com lider",
+          "c dois espera por mim",
+          "c dois e me espera",
+          "explode com lider",
+          "explode espera por mim",
+          "explode e me espera",
+          "explode a porta com lider",
+          "explode a porta espera por mim",
+          "c2 com lider",
+          "c2 espera por mim",
+          "c2 e me espera"
+        ]
+      },
+      "name": "C2 na porta com granada do líder"
+    },
+    {
+      "id": "door.breach.ram.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "1"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "ram and clear",
+          "ram clear",
+          "ram go dynamic",
+          "ram it and clear",
+          "ram it clear",
+          "ram it go dynamic",
+          "battering ram and clear",
+          "battering ram clear"
+        ],
+        "pt": [
+          "aríete e limpa",
+          "aríete limpa",
+          "aríete entra e limpa",
+          "arromba com aríete e limpa",
+          "arromba com aríete limpa",
+          "arromba com aríete entra e limpa",
+          "arromba na marra e limpa",
+          "arromba na marra limpa"
+        ]
+      },
+      "name": "Aríete na porta e limpar"
+    },
+    {
+      "id": "door.breach.ram.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "2"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "ram with flash bang",
+          "ram flash and clear",
+          "ram bang and clear",
+          "ram with flash",
+          "ram with bang",
+          "ram it with flash bang",
+          "ram it flash and clear",
+          "ram it bang and clear",
+          "ram with flashbang",
+          "ram it with flashbang"
+        ],
+        "pt": [
+          "aríete com flash",
+          "aríete com flash bang",
+          "aríete flash e limpa",
+          "aríete com granada de luz",
+          "arromba com aríete com flash",
+          "arromba com aríete com flash bang",
+          "arromba com aríete flash e limpa",
+          "arromba com aríete com granada de luz",
+          "aríete com flashbang",
+          "arromba com aríete com flashbang"
+        ]
+      },
+      "name": "Aríete na porta com flash"
+    },
+    {
+      "id": "door.breach.ram.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "3"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "ram with stinger",
+          "ram sting and clear",
+          "ram with sting",
+          "ram with rubber ball",
+          "ram it with stinger",
+          "ram it sting and clear",
+          "ram it with sting",
+          "ram it with rubber ball"
+        ],
+        "pt": [
+          "aríete com granada de choque",
+          "aríete com sting",
+          "aríete granada de choque e limpa",
+          "aríete com bola de borracha",
+          "arromba com aríete com granada de choque",
+          "arromba com aríete com sting",
+          "arromba com aríete granada de choque e limpa",
+          "arromba com aríete com bola de borracha",
+          "aríete com stinger",
+          "aríete stinger e limpa",
+          "arromba com aríete com stinger",
+          "arromba com aríete stinger e limpa"
+        ]
+      },
+      "name": "Aríete na porta com stinger"
+    },
+    {
+      "id": "door.breach.ram.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "4"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "ram with gas",
+          "ram with cs gas",
+          "ram gas and clear",
+          "ram with tear gas",
+          "ram it with gas",
+          "ram it with cs gas",
+          "ram it gas and clear",
+          "ram it with tear gas"
+        ],
+        "pt": [
+          "aríete com gas",
+          "aríete com gas lacrimogêneo",
+          "aríete gas e limpa",
+          "arromba com aríete com gas",
+          "arromba com aríete com gas lacrimogêneo",
+          "arromba com aríete gas e limpa",
+          "arromba na marra com gas",
+          "arromba na marra com gas lacrimogêneo"
+        ]
+      },
+      "name": "Aríete na porta com gás"
+    },
+    {
+      "id": "door.breach.ram.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "5"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "ram with launcher",
+          "ram with grenade launcher",
+          "ram launcher and clear",
+          "ram it with launcher",
+          "ram it with grenade launcher",
+          "ram it launcher and clear",
+          "battering ram with launcher",
+          "battering ram with grenade launcher"
+        ],
+        "pt": [
+          "aríete com lançador",
+          "aríete com lança granadas",
+          "arromba com aríete com lançador",
+          "arromba com aríete com lança granadas",
+          "arromba na marra com lançador",
+          "arromba na marra com lança granadas"
+        ]
+      },
+      "name": "Aríete na porta com lançador"
+    },
+    {
+      "id": "door.breach.ram.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "4",
+        "6"
+      ],
+      "menu_path": [
+        "Breach",
+        "ram",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "ram with leader",
+          "ram leader and clear",
+          "ram wait for me",
+          "ram it with leader",
+          "ram it leader and clear",
+          "ram it wait for me",
+          "battering ram with leader",
+          "battering ram leader and clear"
+        ],
+        "pt": [
+          "aríete com lider",
+          "aríete espera por mim",
+          "aríete e me espera",
+          "arromba com aríete com lider",
+          "arromba com aríete espera por mim",
+          "arromba com aríete e me espera",
+          "arromba na marra com lider",
+          "arromba na marra espera por mim"
+        ]
+      },
+      "name": "Aríete na porta com granada do líder"
+    },
+    {
+      "id": "door.breach.leader.clear",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "1"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "clear"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "leader and clear",
+          "leader clear",
+          "leader go dynamic",
+          "breach and wait and clear",
+          "breach and wait clear",
+          "breach and wait go dynamic",
+          "breach for me and clear",
+          "breach for me clear"
+        ],
+        "pt": [
+          "lider e limpa",
+          "lider limpa",
+          "lider entra e limpa",
+          "arromba e espera e limpa",
+          "arromba e espera limpa",
+          "arromba e espera entra e limpa",
+          "arromba pra mim e limpa",
+          "arromba pra mim limpa"
+        ]
+      },
+      "name": "Líder arromba e limpar"
+    },
+    {
+      "id": "door.breach.leader.flashbang",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "2"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "flashbang"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "leader with flash bang",
+          "leader flash and clear",
+          "leader bang and clear",
+          "leader with flash",
+          "leader with bang",
+          "breach and wait with flash bang",
+          "breach and wait flash and clear",
+          "breach and wait bang and clear",
+          "leader with flashbang",
+          "breach and wait with flashbang"
+        ],
+        "pt": [
+          "lider com flash",
+          "lider com flash bang",
+          "lider flash e limpa",
+          "lider com granada de luz",
+          "arromba e espera com flash",
+          "arromba e espera com flash bang",
+          "arromba e espera flash e limpa",
+          "arromba e espera com granada de luz",
+          "lider com flashbang",
+          "arromba e espera com flashbang"
+        ]
+      },
+      "name": "Líder arromba com flash"
+    },
+    {
+      "id": "door.breach.leader.stinger",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "3"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "stinger"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "leader with stinger",
+          "leader sting and clear",
+          "leader with sting",
+          "leader with rubber ball",
+          "breach and wait with stinger",
+          "breach and wait sting and clear",
+          "breach and wait with sting",
+          "breach and wait with rubber ball"
+        ],
+        "pt": [
+          "lider com granada de choque",
+          "lider com sting",
+          "lider granada de choque e limpa",
+          "lider com bola de borracha",
+          "arromba e espera com granada de choque",
+          "arromba e espera com sting",
+          "arromba e espera granada de choque e limpa",
+          "arromba e espera com bola de borracha",
+          "lider com stinger",
+          "lider stinger e limpa",
+          "arromba e espera com stinger",
+          "arromba e espera stinger e limpa"
+        ]
+      },
+      "name": "Líder arromba com stinger"
+    },
+    {
+      "id": "door.breach.leader.gas",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "4"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "gas"
+      ],
+      "confidence": "confirmed",
+      "phrases": {
+        "en": [
+          "leader with gas",
+          "leader with cs gas",
+          "leader gas and clear",
+          "leader with tear gas",
+          "breach and wait with gas",
+          "breach and wait with cs gas",
+          "breach and wait gas and clear",
+          "breach and wait with tear gas"
+        ],
+        "pt": [
+          "lider com gas",
+          "lider com gas lacrimogêneo",
+          "lider gas e limpa",
+          "arromba e espera com gas",
+          "arromba e espera com gas lacrimogêneo",
+          "arromba e espera gas e limpa",
+          "arromba pra mim com gas",
+          "arromba pra mim com gas lacrimogêneo"
+        ]
+      },
+      "name": "Líder arromba com gás"
+    },
+    {
+      "id": "door.breach.leader.launcher",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "5"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "launcher"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "leader with launcher",
+          "leader with grenade launcher",
+          "leader launcher and clear",
+          "breach and wait with launcher",
+          "breach and wait with grenade launcher",
+          "breach and wait launcher and clear",
+          "breach for me with launcher",
+          "breach for me with grenade launcher"
+        ],
+        "pt": [
+          "lider com lançador",
+          "lider com lança granadas",
+          "arromba e espera com lançador",
+          "arromba e espera com lança granadas",
+          "arromba pra mim com lançador",
+          "arromba pra mim com lança granadas"
+        ]
+      },
+      "name": "Líder arromba com lançador"
+    },
+    {
+      "id": "door.breach.leader.leader",
+      "context": "door",
+      "path": [
+        "MENU",
+        "3",
+        "5",
+        "6"
+      ],
+      "menu_path": [
+        "Breach",
+        "leader",
+        "leader"
+      ],
+      "confidence": "verify",
+      "phrases": {
+        "en": [
+          "leader with leader",
+          "leader wait for me",
+          "breach and wait with leader",
+          "breach and wait leader and clear",
+          "breach and wait wait for me",
+          "breach for me with leader",
+          "breach for me leader and clear"
+        ],
+        "pt": [
+          "lider com lider",
+          "lider espera por mim",
+          "lider e me espera",
+          "arromba e espera com lider",
+          "arromba e espera espera por mim",
+          "arromba e espera e me espera",
+          "arromba pra mim com lider",
+          "arromba pra mim espera por mim"
+        ]
+      },
+      "name": "Líder arromba com granada do líder"
+    }
+  ]
 }

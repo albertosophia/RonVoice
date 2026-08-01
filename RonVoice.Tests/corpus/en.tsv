@@ -7,12 +7,15 @@ cover me	cover	-	false
 cover my back	cover	-	false
 watch my six	cover	-	false
 watch my back	cover	-	false
-deploy chemlight	deploy.chemlight	-	false
+deploy chem light	deploy.chemlight	-	false
 mark it	deploy.chemlight	-	false
-deploy flashbang	deploy.flashbang	-	false
-throw a flashbang	deploy.flashbang	-	false
+deploy chemlight	deploy.chemlight	-	false
+deploy flash bang	deploy.flashbang	-	false
+throw a flash bang	deploy.flashbang	-	false
 toss a flash	deploy.flashbang	-	false
 bang it	deploy.flashbang	-	false
+deploy flashbang	deploy.flashbang	-	false
+throw a flashbang	deploy.flashbang	-	false
 deploy gas	deploy.gas	-	false
 throw cs gas	deploy.gas	-	false
 gas them	deploy.gas	-	false
@@ -22,54 +25,77 @@ bring the shield	deploy.shield	-	false
 deploy stinger	deploy.stinger	-	false
 throw a stinger	deploy.stinger	-	false
 toss a sting	deploy.stinger	-	false
-c2 and clear	door.breach.c2.clear	-	false
-c2 clear	door.breach.c2.clear	-	false
-c2 go dynamic	door.breach.c2.clear	-	false
+c two and clear	door.breach.c2.clear	-	false
+c two clear	door.breach.c2.clear	-	false
+c two go dynamic	door.breach.c2.clear	-	false
 blow it and clear	door.breach.c2.clear	-	false
 blow it clear	door.breach.c2.clear	-	false
 blow it go dynamic	door.breach.c2.clear	-	false
 blow the door and clear	door.breach.c2.clear	-	false
 blow the door clear	door.breach.c2.clear	-	false
+c2 and clear	door.breach.c2.clear	-	false
+c2 clear	door.breach.c2.clear	-	false
+c2 go dynamic	door.breach.c2.clear	-	false
+c two with flash bang	door.breach.c2.flashbang	-	false
+c two flash and clear	door.breach.c2.flashbang	-	false
+c two bang and clear	door.breach.c2.flashbang	-	false
+c two with flash	door.breach.c2.flashbang	-	false
+c two with bang	door.breach.c2.flashbang	-	false
+blow it with flash bang	door.breach.c2.flashbang	-	false
+blow it flash and clear	door.breach.c2.flashbang	-	false
+blow it bang and clear	door.breach.c2.flashbang	-	false
 c2 with flashbang	door.breach.c2.flashbang	-	false
 c2 flash and clear	door.breach.c2.flashbang	-	false
 c2 bang and clear	door.breach.c2.flashbang	-	false
 c2 with flash	door.breach.c2.flashbang	-	false
 c2 with bang	door.breach.c2.flashbang	-	false
 blow it with flashbang	door.breach.c2.flashbang	-	false
-blow it flash and clear	door.breach.c2.flashbang	-	false
-blow it bang and clear	door.breach.c2.flashbang	-	false
-c2 with gas	door.breach.c2.gas	-	false
-c2 with cs gas	door.breach.c2.gas	-	false
-c2 gas and clear	door.breach.c2.gas	-	false
-c2 with tear gas	door.breach.c2.gas	-	false
+c two with gas	door.breach.c2.gas	-	false
+c two with cs gas	door.breach.c2.gas	-	false
+c two gas and clear	door.breach.c2.gas	-	false
+c two with tear gas	door.breach.c2.gas	-	false
 blow it with gas	door.breach.c2.gas	-	false
 blow it with cs gas	door.breach.c2.gas	-	false
 blow it gas and clear	door.breach.c2.gas	-	false
 blow it with tear gas	door.breach.c2.gas	-	false
-c2 with launcher	door.breach.c2.launcher	-	false
-c2 with grenade launcher	door.breach.c2.launcher	-	false
-c2 launcher and clear	door.breach.c2.launcher	-	false
+c2 with gas	door.breach.c2.gas	-	false
+c2 with cs gas	door.breach.c2.gas	-	false
+c2 gas and clear	door.breach.c2.gas	-	false
+c2 with tear gas	door.breach.c2.gas	-	false
+c two with launcher	door.breach.c2.launcher	-	false
+c two with grenade launcher	door.breach.c2.launcher	-	false
+c two launcher and clear	door.breach.c2.launcher	-	false
 blow it with launcher	door.breach.c2.launcher	-	false
 blow it with grenade launcher	door.breach.c2.launcher	-	false
 blow it launcher and clear	door.breach.c2.launcher	-	false
 blow the door with launcher	door.breach.c2.launcher	-	false
 blow the door with grenade launcher	door.breach.c2.launcher	-	false
-c2 with leader	door.breach.c2.leader	-	false
-c2 leader and clear	door.breach.c2.leader	-	false
-c2 wait for me	door.breach.c2.leader	-	false
+c2 with launcher	door.breach.c2.launcher	-	false
+c2 with grenade launcher	door.breach.c2.launcher	-	false
+c2 launcher and clear	door.breach.c2.launcher	-	false
+c two with leader	door.breach.c2.leader	-	false
+c two leader and clear	door.breach.c2.leader	-	false
+c two wait for me	door.breach.c2.leader	-	false
 blow it with leader	door.breach.c2.leader	-	false
 blow it leader and clear	door.breach.c2.leader	-	false
 blow it wait for me	door.breach.c2.leader	-	false
 blow the door with leader	door.breach.c2.leader	-	false
 blow the door leader and clear	door.breach.c2.leader	-	false
-c2 with stinger	door.breach.c2.stinger	-	false
-c2 sting and clear	door.breach.c2.stinger	-	false
-c2 with sting	door.breach.c2.stinger	-	false
-c2 with rubber ball	door.breach.c2.stinger	-	false
+c2 with leader	door.breach.c2.leader	-	false
+c2 leader and clear	door.breach.c2.leader	-	false
+c2 wait for me	door.breach.c2.leader	-	false
+c two with stinger	door.breach.c2.stinger	-	false
+c two sting and clear	door.breach.c2.stinger	-	false
+c two with sting	door.breach.c2.stinger	-	false
+c two with rubber ball	door.breach.c2.stinger	-	false
 blow it with stinger	door.breach.c2.stinger	-	false
 blow it sting and clear	door.breach.c2.stinger	-	false
 blow it with sting	door.breach.c2.stinger	-	false
 blow it with rubber ball	door.breach.c2.stinger	-	false
+c2 with stinger	door.breach.c2.stinger	-	false
+c2 sting and clear	door.breach.c2.stinger	-	false
+c2 with sting	door.breach.c2.stinger	-	false
+c2 with rubber ball	door.breach.c2.stinger	-	false
 kick and clear	door.breach.kick.clear	-	false
 kick clear	door.breach.kick.clear	-	false
 kick go dynamic	door.breach.kick.clear	-	false
@@ -78,14 +104,16 @@ kick it clear	door.breach.kick.clear	-	false
 kick it go dynamic	door.breach.kick.clear	-	false
 kick the door and clear	door.breach.kick.clear	-	false
 kick the door clear	door.breach.kick.clear	-	false
-kick with flashbang	door.breach.kick.flashbang	-	false
+kick with flash bang	door.breach.kick.flashbang	-	false
 kick flash and clear	door.breach.kick.flashbang	-	false
 kick bang and clear	door.breach.kick.flashbang	-	false
 kick with flash	door.breach.kick.flashbang	-	false
 kick with bang	door.breach.kick.flashbang	-	false
-kick it with flashbang	door.breach.kick.flashbang	-	false
+kick it with flash bang	door.breach.kick.flashbang	-	false
 kick it flash and clear	door.breach.kick.flashbang	-	false
 kick it bang and clear	door.breach.kick.flashbang	-	false
+kick with flashbang	door.breach.kick.flashbang	-	false
+kick it with flashbang	door.breach.kick.flashbang	-	false
 kick with gas	door.breach.kick.gas	-	false
 kick with cs gas	door.breach.kick.gas	-	false
 kick gas and clear	door.breach.kick.gas	-	false
@@ -126,14 +154,16 @@ breach and wait clear	door.breach.leader.clear	-	false
 breach and wait go dynamic	door.breach.leader.clear	-	false
 breach for me and clear	door.breach.leader.clear	-	false
 breach for me clear	door.breach.leader.clear	-	false
-leader with flashbang	door.breach.leader.flashbang	-	false
+leader with flash bang	door.breach.leader.flashbang	-	false
 leader flash and clear	door.breach.leader.flashbang	-	false
 leader bang and clear	door.breach.leader.flashbang	-	false
 leader with flash	door.breach.leader.flashbang	-	false
 leader with bang	door.breach.leader.flashbang	-	false
-breach and wait with flashbang	door.breach.leader.flashbang	-	false
+breach and wait with flash bang	door.breach.leader.flashbang	-	false
 breach and wait flash and clear	door.breach.leader.flashbang	-	false
 breach and wait bang and clear	door.breach.leader.flashbang	-	false
+leader with flashbang	door.breach.leader.flashbang	-	false
+breach and wait with flashbang	door.breach.leader.flashbang	-	false
 leader with gas	door.breach.leader.gas	-	false
 leader with cs gas	door.breach.leader.gas	-	false
 leader gas and clear	door.breach.leader.gas	-	false
@@ -173,14 +203,16 @@ ram it clear	door.breach.ram.clear	-	false
 ram it go dynamic	door.breach.ram.clear	-	false
 battering ram and clear	door.breach.ram.clear	-	false
 battering ram clear	door.breach.ram.clear	-	false
-ram with flashbang	door.breach.ram.flashbang	-	false
+ram with flash bang	door.breach.ram.flashbang	-	false
 ram flash and clear	door.breach.ram.flashbang	-	false
 ram bang and clear	door.breach.ram.flashbang	-	false
 ram with flash	door.breach.ram.flashbang	-	false
 ram with bang	door.breach.ram.flashbang	-	false
-ram it with flashbang	door.breach.ram.flashbang	-	false
+ram it with flash bang	door.breach.ram.flashbang	-	false
 ram it flash and clear	door.breach.ram.flashbang	-	false
 ram it bang and clear	door.breach.ram.flashbang	-	false
+ram with flashbang	door.breach.ram.flashbang	-	false
+ram it with flashbang	door.breach.ram.flashbang	-	false
 ram with gas	door.breach.ram.gas	-	false
 ram with cs gas	door.breach.ram.gas	-	false
 ram gas and clear	door.breach.ram.gas	-	false
@@ -221,14 +253,16 @@ shoot the hinges clear	door.breach.shotgun.clear	-	false
 shoot the hinges go dynamic	door.breach.shotgun.clear	-	false
 breaching shotgun and clear	door.breach.shotgun.clear	-	false
 breaching shotgun clear	door.breach.shotgun.clear	-	false
-shotgun with flashbang	door.breach.shotgun.flashbang	-	false
+shotgun with flash bang	door.breach.shotgun.flashbang	-	false
 shotgun flash and clear	door.breach.shotgun.flashbang	-	false
 shotgun bang and clear	door.breach.shotgun.flashbang	-	false
 shotgun with flash	door.breach.shotgun.flashbang	-	false
 shotgun with bang	door.breach.shotgun.flashbang	-	false
-shoot the hinges with flashbang	door.breach.shotgun.flashbang	-	false
+shoot the hinges with flash bang	door.breach.shotgun.flashbang	-	false
 shoot the hinges flash and clear	door.breach.shotgun.flashbang	-	false
 shoot the hinges bang and clear	door.breach.shotgun.flashbang	-	false
+shotgun with flashbang	door.breach.shotgun.flashbang	-	false
+shoot the hinges with flashbang	door.breach.shotgun.flashbang	-	false
 shotgun with gas	door.breach.shotgun.gas	-	false
 shotgun with cs gas	door.breach.shotgun.gas	-	false
 shotgun gas and clear	door.breach.shotgun.gas	-	false
@@ -276,13 +310,15 @@ open clear	door.open.clear	-	false
 open go dynamic	door.open.clear	-	false
 move in and clear	door.open.clear	-	false
 move in clear	door.open.clear	-	false
-open with flashbang	door.open.flashbang	-	false
+open with flash bang	door.open.flashbang	-	false
 open flash and clear	door.open.flashbang	-	false
 open bang and clear	door.open.flashbang	-	false
 open with flash	door.open.flashbang	-	false
 open with bang	door.open.flashbang	-	false
-move in with flashbang	door.open.flashbang	-	false
+move in with flash bang	door.open.flashbang	-	false
 move in flash and clear	door.open.flashbang	-	false
+open with flashbang	door.open.flashbang	-	false
+move in with flashbang	door.open.flashbang	-	false
 open with gas	door.open.gas	-	false
 open with cs gas	door.open.gas	-	false
 open gas and clear	door.open.gas	-	false
@@ -308,6 +344,7 @@ move in sting and clear	door.open.stinger	-	false
 pick the lock	door.picklock	-	false
 pick it	door.picklock	-	false
 unlock it	door.picklock	-	false
+lock pick	door.picklock	-	false
 lockpick	door.picklock	-	false
 peek	door.scan.peek	-	false
 peek it	door.scan.peek	-	false
@@ -372,9 +409,11 @@ cuff him	person.restrain	-	false
 arrest him	person.restrain	-	false
 zip tie him	person.restrain	-	false
 restrain them	person.restrain	-	false
+chem light	player.chemlight	-	false
+drop chem light	player.chemlight	-	false
+light out	player.chemlight	-	false
 chemlight	player.chemlight	-	false
 drop chemlight	player.chemlight	-	false
-light out	player.chemlight	-	false
 we're done here	player.exfil	-	false
 let's go	player.exfil	-	false
 clear for exfil	player.exfil	-	false

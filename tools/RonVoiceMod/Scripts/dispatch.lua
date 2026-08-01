@@ -56,14 +56,21 @@ monta.scan = function(spec, ctx)
     return noManager("GiveScanDoorCommand", ctx.target, ctx.team, ctx.location, spec.method)
 end
 
+--- Checar armadilha embaixo da porta. E' com o espelho que se faz isso no jogo,
+--- e por isso a frase e' "mirror" — nao ha' funcao de soltar espelho. Recebe o
+--- vetor de cima, que as outras nao recebem.
+monta.checktraps = function(_, ctx)
+    if not ctx.target then return nil, SEM_PORTA end
+    return noManager("GiveCheckForTrapsCommand", ctx.target, ctx.team, ctx.location, ctx.up)
+end
+
 --- As que so' precisam da porta, do time e de onde o jogador esta.
 local naPorta = {
-    opendoor      = "GiveOpenDoorCommand",
-    picklock      = "GivePickLockCommand",
-    wedge         = "GiveWedgeDoorCommand",
-    disarmtrap    = "GiveDisarmTrapOnDoorCommand",
-    checkcontacts = "GiveCheckForContactsCommand",
-    restrain      = "GiveRestrainCommand",
+    opendoor   = "GiveOpenDoorCommand",
+    picklock   = "GivePickLockCommand",
+    wedge      = "GiveWedgeDoorCommand",
+    disarmtrap = "GiveDisarmTrapOnDoorCommand",
+    restrain   = "GiveRestrainCommand",
 }
 
 for chave, fn in pairs(naPorta) do

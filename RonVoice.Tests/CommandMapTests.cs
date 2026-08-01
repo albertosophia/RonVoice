@@ -104,8 +104,8 @@ public class CommandMapTests
     public void PhraseCountsMatchSpec()
     {
         var m = Load();
-        Assert.Equal(399, m.Orders.Values.Sum(o => o.Phrases["en"].Count));
-        Assert.Equal(371, m.Orders.Values.Sum(o => o.Phrases["pt"].Count));
+        Assert.Equal(438, m.Orders.Values.Sum(o => o.Phrases["en"].Count));
+        Assert.Equal(427, m.Orders.Values.Sum(o => o.Phrases["pt"].Count));
     }
 
     [Fact]

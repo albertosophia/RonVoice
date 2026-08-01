@@ -20,7 +20,10 @@ public sealed class VoskSpeechEngine : ISpeechEngine
     {
         Vosk.Vosk.SetLogLevel(-1);          // a lib nativa é falante demais por padrão
         _model = new Model(modelPath);
-        _recognizer = new VoskRecognizer(_model, sampleRate, grammarJson);
+        // NÃO passe grammarJson direto: o binding entrega em ANSI e toda palavra
+        // acentuada é descartada sem um ruído. Ver VoskGrammar.
+        _recognizer = new VoskRecognizer(
+            _model, sampleRate, VoskGrammar.ForNativeCall(grammarJson));
         _recognizer.SetWords(true);         // é o que traz confiança por palavra
     }
 

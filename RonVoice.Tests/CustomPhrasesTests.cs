@@ -25,7 +25,7 @@ public class CustomPhrasesTests
     {
         var result = CustomPhrases.Apply(Map(), null, "pt");
         Assert.Empty(result.Issues);
-        Assert.Equal(371, result.Map.Orders.Values.Sum(o => o.Phrases["pt"].Count));
+        Assert.Equal(427, result.Map.Orders.Values.Sum(o => o.Phrases["pt"].Count));
     }
 
     [Fact]
@@ -185,7 +185,7 @@ public class CustomPhrasesTests
             var result = CustomPhrases.Apply(Map(), path, "pt");
 
             Assert.Equal(PhraseIssueKind.FileUnreadable, Assert.Single(result.Issues).Kind);
-            Assert.Equal(371, result.Map.Orders.Values.Sum(o => o.Phrases["pt"].Count));
+            Assert.Equal(427, result.Map.Orders.Values.Sum(o => o.Phrases["pt"].Count));
         }
         finally { File.Delete(path); }
     }
