@@ -166,6 +166,26 @@ public sealed class VoicePipeline
         // teste precisa mostrar exatamente o que sairia, e é o único jeito de
         // ela dizer a tecla sem mexer no jogo.
         if (!DryRun) _sender.Send(sequence);
+
+        // Escolher elemento é tecla do jogo, e a tecla só troca — calada. Quem
+        // fazia o esquadrão responder era o mod antigo, que escutava F5/F6/F7 só
+        // para isso. Aqui a tecla vai (é ela que seleciona de verdade) e o mod é
+        // avisado em seguida, para a confirmação falada voltar.
+        if (!DryRun
+            && _resolver.Mode == SendMode.Mailbox
+            && _delivery is not null
+            && intent.OrderId is null
+            && intent.Element is not null)
+        {
+            var resposta = _delivery.Deliver(intent);
+            if (!resposta.Ok)
+            {
+                Rejected?.Invoke(
+                    new Rejection(RejectionReason.Unresolvable, result.Text, resposta.Problem));
+                return;
+            }
+        }
+
         Sent?.Invoke(sequence);
     }
 

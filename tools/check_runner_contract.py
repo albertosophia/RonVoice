@@ -27,12 +27,14 @@ SCRIPTS = pathlib.Path(__file__).resolve().parent.parent / "tools" / "RonVoiceMo
 class Cenario:
     """Um jogo de mentira: guarda o que foi chamado e o que foi respondido."""
 
-    def __init__(self, lua, pedido=None, estoura=False, alvo="ALVO"):
+    def __init__(self, lua, pedido=None, estoura=False, alvo="ALVO", timeMorto=False):
         self.lua = lua
         self.pedido = pedido
         self.estoura = estoura
         self.alvo = alvo
+        self.timeMorto = timeMorto
         self.chamadas = []
+        self.ultimosArgs = []
         self.recibos = []
         self.olhadas = 0   # quantas vezes o mundo do jogo foi tocado
 
@@ -46,6 +48,7 @@ class Cenario:
             if self.estoura:
                 raise RuntimeError("o jogo recusou")
             self.chamadas.append(plano.fn)
+            self.ultimosArgs = [plano.args[i] for i in range(1, int(plano.argc) + 1)]
 
         def mundo():
             # Ler o Pawn, o widget e o ator mirado e' o que mais arrisca derrubar
@@ -54,6 +57,7 @@ class Cenario:
             return self.lua.table_from({
                 "target": self.alvo, "location": "LOCAL", "up": "CIMA",
                 "activeTeam": 1,
+                "isTeamDead": (lambda t: self.timeMorto),
                 "findClass": self.lua.eval("function(c) return 'classe:' .. c end"),
             })
 
@@ -163,6 +167,29 @@ def main():
     for _ in range(20):
         runner.tick(estado, c.deps())
     checa("olha uma vez por pedido", c.olhadas == 1, f"{c.olhadas} olhadas")
+
+    # --- SO' O ELEMENTO: o esquadrao responde em voz alta.
+    #
+    # Trocar de time e' tecla do jogo, e a tecla so' troca — quem falava era o
+    # RoNSpeech, que registrava F5/F6/F7 e tocava a fala de confirmacao. Sem
+    # isso, escolher o time vira um silencio: seleciona e nada acontece, e nao
+    # da' para saber se o programa ouviu.
+    for elemento, fala in [("red", "SWATB_01"), ("blue", "SWATA_01"),
+                           ("gold", "SWATB_03")]:
+        c = Cenario(lua, pedido=pedido(20, order=None, element=elemento))
+        runner.tick(runner.newState(), c.deps())
+        checa(f"{elemento} responde", c.chamadas == ["PlaySwatCommandVoiceLine"],
+              str(c.chamadas))
+        checa(f"{elemento} usa a fala {fala}", fala in str(c.ultimosArgs), str(c.ultimosArgs))
+        checa(f"{elemento} confirma", c.recibos == [(20, "ok")], str(c.recibos))
+
+    # --- time morto nao responde, e diz por que. O RoNSpeech conferia isso antes
+    # de falar; sem a checagem, um esquadrao caido "responderia" do tumulo.
+    c = Cenario(lua, pedido=pedido(21, order=None, element="red"), timeMorto=True)
+    runner.tick(runner.newState(), c.deps())
+    checa("time morto nao fala", c.chamadas == [], str(c.chamadas))
+    checa("time morto diz o motivo",
+          len(c.recibos) == 1 and c.recibos[0][1] != "ok", str(c.recibos))
 
     # --- o elemento escolhe o time. Red=1, Blue=2, Gold=5, como o RoNSpeech faz.
     for elemento, time in [("red", 1), ("blue", 2), ("gold", 5), (None, 1)]:

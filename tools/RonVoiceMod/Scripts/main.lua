@@ -88,6 +88,16 @@ local function mundo()
         activeTeam = timeAtivo(pawn),
         findClass = StaticFindObject,
         pawn = pawn,
+
+        -- Um esquadrão caído não confirma nada. Sem esta checagem ele
+        -- responderia do túmulo — é o que o RoNSpeech conferia antes de falar.
+        -- Na dúvida, considera vivo: calar por engano é pior que falar demais.
+        isTeamDead = function(time)
+            local m = pegaManager()
+            if not m then return false end
+            local ok, morto = pcall(function() return m:IsSWATTeamDead(time) end)
+            return ok and morto == true
+        end,
     }
 end
 

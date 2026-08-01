@@ -113,6 +113,28 @@ monta.aimove = function(_, ctx)
     return noPawn("Server_GiveAIMoveTo", ctx.target, ctx.location)
 end
 
+--- A fala de confirmação de cada time, e a resposta positiva que o jogo usa.
+--- Vem do RoNSpeech: era ele quem registrava F5/F6/F7 e tocava isto. A tecla
+--- sozinha só troca o time, calada — e escolher um elemento em silêncio não deixa
+--- ninguém saber se o programa ouviu.
+local RESPOSTA = "[RESPONSE]CommandS_2"
+local FALA = { [1] = "SWATB_01", [2] = "SWATA_01", [5] = "SWATB_03" }
+
+--- Plano para confirmar em voz alta que o elemento foi escolhido.
+---
+--- ctx precisa de isTeamDead: um esquadrão caído não responde, e sem a checagem
+--- ele responderia do túmulo. O RoNSpeech conferia isso antes de falar.
+function M.planAcknowledge(team, ctx)
+    local fala = FALA[team]
+    if not fala then return nil, "time que o mod nao conhece: " .. tostring(team) end
+
+    if ctx.isTeamDead and ctx.isTeamDead(team) then
+        return nil, "esse elemento esta fora de combate"
+    end
+
+    return noManager("PlaySwatCommandVoiceLine", RESPOSTA, fala, false)
+end
+
 --- Plano para este id, ou nil e o motivo.
 ---
 --- ctx: { target, team, location, up, findClass }

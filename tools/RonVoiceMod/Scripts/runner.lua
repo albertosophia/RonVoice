@@ -60,9 +60,18 @@ function M.tick(state, deps)
         location = mundo.location,
         up = mundo.up,
         findClass = mundo.findClass,
+        isTeamDead = mundo.isTeamDead,
     }
 
-    local plano, motivo = dispatch.plan(req.order, ctx)
+    -- Elemento sem ordem: só escolher o time. A tecla do jogo já selecionou;
+    -- o que falta é o esquadrão responder, que era o que o RoNSpeech fazia e
+    -- some sem ele. Escolher em silêncio não deixa saber se o app ouviu.
+    local plano, motivo
+    if req.order == nil then
+        plano, motivo = dispatch.planAcknowledge(ctx.team, ctx)
+    else
+        plano, motivo = dispatch.plan(req.order, ctx)
+    end
 
     -- Marcado como respondido ANTES de agir: se der errado, nao se insiste. Um
     -- pedido que falha e volta a ser tentado falha vinte vezes por segundo.

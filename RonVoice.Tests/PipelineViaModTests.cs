@@ -198,6 +198,41 @@ public class PipelineViaModTests : IDisposable
         engine.Emit(frase);
 
         Assert.NotEmpty(sender.Sent);
+    }
+
+    /// <summary>
+    /// E TAMBEM avisa o mod, para o esquadrao responder em voz alta.
+    ///
+    /// A tecla do jogo troca o time e cala: quem falava era o RoNSpeech, que
+    /// registrava F5/F6/F7 so' para tocar a confirmacao. Sem isso, escolher o
+    /// elemento vira um silencio — seleciona e nada acontece, e nao da' para
+    /// saber se o programa ouviu.
+    /// </summary>
+    [Theory]
+    [InlineData("red team", "red")]
+    [InlineData("blue team", "blue")]
+    [InlineData("gold", "gold")]
+    public void PickingAnElementAlsoAsksTheSquadToAnswer(string frase, string elemento)
+    {
+        var (_, engine, _, _) = Build();
+
+        engine.Emit(frase);
+
+        // "-" na ordem e o elemento preenchido: o mod le' isso como "so' troquei
+        // de time", que e' exatamente o que aconteceu.
+        Assert.Equal($"1|-|{elemento}|0", File.ReadAllText(OrderFile).Trim());
+    }
+
+    /// <summary>
+    /// A aba de teste nao pode fazer o esquadrao falar no meio da missao.
+    /// </summary>
+    [Fact]
+    public void TheTestTabDoesNotMakeThemAnswerEither()
+    {
+        var (_, engine, _, _) = Build(dryRun: true);
+
+        engine.Emit("red team");
+
         Assert.False(File.Exists(OrderFile));
     }
 
