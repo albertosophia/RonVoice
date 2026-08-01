@@ -166,7 +166,19 @@ public sealed class VoicePipeline
     /// seria pedir uma coisa que o mod não conhece, e a ordem morreria no
     /// recibo. "Execute" é uma dessas, e é das mais faladas que existem.
     /// </summary>
-    bool IsAlreadyAKey(Intent intent) => _resolver.IsDirectKey(intent.OrderId);
+    /// <summary>
+    /// Coisas que já são tecla do jogo e continuam sendo, em qualquer modo:
+    ///
+    /// escolher elemento, que não tem ordem nenhuma junto — é F5, F6, F7, e é
+    /// apertar essa tecla que faz o esquadrão responder em voz alta. Pela caixa
+    /// seria pedir uma ordem que não existe: o mod recusa e o jogo nunca fica
+    /// sabendo, enquanto a barra do app segue mostrando o elemento escolhido;
+    ///
+    /// e as ordens cujo caminho já é KEY:, que não passam pelo menu. Não há menu
+    /// para o mod pular, e elas nem estão na tabela dele.
+    /// </summary>
+    bool IsAlreadyAKey(Intent intent) =>
+        intent.OrderId is null || _resolver.IsDirectKey(intent.OrderId);
 
     /// <summary>
     /// Manda pelo mod. Não passa pelo resolvedor: aqui não há tecla nenhuma

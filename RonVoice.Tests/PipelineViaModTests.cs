@@ -179,6 +179,28 @@ public class PipelineViaModTests : IDisposable
         Assert.False(File.Exists(OrderFile));
     }
 
+    /// <summary>
+    /// So' o elemento, sem ordem: "red team". Isso e' tecla do jogo — F5, F6, F7 —
+    /// e trocar de elemento por ela e' o que faz o esquadrao responder em voz
+    /// alta. Mandar pela caixa pede uma ordem que nao existe: o mod recusa, tecla
+    /// nenhuma e' apertada, e o jogo nunca fica sabendo. A barra do app continua
+    /// mostrando o elemento, entao parece selecionado — so' que em silencio, e
+    /// so' do lado de ca'.
+    /// </summary>
+    [Theory]
+    [InlineData("red team")]
+    [InlineData("blue team")]
+    [InlineData("gold")]
+    public void PickingAnElementStaysOnTheGameKey(string frase)
+    {
+        var (_, engine, sender, _) = Build();
+
+        engine.Emit(frase);
+
+        Assert.NotEmpty(sender.Sent);
+        Assert.False(File.Exists(OrderFile));
+    }
+
     [Fact]
     public void TheElementTravelsWithTheOrder()
     {
