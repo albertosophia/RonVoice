@@ -24,7 +24,7 @@ COMO USAR
 4. Entre numa missao, mire numa porta e fale. Em ingles:
 
        "stack up"
-       "red team open with flashbang"
+       "red team open with flash bang"
        "prep open the door"
 
 5. A barra no alto da janela diz o estado o tempo todo:
@@ -53,19 +53,25 @@ EM VR
 O RonVoice funciona em VR — testado com o Ready Or Not VRO Mod.
 
 Para isso ele NAO usa o menu SWAT. Em VR o menu abre mas nao aceita a escolha:
-quem escolhe passa a ser para onde voce esta olhando. Nao e' lentidao —
-testamos com espera de 60, 300 e 800 ms e nao muda nada.
+quem escolhe passa a ser para onde voce esta olhando. Nao e' lentidao — foram
+testadas esperas de 60, 300 e 800 ms e nao muda nada.
 
-Entao cada ordem sai como UMA tecla, que o mod UE4SS RoNSpeech traduz numa
-chamada direta ao jogo. Sem menu, nada de olhar interferindo. Isso vale na
-tela tambem, e e' mais rapido.
+Tambem nao usa tecla. O Windows acaba no F24 e o jogo tem 70 ordens.
 
-POR ISSO O MOD E' OBRIGATORIO. Voce precisa do UE4SS + do RoNSpeech
-instalados na pasta do jogo. Sem eles nada acontece, e nao ha erro.
+O que ele faz e' deixar a ordem num arquivo. O RonVoiceMod, que roda DENTRO do
+jogo, le' e chama a funcao do jogo direto — sem menu, sem tecla, sem teto. E
+responde: quando nao da', voce le' o motivo na tela em vez de ficar falando com
+a parede.
 
-O mod ainda nao cobre todas as 70 ordens — hoje sao 32. A aba Comandos abre
-mostrando as que funcionam, e "Ainda nao" lista as outras. Falar uma delas e'
-recusado com o motivo, em vez de nao fazer nada em silencio.
+POR ISSO O MOD E' OBRIGATORIO. Voce precisa do UE4SS + do RonVoiceMod na pasta
+do jogo; os dois vem juntos num pacote so'. Sem eles nada acontece.
+
+O RoNSpeech NAO e' mais necessario. Se voce tem, pode desligar.
+
+Das 70 ordens, 47 vao pelo mod e 5 sao tecla direta. As 18 de chute, ariete e
+lider-arromba estao bloqueadas: elas fechavam o jogo, e ficam recusando com o
+motivo ate haver um jeito comprovado de pedir. A aba Comandos abre mostrando as
+que funcionam.
 
 
 SO QUANDO EU APERTAR UMA TECLA (PUSH-TO-TALK)
@@ -152,7 +158,7 @@ DEPURAR SEM FALAR
 
 Tudo abaixo roda num terminal aberto COMO ADMINISTRADOR nesta pasta.
 
-    .\RonVoice.Cli.exe test "red team open with flashbang"
+    .\RonVoice.Cli.exe test "red team open with flash bang"
         casa a frase e mostra as teclas, sem jogo e sem microfone
 
     .\RonVoice.Cli.exe keymap
