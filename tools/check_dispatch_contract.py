@@ -20,7 +20,7 @@ except ImportError:
     sys.exit("precisa de lupa: pip install lupa")
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-SCRIPTS = RAIZ / "tools" / "RonVoiceProbe" / "Scripts"
+SCRIPTS = RAIZ / "tools" / "RonVoiceMod" / "Scripts"
 
 GAS = "/Game/Blueprints/Items/WeaponsRevised/Grenade_CSGas_V2.Grenade_CSGas_V2_C"
 FLASH = "/Game/Blueprints/Items/WeaponsRevised/Grenade_Flashbang_V2.Grenade_Flashbang_V2_C"

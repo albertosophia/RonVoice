@@ -1,0 +1,109 @@
+-- RonVoice — o lado do jogo.
+--
+-- O app ouve a voz, resolve a frase e deixa o id da ordem num arquivo. Este mod
+-- le', chama a funcao do jogo e responde. Nao ha' tecla nenhuma no meio: e' por
+-- isso que ele existe. O Windows para no F24, e o jogo tem 70 ordens.
+--
+-- Este arquivo e' de proposito o mais fino possivel, porque e' o unico que
+-- nenhum teste alcanca. Tudo que decide alguma coisa mora ao lado, onde
+-- tools/check_*.py consegue chegar sem abrir o jogo:
+--
+--   mailbox.lua    o formato do pedido e do recibo   check_mailbox_contract.py
+--   orders.lua     id -> como pedir                  ModOrdersTests (C#)
+--   dispatch.lua   id -> qual funcao, quais args     check_dispatch_contract.py
+--   runner.lua     o laco: ler, agir, responder      check_runner_contract.py
+--
+-- Aqui so' fica o que depende do jogo estar rodando: achar o SWATManager, achar
+-- a porta mirada, e um gancho que chame o laco.
+
+local UEHelpers = require("UEHelpers")
+local mailbox = require("mailbox")
+local runner = require("runner")
+
+local PREFIXO = "[RonVoice] "
+local function log(msg) print(PREFIXO .. msg .. "\n") end
+
+local estado = runner.newState()
+
+--- O mod nao pode ler o arquivo em todo quadro: o gancho dispara junto com a
+--- camera, e seriam dezenas de aberturas de arquivo por segundo, para nada. A
+--- voz nao chega mais rapido que isso.
+local INTERVALO = 0.05
+local ultimaLeitura = 0
+
+--- O SWATManager pode nao existir ainda no menu, e some ao trocar de mapa.
+--- Reachar quando estiver invalido e' mais barato que travar tudo.
+local manager = nil
+local function pegaManager()
+    if manager and manager:IsValid() then return manager end
+    manager = FindFirstOf("SWATManager")
+    return manager
+end
+
+--- A porta (ou pessoa) que o jogador esta mirando. O jogo guarda isso no widget
+--- do menu de comandos; uma porta dupla responde pela folha principal, entao a
+--- sub-porta precisa ser resolvida ou a ordem vai para a metade errada.
+local function alvoMirado(pawn)
+    local widget = pawn.SwatCommandWidget
+    if not widget then return nil end
+
+    local ator = widget.LastContextActor
+    if not ator or not ator:IsValid() then return nil end
+
+    if ator.bMainSubDoor == true then return ator end
+    if ator.DriveSubDoor and ator.DriveSubDoor:IsValid() then return ator.DriveSubDoor end
+    return ator
+end
+
+--- Tudo que o dispatch precisa saber do mundo, junto num lugar so'.
+local function mundo()
+    local controller = UEHelpers:GetPlayerController()
+    if not controller or not controller.Pawn or not controller.Pawn:IsValid() then return nil end
+
+    local pawn = controller.Pawn
+    return {
+        target = alvoMirado(pawn),
+        location = pawn:K2_GetActorLocation(),
+        up = pawn:GetActorUpVector(),
+        activeTeam = pawn.SwatCommandWidget and pawn.SwatCommandWidget.ActiveTeamType or 1,
+        findClass = StaticFindObject,
+        pawn = pawn,
+    }
+end
+
+--- Executa o plano. O dispatch ja' decidiu tudo; aqui so' se aponta o objeto.
+local function executa(plano, m)
+    local alvo = plano.on == "pawn" and m.pawn or pegaManager()
+    if not alvo then error("SWATManager nao encontrado") end
+
+    alvo[plano.fn](alvo, table.unpack(plano.args, 1, plano.argc))
+end
+
+local function quadro()
+    local agora = os.clock()
+    if agora - ultimaLeitura < INTERVALO then return end
+    ultimaLeitura = agora
+
+    local m = mundo()
+    if not m then return end
+
+    runner.tick(estado, {
+        mailbox = mailbox,
+        world = m,
+        call = function(plano) executa(plano, m) end,
+    })
+end
+
+-- Um erro solto aqui derruba o gancho e o mod para calado, para sempre. O
+-- runner ja' protege a chamada ao jogo; este pcall e' para o resto — pegar o
+-- controller, ler o widget — que tambem mexe com objeto que pode sumir.
+RegisterHook(
+    "/Script/ReadyOrNot.PlayerCharacter:Server_UpdateCameraRotationRate",
+    function() end,
+    function()
+        local ok, erro = pcall(quadro)
+        if not ok then log("quadro falhou: " .. tostring(erro)) end
+    end
+)
+
+log("pronto. caixa de correio em " .. tostring(mailbox.directory()))

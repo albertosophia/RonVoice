@@ -31,7 +31,7 @@ public class ModOrdersTests
     }
 
     static readonly string LuaPath = Path.Combine(
-        RepoRoot(), "tools", "RonVoiceProbe", "Scripts", "orders.lua");
+        RepoRoot(), "tools", "RonVoiceMod", "Scripts", "orders.lua");
 
     /// <summary>
     /// Ordem cujo caminho comeca em KEY: ja' e' uma tecla direta — nao passa

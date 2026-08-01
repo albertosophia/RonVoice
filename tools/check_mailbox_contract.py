@@ -20,7 +20,7 @@ except ImportError:
     sys.exit("precisa de lupa: pip install lupa")
 
 RAIZ = pathlib.Path(__file__).resolve().parent.parent
-LUA = RAIZ / "tools" / "RonVoiceProbe" / "Scripts" / "mailbox.lua"
+LUA = RAIZ / "tools" / "RonVoiceMod" / "Scripts" / "mailbox.lua"
 
 # As linhas exatas que CommandMailboxTests afirma que o C# escreve. Se alguem
 # mudar o formato la', tem que mudar aqui — e ai lembra do Lua.
