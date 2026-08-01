@@ -17,6 +17,17 @@ public sealed class WpfFixture : IDisposable
 {
     readonly Thread _thread;
     Dispatcher _dispatcher = null!;
+    Exception? _falhaAoMontar;
+
+    /// <summary>
+    /// O nome do assembly do app, perguntado a ele. Escrito à mão aqui, uma
+    /// renomeação do projeto quebra este URI — e quebra CALADA: a exceção sobe
+    /// numa thread STA, derruba o processo do teste, e a suíte termina cedo
+    /// reportando só o que já tinha passado. Foi assim que 28 testes deixaram de
+    /// rodar sem uma linha de vermelho.
+    /// </summary>
+    static string AssemblyDoApp =>
+        typeof(RonVoice.App.RonVoiceSession).Assembly.GetName().Name!;
 
     public WpfFixture()
     {
@@ -26,14 +37,25 @@ public sealed class WpfFixture : IDisposable
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
 
-            // O tema vive em App.xaml, que não é carregado nos testes: sem
-            // montar o dicionário à mão, todo StaticResource estoura e o teste
-            // não prova nada.
-            var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
-            app.Resources.MergedDictionaries.Add(new ResourceDictionary
+            try
             {
-                Source = new Uri("pack://application:,,,/RonVoice.App;component/Theme.xaml"),
-            });
+                // O tema vive em App.xaml, que não é carregado nos testes: sem
+                // montar o dicionário à mão, todo StaticResource estoura e o
+                // teste não prova nada.
+                var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+                app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                {
+                    Source = new Uri(
+                        $"pack://application:,,,/{AssemblyDoApp};component/Theme.xaml"),
+                });
+            }
+            catch (Exception ex)
+            {
+                // Guardar e seguir. Deixar subir aqui mata o processo inteiro e
+                // leva junto os testes que ainda nem começaram — o resultado é
+                // uma suíte que diz "tudo passou" com trinta testes a menos.
+                _falhaAoMontar = ex;
+            }
 
             ready.Set();
             Dispatcher.Run();
@@ -50,7 +72,16 @@ public sealed class WpfFixture : IDisposable
     /// Roda na thread da interface e devolve o resultado. Exceção de dentro
     /// aparece aqui com a pilha original.
     /// </summary>
-    public T Run<T>(Func<T> work) => _dispatcher.Invoke(work);
+    public T Run<T>(Func<T> work)
+    {
+        // Um teste vermelho por vez, dizendo o que houve. É o oposto de sumir.
+        if (_falhaAoMontar is { } erro)
+            throw new InvalidOperationException(
+                "o tema não montou, então nenhum teste de tela vale nada: "
+                + erro.Message, erro);
+
+        return _dispatcher.Invoke(work);
+    }
 
     public void Dispose() => _dispatcher.InvokeShutdown();
 }

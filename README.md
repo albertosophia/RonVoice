@@ -40,7 +40,7 @@ UE4SS, baixe o `RonVoiceMod.rar`, que é só o mod, e jogue a pasta em `Mods\`.
 
 **2. O programa.**
 
-Baixe `RonVoice-app.zip`, descompacte onde quiser e rode `RonVoice.App.exe`.
+Baixe `RonVoice-app.zip`, descompacte onde quiser e rode `RonVoice.exe`.
 O Windows vai pedir permissão de administrador: responda **Sim**. Sem isso o
 jogo simplesmente não recebe nada, e não aparece erro nenhum — o Windows
 descarta a entrada em silêncio porque o jogo roda com integridade mais alta.

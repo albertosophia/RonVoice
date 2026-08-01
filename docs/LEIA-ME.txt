@@ -9,7 +9,7 @@ COMO USAR
 
 1. Abra o Ready or Not.
 
-2. De dois cliques em RonVoice.App.exe.
+2. De dois cliques em RonVoice.exe.
 
    O Windows vai perguntar se pode executar como administrador. Responda Sim.
    Sem isso o input nao chega no jogo e NAO aparece erro nenhum: o jogo roda

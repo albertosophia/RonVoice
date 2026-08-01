@@ -3,6 +3,14 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
+    <!--
+      O executável se chama RonVoice.exe, e não RonVoice.App.exe: o ".App" é
+      nome de projeto, não nome de programa, e quem baixa o zip não tem por que
+      saber como o código está dividido.
+    -->
+    <AssemblyName>RonVoice</AssemblyName>
+    <!-- Gerado por tools/make_icon.py; não editar à mão. -->
+    <ApplicationIcon>RonVoice.ico</ApplicationIcon>
     <!-- interop apenas pelo NotifyIcon; não há Form neste app -->
     <!-- exigido pelo gerador do LibraryImport usado nos hooks (SYSLIB1062) -->
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
