@@ -3,42 +3,32 @@ bin/
 obj/
 *.user
 .vs/
-
-# Vosk models: baixados no build, nunca versionados
-data/models/
+*.csproj.user
 
 # python
 __pycache__/
 *.pyc
 
-# publish output
+# Modelos do Vosk: baixados pelo build, e grandes demais para versionar.
+data/models/
+
+# Saidas de publicacao e pacotes gerados.
 dist/
-
-# audio de teste, gerado por `ronvoice synth`
-RonVoice.Tests/audio/
-
-# vs user files
-*.csproj.user
-
-# pacotes de distribuicao gerados
+dist-app/
 pack/
 build-fd/
-dist-app/
 *.zip
 
-# Binarios de terceiros: UE4SS, o mod RoNSpeech e o perfil do VoiceAttack.
-# Ficam aqui como REFERENCIA — foi lendo o Lua deles que descobrimos como o
-# jogo recebe uma ordem sem passar pelo menu. Nao sao nossos para versionar,
-# e o UE4SS sozinho tem 16 MB.
-VOICE ATTACK/
+# Audio de teste, gerado por `ronvoice synth`.
+RonVoice.Tests/audio/
 
-# Listas geradas a partir do mapa, uteis de ter e sem valor em historico.
+# Listas geradas a partir do mapa: uteis de ter, sem valor em historico.
 faltam.txt
 
-# Perfis do VoiceAttack. Sao de terceiros — o "Ready or Not v5.1.vap" foi
-# publicado por engano quando o repositorio virou publico. Nao entram aqui.
+# Arquivos de terceiros mantidos so' como referencia local.
+VOICE ATTACK/
 *.vap
 
-# Planos e specs de andaime. Serviram para construir e nao descrevem o que o
-# programa faz hoje — quem chega no repositorio quer o README, nao o rascunho.
+# Planos e specs de andaime: serviram para construir e nao descrevem o que o
+# programa faz hoje.
 docs/superpowers/
