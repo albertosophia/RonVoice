@@ -15,6 +15,10 @@
 --   2. entre numa missao e aperte F11
 --   3. mande o arquivo  ronvoice-enums.txt  que aparece ao lado do jogo
 --
+-- Alem do enum de arrombamento, ela despeja TODAS as funcoes do SWATManager.
+-- O mod usa uma dezena; existem outras que ele nem chama, e cada uma pode ser
+-- uma das ordens que faltam. Custa o mesmo F11.
+--
 -- Nao toca em nada: so' le e escreve um txt.
 
 local OUT = "ronvoice-enums.txt"
@@ -90,6 +94,58 @@ local function dumpSignature()
     if index == 0 then say("  (a funcao nao expos propriedades nesta versao do UE4SS)") end
 end
 
+-- 1b) TODAS as funcoes do SWATManager, com os parametros de cada uma.
+--
+-- O mod usa oito ou nove delas. Existem GiveOpenDoorCommand e
+-- GiveCloseDoorCommand que ele nem chama, entao provavelmente ha mais — e cada
+-- uma pode ser uma das 12 ordens que faltam e nao sao de arrombamento. Perguntar
+-- isso custa o mesmo F11.
+local function dumpSwatManagerApi()
+    say("")
+    say("=== todas as funcoes do SWATManager")
+
+    local manager = FindFirstOf("SWATManager")
+    if not manager or not manager:IsValid() then
+        say("  SWATManager NAO encontrado — entre numa missao antes de apertar a tecla")
+        return
+    end
+
+    local class = manager:GetClass()
+    say("  classe: " .. class:GetFullName())
+
+    local count = 0
+    try("ForEachFunction", function()
+        class:ForEachFunction(function(fn)
+            count = count + 1
+            say("")
+            say("  " .. fn:GetFName():ToString())
+
+            try("parametros", function()
+                fn:ForEachProperty(function(prop)
+                    local kind = prop:GetClass():GetFName():ToString()
+                    say(string.format("      %-28s %s",
+                        prop:GetFName():ToString(), kind))
+
+                    -- Se o parametro for enum, despeja os valores: e' isto que
+                    -- decide chute, ariete e lider.
+                    try("enum do parametro", function()
+                        local e = prop:GetEnum()
+                        if e and e:IsValid() then dumpEnum(e, "parametro de " .. fn:GetFName():ToString()) end
+                    end)
+                end)
+            end)
+        end)
+    end)
+
+    if count == 0 then
+        say("  (ForEachFunction nao existe nesta versao do UE4SS —")
+        say("   a varredura de enums abaixo ainda pode achar o que precisamos)")
+    else
+        say("")
+        say("  total de funcoes: " .. count)
+    end
+end
+
 -- 2) Rede de seguranca: varre os enums do jogo atras dos que parecem ser disto.
 local function dumpLikelyEnums()
     say("")
@@ -124,6 +180,7 @@ RegisterKeyBind(Key.F11, function()
     say("")
 
     dumpSignature()
+    dumpSwatManagerApi()
     dumpLikelyEnums()
     flush()
 end)
