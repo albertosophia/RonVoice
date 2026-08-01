@@ -622,6 +622,10 @@ public sealed class RonVoiceSession : IDisposable
         _resolver.Mode = updated.SendMode;
         _main.StatusBar.SendMode = updated.SendMode;
 
+        // O limiar também. Ele ficava preso no construtor do pipeline, então
+        // mexer nele não fazia nada até reabrir — e nada dizia isso.
+        _pipeline.ConfidenceThreshold = updated.ConfidenceThreshold;
+
         // Trocar de microfone passou a valer na hora. Antes exigia reabrir o
         // app, e sem aviso nenhum: quem escolhia outro dispositivo continuava
         // gravando do anterior até fechar.

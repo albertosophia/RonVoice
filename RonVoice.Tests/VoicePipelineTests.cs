@@ -161,4 +161,41 @@ public class VoicePipelineTests
 
         Assert.Equal(2, sender.Sent.Count);
     }
+
+    /// <summary>
+    /// O limiar tem que valer na hora de salvar, e nao so' na proxima abertura.
+    ///
+    /// Ele era passado ao construtor e ficava la': quem subia o limiar na aba
+    /// Configuracao continuava com o antigo, sem uma linha dizendo isso. Pior,
+    /// era invisivel nos dois sentidos — subir e nada ficar mais exigente, ou
+    /// baixar e o app continuar recusando o que voce acabou de liberar.
+    /// </summary>
+    [Fact]
+    public void RaisingTheThresholdTakesEffectWithoutReopening()
+    {
+        var (pipeline, engine, sender, _) = Build();
+
+        engine.Emit("open and clear", confidence: 0.5);
+        Assert.NotEmpty(sender.Sent);
+
+        pipeline.ConfidenceThreshold = 0.9;
+        sender.Sent.Clear();
+        engine.Emit("open and clear", confidence: 0.5);
+
+        Assert.Empty(sender.Sent);
+    }
+
+    [Fact]
+    public void LoweringItTakesEffectTheSameWay()
+    {
+        var (pipeline, engine, sender, _) = Build(threshold: 0.9);
+
+        engine.Emit("open and clear", confidence: 0.5);
+        Assert.Empty(sender.Sent);
+
+        pipeline.ConfidenceThreshold = 0.0;
+        engine.Emit("open and clear", confidence: 0.5);
+
+        Assert.NotEmpty(sender.Sent);
+    }
 }

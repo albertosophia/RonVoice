@@ -17,7 +17,6 @@ public sealed class VoicePipeline
     readonly CommandResolver _resolver;
     readonly IInputSender _sender;
     readonly MailboxDelivery? _delivery;
-    readonly double _confidenceThreshold;
     bool _gateWasOpen = true;
 
     /// <summary>
@@ -39,6 +38,16 @@ public sealed class VoicePipeline
     /// </summary>
     public bool DryRun { get; set; }
 
+    /// <summary>
+    /// Abaixo disto a fala é recusada por falta de confiança. Zero desliga.
+    ///
+    /// Propriedade, e não campo do construtor: quem sobe o limiar na aba
+    /// Configuração precisa que valha ao salvar. Preso no construtor, ficava
+    /// invisível nos dois sentidos — subir e nada ficar mais exigente, ou baixar
+    /// e o app continuar recusando o que a pessoa acabou de liberar.
+    /// </summary>
+    public double ConfidenceThreshold { get; set; }
+
     public VoicePipeline(
         ISpeechEngine engine,
         ListenGate gate,
@@ -54,7 +63,7 @@ public sealed class VoicePipeline
         _resolver = resolver;
         _sender = sender;
         _delivery = delivery;
-        _confidenceThreshold = confidenceThreshold;
+        ConfidenceThreshold = confidenceThreshold;
     }
 
     public void Start() => _engine.OnRecognized += OnRecognized;
@@ -115,7 +124,7 @@ public sealed class VoicePipeline
             return;
         }
 
-        if (_confidenceThreshold > 0 && result.AverageConfidence < _confidenceThreshold)
+        if (ConfidenceThreshold > 0 && result.AverageConfidence < ConfidenceThreshold)
         {
             Rejected?.Invoke(new Rejection(
                 RejectionReason.LowConfidence, result.Text,
