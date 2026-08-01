@@ -43,12 +43,12 @@ M.orders = {
     ["door.open.leader"]    = { call = "breach", breach = 1, leader = true, verify = true },
 
     -- ---- porta: chute (Kick) ----
-    ["door.breach.kick.clear"]     = { call = "breach", breach = 3 },
-    ["door.breach.kick.flashbang"] = { call = "breach", breach = 3, grenade = FLASHBANG },
-    ["door.breach.kick.stinger"]   = { call = "breach", breach = 3, grenade = STINGER },
-    ["door.breach.kick.gas"]       = { call = "breach", breach = 3, grenade = GAS },
-    ["door.breach.kick.launcher"]  = { call = "breach", breach = 3, launcher = true, verify = true },
-    ["door.breach.kick.leader"]    = { call = "breach", breach = 3, leader = true, verify = true },
+    ["door.breach.kick.clear"] = { call = "breach", breach = 3, crashes = true },
+    ["door.breach.kick.flashbang"] = { call = "breach", breach = 3, grenade = FLASHBANG, crashes = true },
+    ["door.breach.kick.stinger"] = { call = "breach", breach = 3, grenade = STINGER, crashes = true },
+    ["door.breach.kick.gas"] = { call = "breach", breach = 3, grenade = GAS, crashes = true },
+    ["door.breach.kick.launcher"] = { call = "breach", breach = 3, launcher = true, crashes = true },
+    ["door.breach.kick.leader"] = { call = "breach", breach = 3, leader = true, crashes = true },
 
     -- ---- porta: escopeta (Shotgun) ----
     ["door.breach.shotgun.clear"]     = { call = "breach", breach = 4 },
@@ -67,20 +67,20 @@ M.orders = {
     ["door.breach.c2.leader"]    = { call = "breach", breach = 6, leader = true, verify = true },
 
     -- ---- porta: aríete (Ram) ----
-    ["door.breach.ram.clear"]     = { call = "breach", breach = 5, verify = true },
-    ["door.breach.ram.flashbang"] = { call = "breach", breach = 5, grenade = FLASHBANG, verify = true },
-    ["door.breach.ram.stinger"]   = { call = "breach", breach = 5, grenade = STINGER, verify = true },
-    ["door.breach.ram.gas"]       = { call = "breach", breach = 5, grenade = GAS, verify = true },
-    ["door.breach.ram.launcher"]  = { call = "breach", breach = 5, launcher = true, verify = true },
-    ["door.breach.ram.leader"]    = { call = "breach", breach = 5, leader = true, verify = true },
+    ["door.breach.ram.clear"] = { call = "breach", breach = 5, crashes = true },
+    ["door.breach.ram.flashbang"] = { call = "breach", breach = 5, grenade = FLASHBANG, crashes = true },
+    ["door.breach.ram.stinger"] = { call = "breach", breach = 5, grenade = STINGER, crashes = true },
+    ["door.breach.ram.gas"] = { call = "breach", breach = 5, grenade = GAS, crashes = true },
+    ["door.breach.ram.launcher"] = { call = "breach", breach = 5, launcher = true, crashes = true },
+    ["door.breach.ram.leader"] = { call = "breach", breach = 5, leader = true, crashes = true },
 
     -- ---- porta: líder arromba (Leader) ----
-    ["door.breach.leader.clear"]     = { call = "breach", breach = 7, verify = true },
-    ["door.breach.leader.flashbang"] = { call = "breach", breach = 7, grenade = FLASHBANG, verify = true },
-    ["door.breach.leader.stinger"]   = { call = "breach", breach = 7, grenade = STINGER, verify = true },
-    ["door.breach.leader.gas"]       = { call = "breach", breach = 7, grenade = GAS, verify = true },
-    ["door.breach.leader.launcher"]  = { call = "breach", breach = 7, launcher = true, verify = true },
-    ["door.breach.leader.leader"]    = { call = "breach", breach = 7, leader = true, verify = true },
+    ["door.breach.leader.clear"] = { call = "breach", breach = 7, crashes = true },
+    ["door.breach.leader.flashbang"] = { call = "breach", breach = 7, grenade = FLASHBANG, crashes = true },
+    ["door.breach.leader.stinger"] = { call = "breach", breach = 7, grenade = STINGER, crashes = true },
+    ["door.breach.leader.gas"] = { call = "breach", breach = 7, grenade = GAS, crashes = true },
+    ["door.breach.leader.launcher"] = { call = "breach", breach = 7, launcher = true, crashes = true },
+    ["door.breach.leader.leader"] = { call = "breach", breach = 7, leader = true, crashes = true },
 
     -- ---- porta: empilhar ----
     -- O RoNSpeech passa 0, 2, 3 e 1 em ramos diferentes de issueStackUp; qual e'

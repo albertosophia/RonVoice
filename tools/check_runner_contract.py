@@ -125,7 +125,7 @@ def main():
           str(c.recibos))
 
     # --- sem porta mirada: mesma coisa, com o motivo certo.
-    c = Cenario(lua, pedido=pedido(10, "door.breach.kick.gas"), alvo=None)
+    c = Cenario(lua, pedido=pedido(10, "door.breach.c2.gas"), alvo=None)
     runner.tick(runner.newState(), c.deps())
     checa("sem porta nao arromba", c.chamadas == [], str(c.chamadas))
     checa("sem porta diz o motivo",

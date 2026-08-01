@@ -49,6 +49,9 @@ public class ModOrdersTests
                 : null;
 
         public bool NeedsCheckingInGame => Field("verify") == "true";
+
+        /// <summary>Provada em jogo — fechando o jogo.</summary>
+        public bool TakesTheGameDown => Field("crashes") == "true";
     }
 
     static List<LuaOrder> Read()
@@ -159,12 +162,40 @@ public class ModOrdersTests
     /// marcado — um palpite que se passa por certeza e' pior que um buraco.
     /// </summary>
     [Theory]
-    [InlineData("door.breach.kick.launcher")]
-    [InlineData("door.breach.kick.leader")]
-    [InlineData("door.breach.ram.launcher")]
-    [InlineData("door.breach.ram.leader")]
+    [InlineData("door.open.launcher")]
+    [InlineData("door.open.leader")]
+    [InlineData("door.breach.shotgun.launcher")]
+    [InlineData("door.breach.c2.leader")]
     public void WhatIsStillAGuessSaysSo(string id) =>
         Assert.True(Get(id).NeedsCheckingInGame, $"{id} devia estar marcada verify");
+
+    /// <summary>
+    /// Chute, aríete e líder-arromba passam os tipos 3, 5 e 7 de EDoorBreachType.
+    /// O jogo FECHOU ao receber o 3 — sem erro, sem recibo, crash — e os outros
+    /// dois vieram da mesma suposição: estar no enum não é o mesmo que a função
+    /// aceitar. As dezoito ficam marcadas até haver um jeito provado de pedir.
+    /// </summary>
+    [Fact]
+    public void TheOnesThatCloseTheGameAreMarked()
+    {
+        var marcadas = Read().Where(o => o.TakesTheGameDown).Select(o => o.Id).ToHashSet();
+
+        var esperadas = new[] { "kick", "ram", "leader" }
+            .SelectMany(f => new[] { "clear", "flashbang", "stinger", "gas", "launcher", "leader" }
+                .Select(g => $"door.breach.{f}.{g}"))
+            .ToHashSet();
+
+        Assert.Equal(esperadas, marcadas);
+    }
+
+    /// <summary>
+    /// E uma marcada nunca pode dizer só "confira em jogo": as duas marcas
+    /// significam coisas diferentes e a mais grave tem que ganhar.
+    /// </summary>
+    [Fact]
+    public void NothingIsBothAGuessAndAKiller() =>
+        Assert.Empty(Read().Where(o => o.TakesTheGameDown && o.NeedsCheckingInGame)
+                           .Select(o => o.Id));
 
     /// <summary>
     /// E o contrario: o que esta provado nao pode estar marcado, senao a marca

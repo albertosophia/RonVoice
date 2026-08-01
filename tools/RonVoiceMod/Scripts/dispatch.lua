@@ -33,6 +33,16 @@ local monta = {}
 --- Lancador e granada do lider viram os argumentos 7 e 8. E' hipotese: o
 --- RoNSpeech liga os dois por tecla modificadora e nunca diz o que significam.
 --- O 8 nunca aparece sozinho la', so' junto do 7 — dai lider ser os dois.
+--- Os tipos de EDoorBreachType que o jogo comprovadamente aceita: abrir, mover,
+--- escopeta e C2. Sao os quatro que o RoNSpeech passa, e ele funciona.
+---
+--- Chute (3), ariete (5) e lider (7) estao no enum, e por estarem no enum eu
+--- os mandei. O jogo FECHOU — sem erro, sem recibo, crash — ao receber o 3.
+--- Estar no enum nao e' o mesmo que a funcao aceitar, e a diferenca custou a
+--- missao de quem estava jogando.
+---
+--- Recusar e' pior do que funcionar e MUITO melhor do que derrubar o jogo.
+--- Enquanto nao houver um jeito provado de pedir chute, estas dizem que nao dao.
 monta.breach = function(spec, ctx)
     if not ctx.target then return nil, SEM_PORTA end
 
@@ -110,6 +120,16 @@ end
 function M.plan(id, ctx)
     local spec = orders.orders[id]
     if not spec then return nil, "ordem que o mod nao conhece: " .. tostring(id) end
+
+    -- Marcada como derrubadora: nem tenta. O jogo FECHOU ao receber o tipo de
+    -- arrombamento 3 — sem erro, sem recibo, crash — e o 5 e o 7 vem da mesma
+    -- suposicao: estar no enum nao e' o mesmo que a funcao aceitar.
+    --
+    -- Recusar e' pior do que funcionar e MUITO melhor do que fechar o jogo de
+    -- quem esta no meio de uma missao.
+    if spec.crashes then
+        return nil, "esta ordem fecha o jogo; ainda nao ha' um jeito seguro de pedir"
+    end
 
     local como = monta[spec.call]
     if not como then return nil, "o mod nao sabe fazer: " .. tostring(spec.call) end

@@ -55,9 +55,6 @@ def args(plano):
 
 CASOS = [
     # (id, contexto extra, funcao esperada, argumentos esperados)
-    ("door.breach.kick.gas", {}, "GiveBreachAndClearCommand",
-     ["ALVO", 3, 1, "LOCAL", "classe:" + GAS, None,
-      False, False, False, False, 0, True]),
 
     ("door.breach.shotgun.clear", {}, "GiveBreachAndClearCommand",
      ["ALVO", 4, 1, "LOCAL", None, None,
@@ -116,6 +113,19 @@ RECUSADOS = [
     ("nao.existe", {}, "id que nao esta na tabela"),
     ("door.breach.kick.gas", dict(target=None), "arrombar sem porta mirada"),
     ("door.stack.auto", dict(target=None), "empilhar sem porta mirada"),
+
+    # Chute, ariete e lider-arromba. O jogo FECHOU ao receber o 3 em
+    # GiveBreachAndClearCommand — nao deu erro, nao devolveu recibo: crash.
+    # O RoNSpeech, que funciona, so' passa 1, 2, 4 e 6, e deixa essas tres
+    # familias de fora; agora da' para desconfiar do porque.
+    #
+    # Recusar e' pior do que funcionar e melhor do que derrubar o jogo de quem
+    # esta no meio de uma missao. Enquanto nao houver um jeito PROVADO de pedir
+    # chute, essas ordens dizem que nao dao, em vez de tentar.
+    ("door.breach.kick.clear", {}, "tipo de arrombamento que derruba o jogo"),
+    ("door.breach.kick.gas", {}, "chute com granada tambem passa o 3"),
+    ("door.breach.ram.clear", {}, "ariete passa o 5, nunca provado"),
+    ("door.breach.leader.clear", {}, "lider-arromba passa o 7, nunca provado"),
 ]
 
 
@@ -141,12 +151,22 @@ def main():
             falhas.append(f"{id_}: planejou {plano.fn}, devia recusar — {porque}")
 
     # Toda entrada da tabela tem que ser despachavel: um `call` que o dispatch
-    # nao conhece e' uma ordem que nunca acontece, e nada avisaria.
+    # nao conhece e' uma ordem que nunca acontece, e nada avisaria. As unicas
+    # dispensadas sao as que recusam de proposito, por derrubarem o jogo.
     orders = lua.execute("return (require('orders'))")
+    recusam = 0
     for id_ in orders.orders:
         plano, motivo = planeja(dispatch, id_, contexto(lua))
-        if plano is None:
-            falhas.append(f"{id_}: a tabela tem, o dispatch nao sabe ({motivo})")
+        if plano is not None:
+            continue
+        if "fecha o jogo" in str(motivo):
+            recusam += 1
+            continue
+        falhas.append(f"{id_}: a tabela tem, o dispatch nao sabe ({motivo})")
+
+    # E a conta tem que fechar: chute, ariete e lider sao 6 cada.
+    if recusam != 18:
+        falhas.append(f"deviam ser 18 ordens recusadas por crash, sao {recusam}")
 
     if falhas:
         print("DESPACHO QUEBRADO:")
