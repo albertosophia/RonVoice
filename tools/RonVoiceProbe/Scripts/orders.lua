@@ -132,9 +132,6 @@ M.orders = {
     ["person.restrain"] = { call = "restrain" },
     -- Nao e' o SWATManager: manda no civil/suspeito, pelo Pawn do jogador.
     ["person.moveto"]   = { call = "aimove", verify = true },
-
-    -- ---- confirmar ----
-    ["confirm.default"] = { call = "execute", verify = true },
 }
 
 return M

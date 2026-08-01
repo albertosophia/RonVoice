@@ -33,9 +33,13 @@ public class ModOrdersTests
     static readonly string LuaPath = Path.Combine(
         RepoRoot(), "tools", "RonVoiceProbe", "Scripts", "orders.lua");
 
-    /// <summary>Ordens que sao acao do jogador: continuam em tecla, de propósito.</summary>
-    static readonly string[] StayOnKeys =
-        ["player.chemlight", "player.fireselect", "player.exfil", "player.yell"];
+    /// <summary>
+    /// Ordem cujo caminho comeca em KEY: ja' e' uma tecla direta — nao passa
+    /// pelo menu, entao nao ha' menu para o mod pular. Passa-la pelo mod seria
+    /// dar a volta para chegar no mesmo lugar. A regra sai do mapa, e nao de uma
+    /// lista escrita a mao aqui, que envelheceria calada.
+    /// </summary>
+    static bool StaysOnKeys(OrderDefinition o) => o.Path[0].StartsWith("KEY:");
 
     public sealed record LuaOrder(string Id, string Body)
     {
@@ -72,12 +76,30 @@ public class ModOrdersTests
     {
         var naTabela = Read().Select(o => o.Id).ToHashSet();
 
-        var faltando = CommandMap.Load(CommandMapTests.MapPath).Orders.Keys
-            .Where(id => !StayOnKeys.Contains(id) && !naTabela.Contains(id))
+        var faltando = CommandMap.Load(CommandMapTests.MapPath).Orders.Values
+            .Where(o => !StaysOnKeys(o) && !naTabela.Contains(o.Id))
+            .Select(o => o.Id)
             .OrderBy(x => x, StringComparer.Ordinal)
             .ToList();
 
         Assert.Empty(faltando);
+    }
+
+    /// <summary>
+    /// E o contrario: uma ordem de tecla na tabela do mod significaria duas
+    /// rotas para a mesma coisa, e uma delas sem ninguem olhando.
+    /// </summary>
+    [Fact]
+    public void NoKeyOrderIsInTheLuaTable()
+    {
+        var naTabela = Read().Select(o => o.Id).ToHashSet();
+
+        var sobrando = CommandMap.Load(CommandMapTests.MapPath).Orders.Values
+            .Where(o => StaysOnKeys(o) && naTabela.Contains(o.Id))
+            .Select(o => o.Id)
+            .ToList();
+
+        Assert.Empty(sobrando);
     }
 
     [Fact]
