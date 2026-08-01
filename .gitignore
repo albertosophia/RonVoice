@@ -25,3 +25,12 @@ pack/
 build-fd/
 dist-app/
 *.zip
+
+# Binarios de terceiros: UE4SS, o mod RoNSpeech e o perfil do VoiceAttack.
+# Ficam aqui como REFERENCIA — foi lendo o Lua deles que descobrimos como o
+# jogo recebe uma ordem sem passar pelo menu. Nao sao nossos para versionar,
+# e o UE4SS sozinho tem 16 MB.
+VOICE ATTACK/
+
+# Listas geradas a partir do mapa, uteis de ter e sem valor em historico.
+faltam.txt
