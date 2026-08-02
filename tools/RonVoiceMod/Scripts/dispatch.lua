@@ -20,6 +20,15 @@ local function plano(alvo, fn, ...)
     return { on = alvo, fn = fn, args = args, argc = args.n }
 end
 
+--- Marca onde esta o alvo nos argumentos. Uma ordem engatilhada dispara muito
+--- depois de decidida, e a porta pode ter deixado de existir nesse meio tempo —
+--- alvo invalido nao da erro de Lua, FECHA o jogo. Com o indice, o main.lua
+--- confere a validade na hora de chamar, e o crash vira recibo.
+local function comAlvo(p)
+    if p then p.targetIndex = 1 end
+    return p
+end
+
 local function noManager(fn, ...) return plano("manager", fn, ...) end
 local function noPawn(fn, ...) return plano("pawn", fn, ...) end
 
@@ -50,20 +59,20 @@ monta.breach = function(spec, ctx)
     local sete = (spec.launcher or spec.leader) and true or false
     local oito = spec.leader and true or false
 
-    return noManager("GiveBreachAndClearCommand",
+    return comAlvo(noManager("GiveBreachAndClearCommand",
         ctx.target, spec.breach, ctx.team, ctx.location, granada, nil,
-        sete, oito, false, false, 0, true)
+        sete, oito, false, false, 0, true))
 end
 
 monta.stack = function(spec, ctx)
     if not ctx.target then return nil, SEM_PORTA end
-    return noManager("GiveStackUpCommand",
-        ctx.target, ctx.team, ctx.location, ctx.up, true, spec.position)
+    return comAlvo(noManager("GiveStackUpCommand",
+        ctx.target, ctx.team, ctx.location, ctx.up, true, spec.position))
 end
 
 monta.scan = function(spec, ctx)
     if not ctx.target then return nil, SEM_PORTA end
-    return noManager("GiveScanDoorCommand", ctx.target, ctx.team, ctx.location, spec.method)
+    return comAlvo(noManager("GiveScanDoorCommand", ctx.target, ctx.team, ctx.location, spec.method))
 end
 
 --- Checar armadilha embaixo da porta. E' com o espelho que se faz isso no jogo,
@@ -71,7 +80,7 @@ end
 --- vetor de cima, que as outras nao recebem.
 monta.checktraps = function(_, ctx)
     if not ctx.target then return nil, SEM_PORTA end
-    return noManager("GiveCheckForTrapsCommand", ctx.target, ctx.team, ctx.location, ctx.up)
+    return comAlvo(noManager("GiveCheckForTrapsCommand", ctx.target, ctx.team, ctx.location, ctx.up))
 end
 
 --- As que so' precisam da porta, do time e de onde o jogador esta.
@@ -86,7 +95,7 @@ local naPorta = {
 for chave, fn in pairs(naPorta) do
     monta[chave] = function(_, ctx)
         if not ctx.target then return nil, SEM_PORTA end
-        return noManager(fn, ctx.target, ctx.team, ctx.location)
+        return comAlvo(noManager(fn, ctx.target, ctx.team, ctx.location))
     end
 end
 
@@ -110,7 +119,7 @@ monta.shield = function(_, ctx) return noManager("GiveDeployShield", ctx.team) e
 --- jogador. Outra API, outro objeto.
 monta.aimove = function(_, ctx)
     if not ctx.target then return nil, "sem pessoa mirada" end
-    return noPawn("Server_GiveAIMoveTo", ctx.target, ctx.location)
+    return comAlvo(noPawn("Server_GiveAIMoveTo", ctx.target, ctx.location))
 end
 
 --- A fala de confirmação de cada time, e a resposta positiva que o jogo usa.

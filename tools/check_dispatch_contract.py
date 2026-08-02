@@ -150,6 +150,23 @@ def main():
         if plano is not None:
             falhas.append(f"{id_}: planejou {plano.fn}, devia recusar — {porque}")
 
+    # Plano com alvo diz ONDE o alvo esta nos argumentos. Uma ordem engatilhada
+    # dispara muito depois de decidida, e a porta pode ter deixado de existir
+    # nesse meio tempo — e alvo invalido nao da erro de Lua, fecha o jogo.
+    # E' este indice que deixa o main.lua conferir a validade antes de chamar.
+    COM_ALVO = ["door.toggle", "door.breach.c2.clear", "door.stack.auto",
+                "door.scan.pie", "door.picklock", "person.restrain", "person.moveto"]
+    SEM_ALVO = ["hold", "move.fallin", "deploy.gas", "cover", "search"]
+    for id_ in COM_ALVO:
+        plano, _ = planeja(dispatch, id_, contexto(lua))
+        if plano is None or plano.targetIndex != 1:
+            falhas.append(f"{id_}: devia marcar targetIndex=1, veio "
+                          f"{getattr(plano, 'targetIndex', None) if plano else 'recusa'}")
+    for id_ in SEM_ALVO:
+        plano, _ = planeja(dispatch, id_, contexto(lua))
+        if plano is None or plano.targetIndex is not None:
+            falhas.append(f"{id_}: nao tem alvo para sumir, targetIndex devia ser nil")
+
     # Toda entrada da tabela tem que ser despachavel: um `call` que o dispatch
     # nao conhece e' uma ordem que nunca acontece, e nada avisaria. As unicas
     # dispensadas sao as que recusam de proposito, por derrubarem o jogo.

@@ -236,6 +236,89 @@ public class PipelineViaModTests : IDisposable
         Assert.False(File.Exists(OrderFile));
     }
 
+    // ---- a fila ----
+    //
+    // "prepara, abre a porta" engatilha no mod; "executa" dispara. O campo de
+    // fila sempre viajou na linha e morria do outro lado — o esquadrao agia na
+    // hora, sem erro nenhum, so' nao fazia o que foi pedido.
+
+    [Fact]
+    public void PrepTravelsAsTheQueueFlag()
+    {
+        var (_, engine, _, _) = Build();
+
+        engine.Emit("prep open the door");
+
+        Assert.Equal("1|door.toggle|-|1", File.ReadAllText(OrderFile).Trim());
+    }
+
+    /// <summary>
+    /// Com gatilho armado, "executa" tem que chegar NO MOD — a fila vive la'.
+    /// Se a tecla Z saisse junto, o jogo dispararia a acao padrao da mira em
+    /// cima da engatilhada: duas ordens por uma fala.
+    /// </summary>
+    [Fact]
+    public void OnceArmedExecuteGoesToTheModAndNotTheKey()
+    {
+        var (_, engine, sender, _) = Build();
+
+        engine.Emit("prep open the door");
+        sender.Sent.Clear();
+
+        engine.Emit("execute");
+
+        Assert.Empty(sender.Sent);
+        Assert.Equal("2|confirm.default|-|0", File.ReadAllText(OrderFile).Trim());
+    }
+
+    /// <summary>
+    /// Sem nada engatilhado, "executa" continua sendo a tecla de sempre: e' o
+    /// comando padrao do jogo na mira, e sempre funcionou assim.
+    /// </summary>
+    [Fact]
+    public void WithNothingArmedExecuteStaysOnTheKey()
+    {
+        var (_, engine, sender, _) = Build();
+
+        engine.Emit("execute");
+
+        Assert.NotEmpty(sender.Sent);
+        Assert.False(File.Exists(OrderFile));
+    }
+
+    /// <summary>
+    /// O gatilho so' arma quando o mod CONFIRMOU. Um "prepara" recusado — sem
+    /// porta mirada — nao pode deixar o app achando que ha' fila.
+    /// </summary>
+    [Fact]
+    public void ARefusedPrepDoesNotArmTheTrigger()
+    {
+        var (_, engine, sender, _) = Build(resposta: "sem porta mirada");
+
+        engine.Emit("prep open the door");
+        sender.Sent.Clear();
+
+        engine.Emit("execute");
+
+        Assert.NotEmpty(sender.Sent);
+        Assert.DoesNotContain("confirm.default", File.ReadAllText(OrderFile));
+    }
+
+    [Fact]
+    public void AfterFiringTheNextExecuteIsAKeyAgain()
+    {
+        var (_, engine, sender, _) = Build();
+
+        engine.Emit("prep open the door");
+        engine.Emit("execute");
+        sender.Sent.Clear();
+
+        engine.Emit("execute");
+
+        Assert.NotEmpty(sender.Sent);
+        Assert.StartsWith("2|", File.ReadAllText(OrderFile));
+    }
+
     [Fact]
     public void TheElementTravelsWithTheOrder()
     {

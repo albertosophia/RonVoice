@@ -139,6 +139,13 @@ public sealed class CommandResolver
     public SendMode Mode { get; set; } = SendMode.Menu;
 
     /// <summary>
+    /// A ordem que dispara as engatilhadas. É tecla direta no jogo (Z, o comando
+    /// padrão da mira) — mas quando há gatilho armado no mod, é para lá que ela
+    /// tem que ir, porque a fila vive no mod.
+    /// </summary>
+    public const string ExecuteOrderId = "confirm.default";
+
+    /// <summary>
     /// Se a ordem já é uma tecla do jogo, e não um caminho pelo menu. Estas não
     /// passam por mod nenhum em modo nenhum: não há menu para pular, e elas nem
     /// aparecem na tabela do RonVoiceMod.

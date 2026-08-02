@@ -106,6 +106,16 @@ local function executa(plano, m)
     local alvo = plano.on == "pawn" and m.pawn or pegaManager()
     if not alvo then error("SWATManager nao encontrado") end
 
+    -- Ordem engatilhada dispara muito depois de decidida, e a porta pode ter
+    -- deixado de existir nesse meio tempo. Alvo invalido nao da erro de Lua —
+    -- FECHA o jogo. Esta conferencia e' o que transforma o crash em recibo.
+    if plano.targetIndex then
+        local t = plano.args[plano.targetIndex]
+        if t == nil or not t:IsValid() then
+            error("o alvo daquela ordem ja nao existe")
+        end
+    end
+
     alvo[plano.fn](alvo, table.unpack(plano.args, 1, plano.argc))
 end
 

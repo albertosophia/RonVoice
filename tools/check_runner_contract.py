@@ -191,6 +191,83 @@ def main():
     checa("time morto diz o motivo",
           len(c.recibos) == 1 and c.recibos[0][1] != "ok", str(c.recibos))
 
+    # --- A FILA: "prepara, abre a porta" guarda em vez de executar.
+    #
+    # A linha da caixa sempre levou o campo de fila, e ate' hoje ele morria
+    # aqui: o runner nem olhava. A pessoa falava "prepara" e o esquadrao agia na
+    # hora — sem erro, sem recibo ruim, so' nao fazia o que foi pedido.
+    #
+    # O desenho e' o do RoNSpeech, que funciona em jogo: UM plano guardado por
+    # time (o ultimo vence), confirmacao falada ao engatilhar, e o "executa"
+    # dispara o que estiver guardado.
+    c = Cenario(lua, pedido=pedido(30, "hold", queue=True))
+    estado = runner.newState()
+    runner.tick(estado, c.deps())
+    checa("engatilhar nao executa a ordem", "GiveHoldCommand" not in c.chamadas,
+          str(c.chamadas))
+    checa("engatilhar confirma em voz alta", c.chamadas == ["PlaySwatCommandVoiceLine"],
+          str(c.chamadas))
+    checa("engatilhar responde ok", c.recibos == [(30, "ok")], str(c.recibos))
+
+    # --- "executa" dispara o que esta guardado, uma vez so'.
+    c.pedido = pedido(31, "confirm.default")
+    runner.tick(estado, c.deps())
+    checa("executa dispara a guardada", c.chamadas[-1] == "GiveHoldCommand", str(c.chamadas))
+    checa("executa confirma", c.recibos[-1] == (31, "ok"), str(c.recibos))
+
+    c.pedido = pedido(32, "confirm.default")
+    runner.tick(estado, c.deps())
+    checa("a fila esvazia ao disparar",
+          len(c.recibos) == 3 and c.recibos[-1][1] != "ok", str(c.recibos))
+
+    # --- executar sem nada engatilhado diz isso, em vez de fingir que fez.
+    c = Cenario(lua, pedido=pedido(33, "confirm.default"))
+    runner.tick(runner.newState(), c.deps())
+    checa("sem fila, executa recusa com motivo",
+          len(c.recibos) == 1 and "engatilhado" in c.recibos[0][1], str(c.recibos))
+
+    # --- um gatilho por time; o elemento do "executa" escolhe qual dispara.
+    c = Cenario(lua, pedido=pedido(40, "door.breach.c2.clear", element="red", queue=True))
+    estado = runner.newState()
+    runner.tick(estado, c.deps())
+    c.pedido = pedido(41, "hold", element="blue", queue=True)
+    runner.tick(estado, c.deps())
+    c.pedido = pedido(42, "confirm.default", element="red")
+    runner.tick(estado, c.deps())
+    checa("executa do vermelho dispara so' o dele",
+          c.chamadas[-1] == "GiveBreachAndClearCommand"
+          and "GiveHoldCommand" not in c.chamadas, str(c.chamadas))
+    c.pedido = pedido(43, "confirm.default")
+    runner.tick(estado, c.deps())
+    checa("o do azul continua esperando o executa geral",
+          c.chamadas[-1] == "GiveHoldCommand", str(c.chamadas))
+
+    # --- engatilhar de novo no mesmo time troca a ordem: o ultimo pedido vence,
+    # como no RoNSpeech. Duas ordens guardadas para o mesmo time nao existem.
+    c = Cenario(lua, pedido=pedido(50, "hold", queue=True))
+    estado = runner.newState()
+    runner.tick(estado, c.deps())
+    c.pedido = pedido(51, "search", queue=True)
+    runner.tick(estado, c.deps())
+    c.pedido = pedido(52, "confirm.default")
+    runner.tick(estado, c.deps())
+    ordens = [f for f in c.chamadas if f != "PlaySwatCommandVoiceLine"]
+    checa("o ultimo gatilho vence", ordens == ["GiveSearchAndSecureCommand"], str(ordens))
+
+    # --- time morto nao engatilha: confirmaria do tumulo e nunca executaria.
+    c = Cenario(lua, pedido=pedido(60, "hold", element="red", queue=True), timeMorto=True)
+    runner.tick(runner.newState(), c.deps())
+    checa("time morto nao engatilha", c.chamadas == [], str(c.chamadas))
+    checa("time morto diz o motivo no gatilho",
+          len(c.recibos) == 1 and c.recibos[0][1] != "ok", str(c.recibos))
+
+    # --- ordem que ja' seria recusada na hora tambem nao engatilha.
+    c = Cenario(lua, pedido=pedido(61, "door.breach.c2.clear", queue=True), alvo=None)
+    runner.tick(runner.newState(), c.deps())
+    checa("sem porta nao engatilha arrombamento",
+          c.chamadas == [] and len(c.recibos) == 1 and "porta" in c.recibos[0][1],
+          str(c.recibos))
+
     # --- o elemento escolhe o time. Red=1, Blue=2, Gold=5, como o RoNSpeech faz.
     for elemento, time in [("red", 1), ("blue", 2), ("gold", 5), (None, 1)]:
         checa(f"elemento {elemento} -> time {time}",

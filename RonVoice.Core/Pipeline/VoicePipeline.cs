@@ -192,9 +192,13 @@ public sealed class VoicePipeline
     /// <summary>
     /// Ordem que já é uma tecla do jogo, e não um caminho pelo menu. Não há menu
     /// para o mod pular, então ela não está na tabela dele: mandá-la pela caixa
-    /// seria pedir uma coisa que o mod não conhece, e a ordem morreria no
-    /// recibo. "Execute" é uma dessas, e é das mais faladas que existem.
+    /// <summary>
+    /// Há ordem engatilhada no mod, esperando o "executa". Armado pelo recibo —
+    /// só quando o mod CONFIRMOU o gatilho — e não pela fala: um "prepara"
+    /// recusado deixaria o app achando que há fila onde não há.
     /// </summary>
+    bool _armedInMod;
+
     /// <summary>
     /// Coisas que já são tecla do jogo e continuam sendo, em qualquer modo:
     ///
@@ -205,9 +209,17 @@ public sealed class VoicePipeline
     ///
     /// e as ordens cujo caminho já é KEY:, que não passam pelo menu. Não há menu
     /// para o mod pular, e elas nem estão na tabela dele.
+    ///
+    /// A exceção é o "executa" com gatilho armado: a fila vive no mod, então é
+    /// para lá que ele vai — e a tecla NÃO sai, senão o jogo dispararia a ação
+    /// padrão da mira em cima da engatilhada, duas ordens por uma fala.
     /// </summary>
-    bool IsAlreadyAKey(Intent intent) =>
-        intent.OrderId is null || _resolver.IsDirectKey(intent.OrderId);
+    bool IsAlreadyAKey(Intent intent)
+    {
+        if (intent.OrderId is null) return true;
+        if (_armedInMod && intent.OrderId == CommandResolver.ExecuteOrderId) return false;
+        return _resolver.IsDirectKey(intent.OrderId);
+    }
 
     /// <summary>
     /// Manda pelo mod. Não passa pelo resolvedor: aqui não há tecla nenhuma
@@ -226,6 +238,11 @@ public sealed class VoicePipeline
 
         var entrega = _delivery!.Deliver(intent);
 
+        // O executa desarma SEMPRE, mesmo recusado: se o mod disse "nada
+        // engatilhado" ou o disparo falhou, a fila lá está vazia de qualquer
+        // jeito, e manter o gatilho aqui deixaria os dois lados discordando.
+        if (intent.OrderId == CommandResolver.ExecuteOrderId) _armedInMod = false;
+
         // O mod é a única ponta que sabe se o jogo agiu, então o que ele
         // responde é o que a tela mostra. Engolir isso traria de volta o
         // silêncio que este caminho existe para acabar.
@@ -234,6 +251,8 @@ public sealed class VoicePipeline
             Rejected?.Invoke(new Rejection(RejectionReason.Unresolvable, heard, entrega.Problem));
             return;
         }
+
+        if (intent.Queue) _armedInMod = true;
 
         Sent?.Invoke(NoKeys);
     }
